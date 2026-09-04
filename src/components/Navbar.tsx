@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Smartphone,
@@ -6,7 +6,8 @@ import {
   Download,
   FileSpreadsheet,
   Layers,
-  RotateCcw
+  RotateCcw,
+  ArrowDownToLine
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -18,6 +19,8 @@ interface NavbarProps {
   onDownloadPDF: () => void;
   isPreviewGenerated: boolean;
   isExporting: boolean;
+  installPrompt: any;
+  onTriggerInstall: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -29,6 +32,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadPDF,
   isPreviewGenerated,
   isExporting,
+  installPrompt,
+  onTriggerInstall,
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full px-3 sm:px-6 lg:px-8 pt-3 pb-2 safe-top">
@@ -53,6 +58,19 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-2">
+          {/* Direct Install App Button (When PWA install prompt is available) */}
+          {installPrompt && (
+            <button
+              type="button"
+              onClick={onTriggerInstall}
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-emerald-900 bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-95 border border-emerald-500/40 rounded-full transition-all cursor-pointer shadow-md shadow-emerald-500/10 backdrop-blur-md animate-bounce"
+              title="Install Cover Page App to Phone"
+            >
+              <ArrowDownToLine className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Install App</span>
+            </button>
+          )}
+
           {/* Quick Presets Button (Liquid Cyan Pill) */}
           <button
             type="button"

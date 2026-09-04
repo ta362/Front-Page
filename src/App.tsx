@@ -20,7 +20,8 @@ import {
   X,
   Maximize2,
   Minimize2,
-  Layers
+  Layers,
+  ArrowDownToLine
 } from 'lucide-react';
 
 const STORAGE_KEY = 'assignment_cover_page_data_liquid_v2';
@@ -46,6 +47,8 @@ export default function App() {
   const [isAndroidModalOpen, setIsAndroidModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
   const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
+  const [showInstallBanner, setShowInstallBanner] = useState<boolean>(false);
 
   // Auto-save form state in LocalStorage
   useEffect(() => {
@@ -55,6 +58,41 @@ export default function App() {
       console.error('Failed to persist form data', e);
     }
   }, [formData]);
+
+  // Capture PWA beforeinstallprompt event for instant one-click install
+  useEffect(() => {
+    const handleBeforeInstall = (e: any) => {
+      e.preventDefault();
+      setDeferredInstallPrompt(e);
+      setShowInstallBanner(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+
+    // Also check if running in standalone mode (already installed)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    if (isStandalone) {
+      setShowInstallBanner(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+    };
+  }, []);
+
+  const handleInstallApp = async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        addToast('success', 'App installed successfully on your phone!');
+        setShowInstallBanner(false);
+      }
+      setDeferredInstallPrompt(null);
+    } else {
+      addToast('info', 'To install: Tap browser menu (⋮) and tap "Install App" or "Add to Home Screen".');
+    }
+  };
 
   const addToast = (type: ToastMessage['type'], text: string) => {
     const id = Date.now().toString() + Math.random().toString();
@@ -226,11 +264,49 @@ export default function App() {
         onDownloadPDF={handleDownloadPDF}
         isPreviewGenerated={isPreviewGenerated}
         isExporting={isExporting}
+        installPrompt={deferredInstallPrompt}
+        onTriggerInstall={handleInstallApp}
       />
 
       {/* Main Layout Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 pb-20 lg:pb-6">
         
+        {/* Instant Mobile App Install Banner */}
+        {showInstallBanner && (
+          <div className="liquid-panel p-3.5 sm:p-4 bg-gradient-to-r from-purple-600/10 via-indigo-600/10 to-teal-600/10 border border-purple-300/40 shadow-xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md shadow-purple-500/30">
+                <ArrowDownToLine className="w-5 h-5 animate-bounce" />
+              </div>
+              <div className="min-w-0">
+                <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">
+                  মোবাইলে অ্যাপ হিসেবে ইন্সটল করুন
+                </h4>
+                <p className="text-[11px] sm:text-xs text-slate-600 font-medium truncate">
+                  কোনো ব্রাউজার বার ছাড়া ফুল-স্ক্রিন সরাসরি ওপেন হবে
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={handleInstallApp}
+                className="liquid-pill-purple px-4 py-2 text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
+              >
+                <ArrowDownToLine className="w-3.5 h-3.5" />
+                <span>ইন্সটল</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowInstallBanner(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Mobile View Toggle Bar (Liquid Glass Capsule) */}
         <div className="lg:hidden flex items-center liquid-panel p-1 shadow-md">
           <button
@@ -320,102 +396,87 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Bottom Quick Bar */}
-              <div className="pt-2 flex flex-wrap items-center justify-between gap-2.5 text-xs text-slate-500 font-medium">
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('editor')}
-                    className="lg:hidden text-xs text-indigo-600 hover:underline font-bold flex items-center gap-1"
-                  >
-                    ← Edit Details
-                  </button>
-                  <span className="hidden sm:inline">Typography: <strong className="text-slate-700">Academic Serif (Times / Garamond)</strong></span>
-                </div>
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <button
-                    onClick={handleDownloadJPG}
-                    disabled={isExporting}
-                    className="px-4 py-2 liquid-pill-blue font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer text-xs"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    Save JPG
-                  </button>
-                  <button
-                    onClick={handleDownloadPDF}
-                    disabled={isExporting}
-                    className="px-4 py-2 bg-white/80 hover:bg-white text-slate-700 border border-white rounded-full font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer text-xs backdrop-blur-md"
-                  >
-                    PDF
-                  </button>
-                </div>
+              {/* Quick Action Footer in Preview Column */}
+              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleDownloadJPG}
+                  disabled={!isPreviewGenerated || isExporting}
+                  className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-blue flex items-center justify-center gap-2 cursor-pointer ${
+                    isPreviewGenerated && !isExporting
+                      ? 'opacity-100 active:scale-95'
+                      : 'opacity-60 cursor-not-allowed'
+                  }`}
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download JPG (300 DPI)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadPDF}
+                  disabled={!isPreviewGenerated || isExporting}
+                  className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-purple flex items-center justify-center gap-2 cursor-pointer ${
+                    isPreviewGenerated && !isExporting
+                      ? 'opacity-100 active:scale-95'
+                      : 'opacity-60 cursor-not-allowed'
+                  }`}
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download PDF Document</span>
+                </button>
               </div>
 
             </div>
-
-            {/* Android Banner Card (Liquid Aurora Glass) */}
-            <div className="liquid-aurora-card p-4 sm:p-5 flex items-center justify-between gap-3 shadow-lg">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-white/80 text-purple-700 rounded-2xl shadow-md shrink-0">
-                  <Smartphone className="w-5 h-5" />
-                </div>
-                <div className="min-w-0">
-                  <h4 className="text-xs sm:text-sm font-extrabold text-slate-800 truncate">Native Android Studio Project</h4>
-                  <p className="text-[10px] sm:text-[11px] text-slate-600 font-medium truncate">Jetpack Compose + Kotlin architecture source code</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsAndroidModalOpen(true)}
-                className="px-4 py-2 liquid-pill-purple text-xs font-bold shadow-md transition-all shrink-0 cursor-pointer"
-              >
-                View Code
-              </button>
-            </div>
-
           </div>
 
         </div>
-
       </main>
 
+      {/* Hidden container dedicated to High-DPI browser printing */}
+      <div id="print-cover-area" className="hidden">
+        <A4CoverPage data={formData} id="print-cover-inner" isPrintArea={true} />
+      </div>
+
       {/* Preset Modal */}
-      <PresetSelectorModal
-        isOpen={isPresetsOpen}
-        onClose={() => setIsPresetsOpen(false)}
-        onSelectPreset={handleSelectPreset}
-      />
+      {isPresetsOpen && (
+        <PresetSelectorModal
+          onSelectPreset={handleSelectPreset}
+          onClose={() => setIsPresetsOpen(false)}
+        />
+      )}
 
-      {/* Android Studio Modal */}
-      <AndroidProjectModal
-        isOpen={isAndroidModalOpen}
-        onClose={() => setIsAndroidModalOpen(false)}
-      />
+      {/* Android Project Studio Modal */}
+      {isAndroidModalOpen && (
+        <AndroidProjectModal
+          onClose={() => setIsAndroidModalOpen(false)}
+        />
+      )}
 
-      {/* Floating Glass Toast Notification Stack */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-3">
+      {/* Floating Toast Alerts */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-3 pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-2xl shadow-xl border backdrop-blur-xl animate-in slide-in-from-bottom-5 transition-all ${
+            className={`pointer-events-auto p-3.5 rounded-2xl shadow-xl border flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-3 backdrop-blur-xl ${
               toast.type === 'success'
-                ? 'bg-emerald-500/20 text-emerald-950 border-emerald-400/40'
+                ? 'bg-emerald-500/90 text-white border-emerald-400/50 shadow-emerald-500/20'
                 : toast.type === 'error'
-                ? 'bg-rose-500/20 text-rose-950 border-rose-400/40'
+                ? 'bg-rose-500/90 text-white border-rose-400/50 shadow-rose-500/20'
                 : toast.type === 'warning'
-                ? 'bg-amber-500/20 text-amber-950 border-amber-400/40'
-                : 'bg-indigo-500/20 text-indigo-950 border-indigo-400/40'
+                ? 'bg-amber-500/90 text-white border-amber-400/50 shadow-amber-500/20'
+                : 'bg-indigo-600/90 text-white border-indigo-400/50 shadow-indigo-500/20'
             }`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              {toast.type === 'success' && <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />}
-              {toast.type === 'error' && <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />}
-              {toast.type === 'warning' && <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />}
-              {toast.type === 'info' && <Info className="w-4 h-4 text-indigo-600 shrink-0" />}
+              {toast.type === 'success' && <CheckCircle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'error' && <AlertTriangle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'warning' && <AlertTriangle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'info' && <Info className="w-4 h-4 shrink-0" />}
               <span className="text-xs font-bold leading-snug">{toast.text}</span>
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="p-1 hover:bg-black/10 rounded-full transition-colors shrink-0 cursor-pointer"
+              className="p-1 text-white/80 hover:text-white rounded-full transition-colors cursor-pointer"
             >
               <X className="w-3.5 h-3.5" />
             </button>
