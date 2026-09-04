@@ -1,0 +1,8 @@
+{
+  "name": "Assignment / Lab Copy Cover Page Generator",
+  "description": "Generate professional academic A4 cover pages for assignments and lab copies with instant high-resolution JPG, PNG, and PDF export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

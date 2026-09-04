@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    background-color: #f3f5f9;
+    color: #1e293b;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* 🫧 Optimized Liquid Glass Background Canvas 🫧 */
+.liquid-bg-canvas {
+  background: radial-gradient(circle at 15% 15%, rgba(216, 180, 254, 0.4) 0%, transparent 40%),
+              radial-gradient(circle at 85% 15%, rgba(147, 197, 253, 0.45) 0%, transparent 45%),
+              radial-gradient(circle at 50% 85%, rgba(167, 243, 208, 0.35) 0%, transparent 45%),
+              #f1f4f9;
+  background-attachment: scroll; /* Mobile scroll performance optimization */
+}
+
+/* Master Liquid Glass Panel (Hardware-Accelerated & Mobile-Optimized Blur) */
+.liquid-panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 
+    0 10px 30px -10px rgba(100, 116, 139, 0.12),
+    0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  border-radius: 24px;
+  transform: translateZ(0); /* Force GPU compositing layer */
+  will-change: transform;
+}
+
+/* Liquid Glass Capsule / Inset Card */
+.liquid-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 4px 14px -3px rgba(148, 163, 184, 0.1),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  transform: translateZ(0);
+}
+
+/* Liquid Pill Button (Purple / Violet) */
+.liquid-pill-purple {
+  background: linear-gradient(135deg, #9333ea 0%, #6b21a8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 6px 16px -2px rgba(107, 33, 168, 0.35),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  border-radius: 9999px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translateZ(0);
+}
+.liquid-pill-purple:active {
+  transform: scale(0.97) translateZ(0);
+}
+
+/* Liquid Pill Button (Cyan / Teal) */
+.liquid-pill-cyan {
+  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 6px 16px -2px rgba(15, 118, 110, 0.35),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  border-radius: 9999px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translateZ(0);
+}
+.liquid-pill-cyan:active {
+  transform: scale(0.97) translateZ(0);
+}
+
+/* Liquid Pill Button (Blue / Royal) */
+.liquid-pill-blue {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 
+    0 6px 16px -2px rgba(29, 78, 216, 0.35),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.65);
+  color: #ffffff;
+  border-radius: 9999px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translateZ(0);
+}
+.liquid-pill-blue:active {
+  transform: scale(0.97) translateZ(0);
+}
+
+/* Liquid Pastel Aurora Card */
+.liquid-aurora-card {
+  background: linear-gradient(135deg, rgba(254, 215, 226, 0.75) 0%, rgba(233, 213, 255, 0.75) 50%, rgba(224, 231, 255, 0.75) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 25px -8px rgba(167, 139, 250, 0.2);
+  border-radius: 20px;
+  transform: translateZ(0);
+}
+
+/* Liquid Pill Input */
+.liquid-input {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(203, 213, 225, 0.8);
+  box-shadow: inset 0 1px 2px 0 rgba(148, 163, 184, 0.1);
+  color: #0f172a;
+  border-radius: 12px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.liquid-input:focus {
+  background: #ffffff;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* Safe area insets */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.font-academic-serif {
+  font-family: 'Tinos', 'EB Garamond', 'Times New Roman', Times, serif;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-cover-area, #print-cover-area * {
+    visibility: visible;
+  }
+  #print-cover-area {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 20mm 15mm !important;
+    box-shadow: none !important;
+    background: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
