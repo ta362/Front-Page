@@ -206,4 +206,5 @@ export const INITIAL_FORM_DATA: CoverPageFormData = {
   showWatermark: false,
   fontTheme: 'times',
   accentColor: '#dc2626',
+  layoutMode: 'side-by-side',
 };

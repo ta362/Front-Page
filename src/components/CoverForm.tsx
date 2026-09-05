@@ -523,11 +523,66 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         </div>
       </div>
 
-      {/* SECTION 5: Border & Framing Style */}
+      {/* SECTION 5: Information Layout (Side-by-Side vs Stacked) */}
+      <div className="liquid-card p-4 sm:p-5 space-y-3.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+              5
+            </span>
+            <h3 className="text-sm sm:text-base font-bold text-slate-800">
+              Information Layout / বিন্যাস
+            </h3>
+          </div>
+          <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-100 text-indigo-700">
+            {formData.layoutMode === 'stacked' ? 'Centered Stack' : 'Side-by-Side (পাশাপাশি)'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <button
+            type="button"
+            onClick={() => onChange({ layoutMode: 'side-by-side' })}
+            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
+              formData.layoutMode !== 'stacked'
+                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
+                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
+            }`}
+          >
+            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
+              <span>পাশাপাশি (Side-by-Side)</span>
+              {formData.layoutMode !== 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
+            </span>
+            <span className="text-[11px] text-slate-500 mt-1">
+              Submitted To (Left) এবং Submitted By (Right) পাশাপাশি বড় ও স্পষ্ট ফন্টে দেখাবে
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onChange({ layoutMode: 'stacked' })}
+            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
+              formData.layoutMode === 'stacked'
+                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
+                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
+            }`}
+          >
+            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
+              <span>উপরে-নিচে (Centered)</span>
+              {formData.layoutMode === 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
+            </span>
+            <span className="text-[11px] text-slate-500 mt-1">
+              ঐতিহ্যবাহী মাঝে সাজানো উল্লম্ব লেআউট
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* SECTION 6: Border & Framing Style */}
       <div className="liquid-card p-4 sm:p-5 space-y-3.5">
         <div className="flex items-center gap-2.5">
           <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-            5
+            6
           </span>
           <h3 className="text-sm sm:text-base font-bold text-slate-800">
             Border & Framing Style

@@ -30,6 +30,7 @@ export interface CoverPageFormData {
   showWatermark: boolean;
   fontTheme: 'times' | 'garamond' | 'cinzel';
   accentColor: string;
+  layoutMode?: 'side-by-side' | 'stacked';
 }
 
 export interface ValidationErrors {
