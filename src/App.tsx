@@ -431,18 +431,21 @@ export default function App() {
         </div>
       </main>
 
-      {/* Canonical off-screen full-size A4 export container (794px x 1123px) */}
+      {/* Canonical full-size A4 export container (794px x 1123px) - Clipped and visible to DOM render pipeline */}
       <div
         id="export-mount"
+        aria-hidden="true"
         style={{
           position: 'fixed',
-          left: '-9999px',
           top: 0,
+          left: 0,
           width: '794px',
           height: '1123px',
-          zIndex: -9999,
+          zIndex: -50,
+          opacity: 0,
           pointerEvents: 'none',
           overflow: 'hidden',
+          backgroundColor: '#ffffff',
         }}
       >
         <A4CoverPage data={formData} id="target-cover" />

@@ -33,27 +33,27 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
       case 'classic-double':
         return (
           <>
-            <div className="absolute inset-[18px] border-[2.5px] border-slate-950 pointer-events-none" />
-            <div className="absolute inset-[25px] border-[1px] border-slate-950 pointer-events-none" />
+            <div style={{ position: 'absolute', top: 16, left: 16, right: 16, bottom: 16, border: '2.5px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 23, left: 23, right: 23, bottom: 23, border: '1px solid #000000', pointerEvents: 'none' }} />
           </>
         );
       case 'ornate-corners':
         return (
           <>
-            <div className="absolute inset-[18px] border-[2px] border-slate-950 pointer-events-none" />
-            <div className="absolute top-[22px] left-[22px] w-6 h-6 border-t-[3px] border-l-[3px] border-slate-950 pointer-events-none" />
-            <div className="absolute top-[22px] right-[22px] w-6 h-6 border-t-[3px] border-r-[3px] border-slate-950 pointer-events-none" />
-            <div className="absolute bottom-[22px] left-[22px] w-6 h-6 border-b-[3px] border-l-[3px] border-slate-950 pointer-events-none" />
-            <div className="absolute bottom-[22px] right-[22px] w-6 h-6 border-b-[3px] border-r-[3px] border-slate-950 pointer-events-none" />
+            <div style={{ position: 'absolute', top: 16, left: 16, right: 16, bottom: 16, border: '2px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 20, left: 20, width: 28, height: 28, borderTop: '3px solid #000000', borderLeft: '3px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 20, right: 20, width: 28, height: 28, borderTop: '3px solid #000000', borderRight: '3px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 20, left: 20, width: 28, height: 28, borderBottom: '3px solid #000000', borderLeft: '3px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 20, right: 20, width: 28, height: 28, borderBottom: '3px solid #000000', borderRight: '3px solid #000000', pointerEvents: 'none' }} />
           </>
         );
       case 'simple-single':
-        return <div className="absolute inset-[18px] border-[2px] border-slate-950 pointer-events-none" />;
+        return <div style={{ position: 'absolute', top: 16, left: 16, right: 16, bottom: 16, border: '2px solid #000000', pointerEvents: 'none' }} />;
       case 'academic-crest':
         return (
           <>
-            <div className="absolute inset-[18px] border-[2px] border-slate-950 pointer-events-none" />
-            <div className="absolute inset-[26px] border border-dashed border-slate-700 pointer-events-none" />
+            <div style={{ position: 'absolute', top: 16, left: 16, right: 16, bottom: 16, border: '2px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 24, left: 24, right: 24, bottom: 24, border: '1px dashed #334155', pointerEvents: 'none' }} />
           </>
         );
       case 'minimal':
@@ -62,16 +62,16 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
     }
   };
 
-  const fontClass = {
-    times: 'font-academic-serif',
-    garamond: 'font-serif',
-    cinzel: 'font-cinzel',
+  const fontFamily = {
+    times: "'Tinos', 'EB Garamond', 'Times New Roman', Times, serif",
+    garamond: "'EB Garamond', Georgia, serif",
+    cinzel: "'Cinzel', serif",
   }[data.fontTheme || 'times'];
 
   return (
     <div
       id={id}
-      className={`relative bg-white text-slate-950 select-none overflow-hidden mx-auto ${fontClass} ${
+      className={`relative select-none overflow-hidden mx-auto ${
         isPrintArea ? '' : 'shadow-2xl'
       }`}
       style={{
@@ -83,100 +83,197 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
         maxHeight: '1123px',
         boxSizing: 'border-box',
         backgroundColor: '#ffffff',
+        color: '#000000',
+        fontFamily,
+        position: 'relative',
       }}
     >
       {/* Borders */}
       {renderBorders()}
 
-      {/* Optional Watermark Logo in background */}
+      {/* Optional Watermark Logo */}
       {data.showWatermark && data.logoUrl && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 overflow-hidden">
+        <div 
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none',
+            opacity: 0.05,
+            overflow: 'hidden',
+          }}
+        >
           <img
             src={data.logoUrl}
             alt="Watermark"
-            className="w-1/2 h-1/2 object-contain grayscale"
+            style={{ width: '50%', height: '50%', objectFit: 'contain', filter: 'grayscale(100%)' }}
           />
         </div>
       )}
 
-      {/* Main Content Layout - Exact vertical containment within 794px x 1123px A4 bounds */}
+      {/* Main Structural Content - Guaranteed No-Overlap Layout */}
       <div 
-        className="relative z-10 w-full h-full flex flex-col justify-between text-center box-border"
         style={{
-          padding: '52px 64px 44px 64px',
+          position: 'relative',
+          zIndex: 10,
+          width: '794px',
+          height: '1123px',
+          padding: '48px 64px 38px 64px',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          textAlign: 'center',
         }}
       >
         
         {/* 1. TOP HEADER SECTION */}
-        <div className="flex flex-col items-center w-full space-y-2">
-          {/* Submission Type (e.g. ASSIGNMENT / LABORATORY REPORT) */}
-          <div className="w-full">
-            <h1 className="text-base font-semibold tracking-[0.2em] text-slate-800 uppercase">
-              {data.submissionType || 'Assignment'}
-            </h1>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Submission Type (e.g. ASSIGNMENT) */}
+          <div 
+            style={{
+              fontSize: '15px',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: '#1e293b',
+              marginBottom: '10px',
+              lineHeight: 1.4,
+            }}
+          >
+            {data.submissionType || 'ASSIGNMENT'}
           </div>
 
           {/* College / University Name */}
-          <div className="w-full px-2">
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-950 uppercase leading-snug whitespace-pre-line break-words max-w-[660px] mx-auto">
-              {data.college || 'Techno College of Engineering Agartala'}
-            </h2>
+          <div 
+            style={{
+              fontSize: '22px',
+              fontWeight: 800,
+              letterSpacing: '0.01em',
+              textTransform: 'uppercase',
+              color: '#000000',
+              lineHeight: 1.35,
+              maxWidth: '660px',
+              margin: '0 auto 12px auto',
+              wordWrap: 'break-word',
+            }}
+          >
+            {data.college || 'Techno College of Engineering Agartala'}
           </div>
 
-          {/* Course Title & Course Code */}
-          <div className="flex flex-col items-center text-slate-900 w-full pt-1 space-y-1 text-sm">
-            {data.course && (
-              <p className="leading-snug break-words">
-                <span className="font-bold text-slate-950">Course Title: </span>
-                <span className="font-normal text-slate-800">{data.course}</span>
-              </p>
-            )}
-            {data.courseCode && (
-              <p className="leading-snug break-words">
-                <span className="font-bold text-slate-950">Course Code: </span>
-                <span className="font-normal text-slate-800">{data.courseCode}</span>
-              </p>
-            )}
-          </div>
+          {/* Course Title */}
+          {data.course && (
+            <div 
+              style={{
+                fontSize: '14.5px',
+                lineHeight: 1.5,
+                color: '#1e293b',
+                maxWidth: '620px',
+                margin: '0 auto 4px auto',
+                wordWrap: 'break-word',
+              }}
+            >
+              <strong style={{ color: '#000000', fontWeight: 700 }}>Course Title: </strong>
+              <span>{data.course}</span>
+            </div>
+          )}
+
+          {/* Course Code */}
+          {data.courseCode && (
+            <div 
+              style={{
+                fontSize: '14.5px',
+                lineHeight: 1.5,
+                color: '#1e293b',
+                maxWidth: '620px',
+                margin: '0 auto',
+                wordWrap: 'break-word',
+              }}
+            >
+              <strong style={{ color: '#000000', fontWeight: 700 }}>Course Code: </strong>
+              <span>{data.courseCode}</span>
+            </div>
+          )}
         </div>
 
-        {/* 2. LOGO (Centered with dedicated headroom) */}
+        {/* 2. LOGO SECTION (Generous vertical breathing space) */}
         {data.logoUrl && (
-          <div className="my-auto py-2 flex items-center justify-center w-full">
+          <div 
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '12px 0',
+              minHeight: '120px',
+            }}
+          >
             <img
               src={data.logoUrl}
-              alt="College Emblem"
-              className="object-contain"
+              alt="Emblem"
               style={{
-                maxWidth: `${Math.min(data.logoSize || 140, 160)}px`,
-                maxHeight: '120px',
+                maxWidth: `${Math.min(data.logoSize || 135, 145)}px`,
+                maxHeight: '115px',
+                objectFit: 'contain',
+                display: 'block',
               }}
             />
           </div>
         )}
 
         {/* 3. SUBMITTED TO SECTION */}
-        <div className="flex flex-col items-center w-full px-2">
-          <h3 className="text-sm font-bold tracking-wider text-slate-950 uppercase underline underline-offset-4 mb-2">
-            Submitted To:
-          </h3>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div 
+            style={{
+              fontSize: '14px',
+              fontWeight: 800,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: '#000000',
+              textDecoration: 'underline',
+              textUnderlineOffset: '4px',
+              marginBottom: '10px',
+              lineHeight: 1.4,
+            }}
+          >
+            SUBMITTED TO:
+          </div>
 
-          <div className="text-slate-950 flex flex-col items-center w-full max-w-md text-[14px] leading-relaxed space-y-0.5">
-            <div className="font-bold text-slate-950 break-words text-base">
+          <div 
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+              maxWidth: '560px',
+              margin: '0 auto',
+              lineHeight: 1.55,
+            }}
+          >
+            <div 
+              style={{
+                fontSize: '16px',
+                fontWeight: 700,
+                color: '#000000',
+                marginBottom: '3px',
+              }}
+            >
               {data.teacher || 'Mr. Sudip Deb'}
             </div>
             {data.designation && (
-              <div className="text-slate-800 break-words">
+              <div style={{ fontSize: '14px', color: '#1e293b', marginBottom: '2px' }}>
                 {data.designation}
               </div>
             )}
             {data.department && (
-              <div className="text-slate-800 break-words">
+              <div style={{ fontSize: '14px', color: '#1e293b', marginBottom: '2px' }}>
                 {data.department}
               </div>
             )}
             {data.college && (
-              <div className="text-slate-800 break-words line-clamp-1">
+              <div style={{ fontSize: '13.5px', color: '#334155' }}>
                 {data.college.split('\n')[0]}
               </div>
             )}
@@ -184,52 +281,93 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
         </div>
 
         {/* 4. SUBMITTED BY SECTION */}
-        <div className="flex flex-col items-center w-full px-2 mt-2">
-          <h3 className="text-sm font-bold tracking-wider text-slate-950 uppercase underline underline-offset-4 mb-2">
-            Submitted By:
-          </h3>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '6px' }}>
+          <div 
+            style={{
+              fontSize: '14px',
+              fontWeight: 800,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: '#000000',
+              textDecoration: 'underline',
+              textUnderlineOffset: '4px',
+              marginBottom: '10px',
+              lineHeight: 1.4,
+            }}
+          >
+            SUBMITTED BY:
+          </div>
 
-          <div className="text-slate-950 flex flex-col items-center w-full max-w-lg text-[14px] leading-relaxed">
+          <div 
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '100%',
+              maxWidth: '580px',
+              margin: '0 auto',
+            }}
+          >
             {/* Student Name */}
-            <div className="font-bold text-slate-950 uppercase tracking-wide text-base mb-1.5 break-words">
+            <div 
+              style={{
+                fontSize: '16.5px',
+                fontWeight: 800,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: '#000000',
+                marginBottom: '8px',
+                lineHeight: 1.4,
+              }}
+            >
               {data.student || 'TANMOY DAS'}
             </div>
 
-            {/* Student Details Stack - Explicit clean rows, no flex squishing */}
-            <div className="flex flex-col items-center w-full max-w-md space-y-1 text-slate-800 text-center">
+            {/* Student Details Stack - Every single row has explicit height and spacing */}
+            <div 
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '100%',
+                fontSize: '13.5px',
+                lineHeight: 1.6,
+                color: '#1e293b',
+              }}
+            >
               {data.studentId && (
-                <div>
-                  <span className="font-semibold text-slate-950">Student ID: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>Student ID: </strong>
                   <span>{data.studentId}</span>
                 </div>
               )}
               {data.roll && (
-                <div>
-                  <span className="font-semibold text-slate-950">TU Roll No.: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>TU Roll No.: </strong>
                   <span>{data.roll}</span>
                 </div>
               )}
               {data.reg && (
-                <div>
-                  <span className="font-semibold text-slate-950">TU Registration No.: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>TU Registration No.: </strong>
                   <span>{data.reg}</span>
                 </div>
               )}
               {data.department && (
-                <div className="break-words">
-                  <span className="font-semibold text-slate-950">Department: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>Department: </strong>
                   <span>{data.department.replace(/^Department of\s*/i, '')}</span>
                 </div>
               )}
               {data.semester && (
-                <div>
-                  <span className="font-semibold text-slate-950">Program Level & Semester: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>Program Level &amp; Semester: </strong>
                   <span>{data.semester}</span>
                 </div>
               )}
               {data.session && (
-                <div>
-                  <span className="font-semibold text-slate-950">Session: </span>
+                <div style={{ marginBottom: '2px' }}>
+                  <strong style={{ color: '#000000', fontWeight: 700 }}>Session: </strong>
                   <span>{data.session}</span>
                 </div>
               )}
@@ -237,9 +375,16 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
 
             {/* Date of Submission */}
             {formattedDate && (
-              <div className="mt-3 text-[14px] text-slate-950">
-                <span className="font-semibold">Date of Submission: </span>
-                <span className="font-normal">{formattedDate}</span>
+              <div 
+                style={{
+                  marginTop: '12px',
+                  fontSize: '13.5px',
+                  lineHeight: 1.5,
+                  color: '#000000',
+                }}
+              >
+                <strong style={{ fontWeight: 700 }}>Date of Submission: </strong>
+                <span>{formattedDate}</span>
               </div>
             )}
           </div>
@@ -250,3 +395,4 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
   );
 });
 A4CoverPage.displayName = 'A4CoverPage';
+
