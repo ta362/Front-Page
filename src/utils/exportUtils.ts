@@ -13,20 +13,33 @@ function downloadDataUrl(dataUrl: string, filename: string) {
   document.body.removeChild(link);
 }
 
+const CANONICAL_A4_WIDTH = 794;
+const CANONICAL_A4_HEIGHT = 1123;
+
 /**
  * High-resolution 300 DPI A4 JPG Exporter
- * Uses html-to-image (SVG foreignObject) with pixelRatio 3x, which handles OKLCH, Tailwind v4 and modern CSS colors flawlessly.
+ * Generates exact 2382 x 3369 px image with clean font rendering and no text overlaps
  */
 export async function exportCoverPageAsJPG(elementId: string, filename = 'Cover_Page_A4.jpg'): Promise<boolean> {
   const element = document.getElementById(elementId);
   if (!element) {
-    throw new Error('Cover page element not found. Please ensure the preview is visible.');
+    throw new Error('Cover page element not found.');
   }
 
-  // Ensure element has standard white background and no transform issues
+  // Ensure document fonts are completely ready before rasterizing
+  if ('fonts' in document) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // Continue gracefully if font wait times out
+    }
+  }
+
   const dataUrl = await toJpeg(element, {
     quality: 0.98,
-    pixelRatio: 3, // ~2480 x 3508 px at full standard 300 DPI print quality
+    pixelRatio: 3, // 794 * 3 = 2382px, 1123 * 3 = 3369px (true 300 DPI A4)
+    width: CANONICAL_A4_WIDTH,
+    height: CANONICAL_A4_HEIGHT,
     backgroundColor: '#ffffff',
     cacheBust: true,
   });
@@ -42,11 +55,19 @@ export async function exportCoverPageAsJPG(elementId: string, filename = 'Cover_
 export async function exportCoverPageAsPNG(elementId: string, filename = 'Cover_Page_A4.png'): Promise<boolean> {
   const element = document.getElementById(elementId);
   if (!element) {
-    throw new Error('Cover page element not found. Please ensure the preview is visible.');
+    throw new Error('Cover page element not found.');
+  }
+
+  if ('fonts' in document) {
+    try {
+      await document.fonts.ready;
+    } catch {}
   }
 
   const dataUrl = await toPng(element, {
     pixelRatio: 3,
+    width: CANONICAL_A4_WIDTH,
+    height: CANONICAL_A4_HEIGHT,
     backgroundColor: '#ffffff',
     cacheBust: true,
   });
@@ -62,12 +83,20 @@ export async function exportCoverPageAsPNG(elementId: string, filename = 'Cover_
 export async function exportCoverPageAsPDF(elementId: string, filename = 'Cover_Page_A4.pdf'): Promise<boolean> {
   const element = document.getElementById(elementId);
   if (!element) {
-    throw new Error('Cover page element not found. Please ensure the preview is visible.');
+    throw new Error('Cover page element not found.');
+  }
+
+  if ('fonts' in document) {
+    try {
+      await document.fonts.ready;
+    } catch {}
   }
 
   const dataUrl = await toJpeg(element, {
     quality: 0.98,
-    pixelRatio: 2.5,
+    pixelRatio: 2.5, // 1985 x 2807 px for high definition PDF document
+    width: CANONICAL_A4_WIDTH,
+    height: CANONICAL_A4_HEIGHT,
     backgroundColor: '#ffffff',
     cacheBust: true,
   });

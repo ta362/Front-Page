@@ -4,6 +4,7 @@ import { INITIAL_FORM_DATA } from './utils/academicPresets';
 import { Navbar } from './components/Navbar';
 import { CoverForm } from './components/CoverForm';
 import { A4CoverPage } from './components/A4CoverPage';
+import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
 import { AndroidProjectModal } from './components/AndroidProjectModal';
 import { exportCoverPageAsJPG, exportCoverPageAsPNG, exportCoverPageAsPDF } from './utils/exportUtils';
@@ -389,11 +390,9 @@ export default function App() {
                 </div>
               </div>
 
-              {/* A4 Canvas Container with smooth scrollable viewport */}
-              <div className="w-full bg-slate-200/50 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-white/80 overflow-y-auto max-h-[72vh] sm:max-h-[78vh] flex justify-center items-start shadow-inner">
-                <div className="w-full max-w-[460px] shadow-2xl transition-transform origin-top my-1 rounded-sm overflow-hidden">
-                  <A4CoverPage data={formData} id="target-cover" />
-                </div>
+              {/* A4 Canvas Container with smooth proportional zoom preview */}
+              <div className="w-full bg-slate-200/50 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-white/80 overflow-y-auto max-h-[75vh] flex justify-center items-start shadow-inner">
+                <A4PreviewViewer data={formData} />
               </div>
 
               {/* Quick Action Footer in Preview Column */}
@@ -431,6 +430,23 @@ export default function App() {
 
         </div>
       </main>
+
+      {/* Canonical off-screen full-size A4 export container (794px x 1123px) */}
+      <div
+        id="export-mount"
+        style={{
+          position: 'fixed',
+          left: '-9999px',
+          top: 0,
+          width: '794px',
+          height: '1123px',
+          zIndex: -9999,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+        }}
+      >
+        <A4CoverPage data={formData} id="target-cover" />
+      </div>
 
       {/* Hidden container dedicated to High-DPI browser printing */}
       <div id="print-cover-area" className="hidden">
