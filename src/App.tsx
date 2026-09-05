@@ -7,7 +7,7 @@ import { A4CoverPage } from './components/A4CoverPage';
 import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
 import { AndroidProjectModal } from './components/AndroidProjectModal';
-import { exportCoverPageAsJPG, exportCoverPageAsPNG, exportCoverPageAsPDF } from './utils/exportUtils';
+import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
   Smartphone,
@@ -157,7 +157,7 @@ export default function App() {
     try {
       setIsExporting(true);
       addToast('info', 'Rendering high-resolution A4 image (300 DPI)...');
-      await exportCoverPageAsJPG('target-cover', 'Cover_Page_A4.jpg');
+      await exportCoverPageAsJPGDirect(formData, 'Cover_Page_A4.jpg');
       addToast('success', 'Cover page saved successfully! (Cover_Page_A4.jpg)');
     } catch (err: any) {
       console.error(err);
@@ -174,7 +174,7 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      await exportCoverPageAsPNG('target-cover', 'Cover_Page_A4.png');
+      await exportCoverPageAsPNGDirect(formData, 'Cover_Page_A4.png');
       addToast('success', 'PNG exported successfully!');
     } catch (err: any) {
       console.error(err);
@@ -192,7 +192,7 @@ export default function App() {
     try {
       setIsExporting(true);
       addToast('info', 'Generating print-ready A4 PDF document...');
-      await exportCoverPageAsPDF('target-cover', 'Cover_Page_A4.pdf');
+      await exportCoverPageAsPDFDirect(formData, 'Cover_Page_A4.pdf');
       addToast('success', 'PDF file downloaded successfully!');
     } catch (err: any) {
       console.error(err);
