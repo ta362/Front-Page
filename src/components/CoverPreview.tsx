@@ -64,6 +64,7 @@ export const CoverPreview = forwardRef<HTMLDivElement, CoverPreviewProps>(
       borderStyle = 'classic-double',
       showWatermark = false,
       fontTheme = 'times',
+      layoutMode = 'stacked',
     } = formData;
 
     const formattedDate = date
@@ -263,68 +264,139 @@ export const CoverPreview = forwardRef<HTMLDivElement, CoverPreviewProps>(
                   </div>
                 </div>
 
-                {/* 4. SUBMITTED TO & SUBMITTED BY (SIDE-BY-SIDE TWO COLUMN LAYOUT) */}
-                <div className="w-full grid grid-cols-2 gap-6 pt-3 pb-2 border-t border-slate-300 text-left">
-                  {/* Left Column: Submitted To */}
-                  <div className="space-y-1.5 pr-2">
-                    <p className="text-[13px] font-bold uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 inline-block">
-                      Submitted To:
-                    </p>
-                    <p className="text-[15px] font-bold text-slate-950 leading-tight">
-                      {teacher || 'Teacher Name'}
-                    </p>
-                    {designation && (
-                      <p className="text-[12px] font-medium text-slate-700 leading-tight">
-                        {designation}
+                {/* 4. SUBMITTED TO & SUBMITTED BY */}
+                {layoutMode === 'stacked' ? (
+                  <div className="w-full space-y-4 pt-2 pb-1 border-t border-slate-300 text-center">
+                    {/* Centered: Submitted To */}
+                    <div className="space-y-1">
+                      <p className="text-[13px] font-extrabold uppercase tracking-wider text-slate-900 underline underline-offset-4 inline-block">
+                        Submitted To:
                       </p>
-                    )}
-                    {department && (
-                      <p className="text-[11.5px] text-slate-600 leading-tight">
-                        {department}
+                      <p className="text-[15px] font-bold text-slate-950 leading-tight">
+                        {teacher || 'Teacher Name'}
                       </p>
-                    )}
-                    <p className="text-[11.5px] text-slate-600 leading-tight font-serif">
-                      {college || 'Techno College of Engineering Agartala'}
-                    </p>
-                  </div>
-
-                  {/* Right Column: Submitted By */}
-                  <div className="space-y-1.5 pl-2 border-l border-slate-200">
-                    <p className="text-[13px] font-bold uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 inline-block">
-                      Submitted By:
-                    </p>
-                    <p className="text-[15px] font-bold text-slate-950 leading-tight">
-                      {student || 'Student Name'}
-                    </p>
-                    <div className="text-[12px] space-y-0.5 text-slate-800">
-                      {studentId && (
-                        <p>
-                          <span className="font-semibold text-slate-900">Student ID:</span> {studentId}
+                      {designation && (
+                        <p className="text-[12px] font-medium text-slate-700 leading-tight">
+                          {designation}
                         </p>
                       )}
-                      {roll && (
-                        <p>
-                          <span className="font-semibold text-slate-900">Roll No.:</span> {roll}
+                      {department && (
+                        <p className="text-[12px] text-slate-700 leading-tight">
+                          {department}
                         </p>
                       )}
-                      {reg && (
-                        <p>
-                          <span className="font-semibold text-slate-900">Reg. No.:</span> {reg}
-                        </p>
-                      )}
-                      {semester && (
-                        <p>
-                          <span className="font-semibold text-slate-900">Semester:</span> {semester}
-                        </p>
-                      )}
-                      {session && (
-                        <p>
-                          <span className="font-semibold text-slate-900">Session:</span> {session}
+                      {college && (
+                        <p className="text-[11.5px] text-slate-600 leading-tight font-serif">
+                          {college.split('\n')[0]}
                         </p>
                       )}
                     </div>
+
+                    {/* Centered: Submitted By */}
+                    <div className="space-y-1 pt-1 border-t border-slate-200/60">
+                      <p className="text-[13px] font-extrabold uppercase tracking-wider text-slate-900 underline underline-offset-4 inline-block">
+                        Submitted By:
+                      </p>
+                      <p className="text-[15px] font-extrabold text-slate-950 uppercase tracking-wide leading-tight">
+                        {student || 'Student Name'}
+                      </p>
+                      <div className="text-[12px] space-y-0.5 text-slate-800">
+                        {studentId && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Student ID:</span> {studentId}
+                          </p>
+                        )}
+                        {roll && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Roll No.:</span> {roll}
+                          </p>
+                        )}
+                        {reg && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Reg. No.:</span> {reg}
+                          </p>
+                        )}
+                        {department && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Department:</span> {department.replace(/^Department of\s*/i, '')}
+                          </p>
+                        )}
+                        {semester && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Program Level & Semester:</span> {semester}
+                          </p>
+                        )}
+                        {session && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Session:</span> {session}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="w-full grid grid-cols-2 gap-6 pt-3 pb-2 border-t border-slate-300 text-left">
+                    {/* Left Column: Submitted To */}
+                    <div className="space-y-1.5 pr-2">
+                      <p className="text-[13px] font-bold uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 inline-block">
+                        Submitted To:
+                      </p>
+                      <p className="text-[15px] font-bold text-slate-950 leading-tight">
+                        {teacher || 'Teacher Name'}
+                      </p>
+                      {designation && (
+                        <p className="text-[12px] font-medium text-slate-700 leading-tight">
+                          {designation}
+                        </p>
+                      )}
+                      {department && (
+                        <p className="text-[11.5px] text-slate-600 leading-tight">
+                          {department}
+                        </p>
+                      )}
+                      <p className="text-[11.5px] text-slate-600 leading-tight font-serif">
+                        {college || 'Techno College of Engineering Agartala'}
+                      </p>
+                    </div>
+
+                    {/* Right Column: Submitted By */}
+                    <div className="space-y-1.5 pl-2 border-l border-slate-200">
+                      <p className="text-[13px] font-bold uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 inline-block">
+                        Submitted By:
+                      </p>
+                      <p className="text-[15px] font-bold text-slate-950 leading-tight">
+                        {student || 'Student Name'}
+                      </p>
+                      <div className="text-[12px] space-y-0.5 text-slate-800">
+                        {studentId && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Student ID:</span> {studentId}
+                          </p>
+                        )}
+                        {roll && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Roll No.:</span> {roll}
+                          </p>
+                        )}
+                        {reg && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Reg. No.:</span> {reg}
+                          </p>
+                        )}
+                        {semester && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Semester:</span> {semester}
+                          </p>
+                        )}
+                        {session && (
+                          <p>
+                            <span className="font-semibold text-slate-900">Session:</span> {session}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* 5. FOOTER: DATE OF SUBMISSION */}
                 <div className="w-full pt-2 pb-1 border-t border-slate-200 flex justify-between items-center text-[11px] text-slate-600">

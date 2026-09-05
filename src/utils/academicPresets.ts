@@ -202,9 +202,9 @@ export const INITIAL_FORM_DATA: CoverPageFormData = {
   date: new Date().toISOString().split('T')[0],
   logoUrl: TCEA_LOGO_SVG,
   logoSize: 155,
-  borderStyle: 'classic-double',
+  borderStyle: 'none',
   showWatermark: false,
   fontTheme: 'times',
   accentColor: '#dc2626',
-  layoutMode: 'side-by-side',
+  layoutMode: 'stacked',
 };

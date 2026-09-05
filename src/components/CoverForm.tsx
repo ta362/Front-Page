@@ -531,33 +531,15 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               5
             </span>
             <h3 className="text-sm sm:text-base font-bold text-slate-800">
-              Information Layout / বিন্যাস
+              Information Layout
             </h3>
           </div>
           <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-100 text-indigo-700">
-            {formData.layoutMode === 'stacked' ? 'Centered Stack' : 'Side-by-Side (পাশাপাশি)'}
+            {formData.layoutMode === 'stacked' ? 'Centered Stack' : 'Side-by-Side'}
           </span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onClick={() => onChange({ layoutMode: 'side-by-side' })}
-            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-              formData.layoutMode !== 'stacked'
-                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
-                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
-            }`}
-          >
-            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
-              <span>পাশাপাশি (Side-by-Side)</span>
-              {formData.layoutMode !== 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
-            </span>
-            <span className="text-[11px] text-slate-500 mt-1">
-              Submitted To (Left) এবং Submitted By (Right) পাশাপাশি বড় ও স্পষ্ট ফন্টে দেখাবে
-            </span>
-          </button>
-
           <button
             type="button"
             onClick={() => onChange({ layoutMode: 'stacked' })}
@@ -568,11 +550,29 @@ export const CoverForm: React.FC<CoverFormProps> = ({
             }`}
           >
             <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
-              <span>উপরে-নিচে (Centered)</span>
+              <span>Vertical Stack (Centered)</span>
               {formData.layoutMode === 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
             </span>
             <span className="text-[11px] text-slate-500 mt-1">
-              ঐতিহ্যবাহী মাঝে সাজানো উল্লম্ব লেআউট
+              Classic centered column layout with balanced vertical spacing
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onChange({ layoutMode: 'side-by-side' })}
+            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
+              formData.layoutMode !== 'stacked'
+                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
+                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
+            }`}
+          >
+            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
+              <span>Side-by-Side</span>
+              {formData.layoutMode !== 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
+            </span>
+            <span className="text-[11px] text-slate-500 mt-1">
+              Submitted To (Left) and Submitted By (Right) side-by-side columns
             </span>
           </button>
         </div>
@@ -589,19 +589,20 @@ export const CoverForm: React.FC<CoverFormProps> = ({
           </h3>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {[
-            { id: 'minimal', label: 'Minimal / Clean', desc: 'No outer border' },
+            { id: 'none', label: 'No Border (Clean)', desc: 'Remove side borders' },
             { id: 'classic-double', label: 'Classic Double', desc: 'Double lines' },
             { id: 'simple-single', label: 'Single Line', desc: 'Clean border' },
             { id: 'ornate-corners', label: 'Ornate Corners', desc: 'Accent corners' },
+            { id: 'minimal', label: 'Minimal', desc: 'Frameless' },
           ].map((style) => (
             <button
               key={style.id}
               type="button"
               onClick={() => onChange({ borderStyle: style.id as BorderStyle })}
               className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-                formData.borderStyle === style.id
+                formData.borderStyle === style.id || (!formData.borderStyle && style.id === 'none')
                   ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm'
                   : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
               }`}

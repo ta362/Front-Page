@@ -534,11 +534,11 @@ export async function renderCoverPageToCanvas(
       );
     }
   } else {
-    // ======== STACKED / CENTERED LAYOUT (Larger text) ========
-    currentY = Math.max(currentY, 1420);
+    // ======== STACKED / CENTERED LAYOUT (Larger text & tighter spacing) ========
+    currentY = Math.max(currentY, 1380);
 
     // Section Heading: SUBMITTED TO
-    ctx.font = `bold ${15.5 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -550,46 +550,46 @@ export async function renderCoverPageToCanvas(
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1.3 * SCALE;
     ctx.beginPath();
-    ctx.moveTo(centerX - subToWidth / 2, currentY + 18 * SCALE);
-    ctx.lineTo(centerX + subToWidth / 2, currentY + 18 * SCALE);
+    ctx.moveTo(centerX - subToWidth / 2, currentY + 19 * SCALE);
+    ctx.lineTo(centerX + subToWidth / 2, currentY + 19 * SCALE);
     ctx.stroke();
 
-    currentY += 26 * SCALE;
+    currentY += 25 * SCALE;
 
     // Teacher Name
-    ctx.font = `bold ${17.5 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${19 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.fillText(data.teacher || 'Mr. Sudip Deb', centerX, currentY);
-    currentY += 25 * SCALE;
+    currentY += 24 * SCALE;
 
     // Designation
     if (data.designation) {
-      ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${16 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#1e293b';
       ctx.fillText(data.designation, centerX, currentY);
-      currentY += 22 * SCALE;
+      currentY += 21 * SCALE;
     }
 
     // Department
     if (data.department) {
-      ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${16 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#1e293b';
       ctx.fillText(data.department, centerX, currentY);
-      currentY += 22 * SCALE;
+      currentY += 21 * SCALE;
     }
 
     // College Name
     if (data.college) {
-      ctx.font = `normal ${14.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${15.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#334155';
       ctx.fillText(data.college.split('\n')[0], centerX, currentY);
-      currentY += 25 * SCALE;
+      currentY += 23 * SCALE;
     }
 
     // Section Heading: SUBMITTED BY
-    currentY = Math.max(currentY + 18 * SCALE, 2120);
+    currentY = Math.max(currentY + 16 * SCALE, 2080);
 
-    ctx.font = `bold ${15.5 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -601,21 +601,21 @@ export async function renderCoverPageToCanvas(
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1.3 * SCALE;
     ctx.beginPath();
-    ctx.moveTo(centerX - subByWidth / 2, currentY + 18 * SCALE);
-    ctx.lineTo(centerX + subByWidth / 2, currentY + 18 * SCALE);
+    ctx.moveTo(centerX - subByWidth / 2, currentY + 19 * SCALE);
+    ctx.lineTo(centerX + subByWidth / 2, currentY + 19 * SCALE);
     ctx.stroke();
 
-    currentY += 26 * SCALE;
+    currentY += 25 * SCALE;
 
     // Student Name
-    ctx.font = `bold ${18 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${20 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.fillText((data.student || 'TANMOY DAS').toUpperCase(), centerX, currentY);
-    currentY += 28 * SCALE;
+    currentY += 26 * SCALE;
 
     // Student Details
-    const detailFontSize = 14.5 * SCALE;
-    const detailRowHeight = 23 * SCALE;
+    const detailFontSize = 16 * SCALE;
+    const detailRowHeight = 22 * SCALE;
 
     if (data.studentId) {
       drawLabeledCenteredText(ctx, 'Student ID: ', data.studentId, currentY, centerX, fontFamily, detailFontSize);

@@ -7,7 +7,7 @@ export type SubmissionType =
   | 'Practical Notebook'
   | 'Case Study';
 
-export type BorderStyle = 'classic-double' | 'simple-single' | 'ornate-corners' | 'minimal' | 'academic-crest';
+export type BorderStyle = 'none' | 'classic-double' | 'simple-single' | 'ornate-corners' | 'minimal' | 'academic-crest';
 
 export interface CoverPageFormData {
   college: string;

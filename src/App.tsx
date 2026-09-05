@@ -32,7 +32,12 @@ export default function App() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+          ...parsed,
+          borderStyle: parsed.borderStyle === 'classic-double' ? 'none' : (parsed.borderStyle || 'none'),
+          layoutMode: 'stacked',
+        };
       }
     } catch (e) {
       console.error('Failed to load local storage form data', e);
@@ -281,10 +286,10 @@ export default function App() {
               </div>
               <div className="min-w-0">
                 <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">
-                  মোবাইলে অ্যাপ হিসেবে ইন্সটল করুন
+                  Install App on Mobile
                 </h4>
                 <p className="text-[11px] sm:text-xs text-slate-600 font-medium truncate">
-                  কোনো ব্রাউজার বার ছাড়া ফুল-স্ক্রিন সরাসরি ওপেন হবে
+                  Opens directly in full-screen without browser bars
                 </p>
               </div>
             </div>
@@ -295,7 +300,7 @@ export default function App() {
                 className="liquid-pill-purple px-4 py-2 text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
               >
                 <ArrowDownToLine className="w-3.5 h-3.5" />
-                <span>ইন্সটল</span>
+                <span>Install</span>
               </button>
               <button
                 type="button"
