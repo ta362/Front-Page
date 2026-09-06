@@ -199,7 +199,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           )}
         </div>
 
-        {/* 2. LOGO SECTION (Enlarged and positioned higher up) */}
+        {/* 2. LOGO SECTION */}
         {data.logoUrl && (
           <div 
             style={{
@@ -207,7 +207,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '4px 0 12px 0',
+              margin: '18px 0 16px 0',
               minHeight: '135px',
             }}
           >
@@ -232,9 +232,9 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               display: 'flex', 
               flexDirection: 'column', 
               alignItems: 'center', 
-              gap: '24px',
-              marginTop: '4px',
-              marginBottom: '10px',
+              gap: '20px',
+              marginTop: '16px',
+              marginBottom: 'auto',
             }}
           >
             {/* Stacked Layout: SUBMITTED TO */}
@@ -294,8 +294,8 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               </div>
             </div>
 
-            {/* Stacked Layout: SUBMITTED BY */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Stacked Layout: SUBMITTED BY (shifted ~3 lines lower) */}
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '36px' }}>
               <div 
                 style={{
                   fontSize: '18px',

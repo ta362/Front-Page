@@ -362,8 +362,8 @@ export async function renderCoverPageToCanvas(
     currentY += 28 * SCALE;
   }
 
-  // ---- 4. CENTER LOGO (Enlarged and lifted up) ----
-  const logoTargetCenterY = 960; // Lifted higher up
+  // ---- 4. CENTER LOGO ----
+  const logoTargetCenterY = 1040; // Balanced vertical placement
   if (logoImg) {
     const maxLogoW = Math.min((data.logoSize || 170) * SCALE, 185 * SCALE);
     const maxLogoH = 150 * SCALE;
@@ -376,11 +376,11 @@ export async function renderCoverPageToCanvas(
       drawW = drawH * imgAspect;
     }
 
-    const logoY = Math.max(currentY + 14 * SCALE, logoTargetCenterY - drawH / 2);
+    const logoY = Math.max(currentY + 22 * SCALE, logoTargetCenterY - drawH / 2);
     ctx.drawImage(logoImg, centerX - drawW / 2, logoY, drawW, drawH);
-    currentY = logoY + drawH + 24 * SCALE;
+    currentY = logoY + drawH + 34 * SCALE;
   } else {
-    currentY = Math.max(currentY + 30 * SCALE, 1050);
+    currentY = Math.max(currentY + 36 * SCALE, 1150);
   }
 
   // Formatted date string calculation
@@ -400,7 +400,7 @@ export async function renderCoverPageToCanvas(
   // ---- 5 & 6. SUBMITTED TO & SUBMITTED BY ----
   if (data.layoutMode !== 'stacked') {
     // ======== SIDE-BY-SIDE LAYOUT (Side-by-Side) ========
-    const startSectionY = Math.max(currentY + 15 * SCALE, 1480);
+    const startSectionY = Math.max(currentY + 12 * SCALE, 1400);
     let leftY = startSectionY;
     let rightY = startSectionY;
 
@@ -535,7 +535,7 @@ export async function renderCoverPageToCanvas(
     }
   } else {
     // ======== STACKED / CENTERED LAYOUT (Larger text & tight, cohesive spacing) ========
-    currentY = Math.max(currentY, 1260);
+    currentY = Math.max(currentY, 1220);
 
     // Section Heading: SUBMITTED TO
     ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
@@ -586,8 +586,8 @@ export async function renderCoverPageToCanvas(
       currentY += 24 * SCALE;
     }
 
-    // Section Heading: SUBMITTED BY (moderate spacing right after faculty, no giant gap)
-    currentY += 28 * SCALE;
+    // Section Heading: SUBMITTED BY (shifted ~3 text lines lower from faculty)
+    currentY += 68 * SCALE;
 
     ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
