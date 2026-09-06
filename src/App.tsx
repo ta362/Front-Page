@@ -6,7 +6,6 @@ import { CoverForm } from './components/CoverForm';
 import { A4CoverPage } from './components/A4CoverPage';
 import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
-import { AndroidProjectModal } from './components/AndroidProjectModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
@@ -50,7 +49,6 @@ export default function App() {
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isPresetsOpen, setIsPresetsOpen] = useState<boolean>(false);
-  const [isAndroidModalOpen, setIsAndroidModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
@@ -263,7 +261,6 @@ export default function App() {
       {/* Top Navbar */}
       <Navbar
         onOpenPresets={() => setIsPresetsOpen(true)}
-        onOpenAndroidModal={() => setIsAndroidModalOpen(true)}
         onClearForm={handleClearForm}
         onPrint={handlePrint}
         onDownloadJPG={handleDownloadJPG}
@@ -466,13 +463,6 @@ export default function App() {
         <PresetSelectorModal
           onSelectPreset={handleSelectPreset}
           onClose={() => setIsPresetsOpen(false)}
-        />
-      )}
-
-      {/* Android Project Studio Modal */}
-      {isAndroidModalOpen && (
-        <AndroidProjectModal
-          onClose={() => setIsAndroidModalOpen(false)}
         />
       )}
 

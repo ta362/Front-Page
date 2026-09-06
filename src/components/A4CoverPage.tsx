@@ -121,11 +121,11 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           zIndex: 10,
           width: '794px',
           height: '1123px',
-          padding: '48px 64px 38px 64px',
+          padding: '44px 60px 34px 60px',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: data.layoutMode === 'stacked' ? 'space-evenly' : 'space-between',
+          justifyContent: 'space-between',
           textAlign: 'center',
         }}
       >
@@ -135,12 +135,12 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {/* Submission Type (e.g. ASSIGNMENT) */}
           <div 
             style={{
-              fontSize: '17px',
+              fontSize: '18px',
               fontWeight: 700,
               letterSpacing: '0.22em',
               textTransform: 'uppercase',
               color: '#1e293b',
-              marginBottom: '10px',
+              marginBottom: '8px',
               lineHeight: 1.4,
             }}
           >
@@ -150,14 +150,14 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {/* College / University Name */}
           <div 
             style={{
-              fontSize: '25px',
+              fontSize: '26.5px',
               fontWeight: 800,
               letterSpacing: '0.01em',
               textTransform: 'uppercase',
               color: '#000000',
               lineHeight: 1.35,
               maxWidth: '680px',
-              margin: '0 auto 12px auto',
+              margin: '0 auto 10px auto',
               wordWrap: 'break-word',
             }}
           >
@@ -168,10 +168,10 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.course && (
             <div 
               style={{
-                fontSize: '16px',
+                fontSize: '17.5px',
                 lineHeight: 1.5,
                 color: '#1e293b',
-                maxWidth: '650px',
+                maxWidth: '660px',
                 margin: '0 auto 4px auto',
                 wordWrap: 'break-word',
               }}
@@ -185,10 +185,10 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.courseCode && (
             <div 
               style={{
-                fontSize: '16px',
+                fontSize: '17.5px',
                 lineHeight: 1.5,
                 color: '#1e293b',
-                maxWidth: '650px',
+                maxWidth: '660px',
                 margin: '0 auto',
                 wordWrap: 'break-word',
               }}
@@ -199,7 +199,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           )}
         </div>
 
-        {/* 2. LOGO SECTION (Generous vertical breathing space) */}
+        {/* 2. LOGO SECTION (Enlarged and positioned higher up) */}
         {data.logoUrl && (
           <div 
             style={{
@@ -207,16 +207,16 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '10px 0',
-              minHeight: '120px',
+              margin: '4px 0 12px 0',
+              minHeight: '135px',
             }}
           >
             <img
               src={data.logoUrl}
               alt="Emblem"
               style={{
-                maxWidth: `${Math.min(data.logoSize || 145, 155)}px`,
-                maxHeight: '125px',
+                maxWidth: `${Math.min(Math.max(data.logoSize || 170, 160), 185)}px`,
+                maxHeight: '145px',
                 objectFit: 'contain',
                 display: 'block',
               }}
@@ -226,12 +226,22 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
 
         {/* 3 & 4. SUBMITTED TO & SUBMITTED BY (SIDE-BY-SIDE OR STACKED) */}
         {data.layoutMode === 'stacked' ? (
-          <>
+          <div 
+            style={{ 
+              width: '100%', 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center', 
+              gap: '24px',
+              marginTop: '4px',
+              marginBottom: '10px',
+            }}
+          >
             {/* Stacked Layout: SUBMITTED TO */}
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div 
                 style={{
-                  fontSize: '17px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
@@ -251,14 +261,14 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                   flexDirection: 'column',
                   alignItems: 'center',
                   width: '100%',
-                  maxWidth: '620px',
+                  maxWidth: '640px',
                   margin: '0 auto',
-                  lineHeight: 1.4,
+                  lineHeight: 1.45,
                 }}
               >
                 <div 
                   style={{
-                    fontSize: '19px',
+                    fontSize: '20.5px',
                     fontWeight: 700,
                     color: '#000000',
                     marginBottom: '2px',
@@ -267,17 +277,17 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                   {data.teacher || 'Mr. Sudip Deb'}
                 </div>
                 {data.designation && (
-                  <div style={{ fontSize: '16px', color: '#1e293b', marginBottom: '1px' }}>
+                  <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
                     {data.designation}
                   </div>
                 )}
                 {data.department && (
-                  <div style={{ fontSize: '16px', color: '#1e293b', marginBottom: '1px' }}>
+                  <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
                     {data.department}
                   </div>
                 )}
                 {data.college && (
-                  <div style={{ fontSize: '15.5px', color: '#334155' }}>
+                  <div style={{ fontSize: '16.5px', color: '#334155' }}>
                     {data.college.split('\n')[0]}
                   </div>
                 )}
@@ -285,10 +295,10 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
             </div>
 
             {/* Stacked Layout: SUBMITTED BY */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div 
                 style={{
-                  fontSize: '17px',
+                  fontSize: '18px',
                   fontWeight: 800,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
@@ -308,13 +318,13 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                   flexDirection: 'column',
                   alignItems: 'center',
                   width: '100%',
-                  maxWidth: '620px',
+                  maxWidth: '640px',
                   margin: '0 auto',
                 }}
               >
                 <div 
                   style={{
-                    fontSize: '20px',
+                    fontSize: '21.5px',
                     fontWeight: 800,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
@@ -332,49 +342,49 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                     flexDirection: 'column',
                     alignItems: 'center',
                     width: '100%',
-                    fontSize: '16px',
-                    lineHeight: 1.45,
+                    fontSize: '17px',
+                    lineHeight: 1.5,
                     color: '#1e293b',
                   }}
                 >
                   {data.studentId && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>Student ID: </strong>
                       <span>{data.studentId}</span>
                     </div>
                   )}
                   {data.roll && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>TU Roll No.: </strong>
                       <span>{data.roll}</span>
                     </div>
                   )}
                   {data.reg && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>TU Registration No.: </strong>
                       <span>{data.reg}</span>
                     </div>
                   )}
                   {data.department && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>Department: </strong>
                       <span>{data.department.replace(/^Department of\s*/i, '')}</span>
                     </div>
                   )}
                   {data.semester && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>Program Level &amp; Semester: </strong>
                       <span>{data.semester}</span>
                     </div>
                   )}
                   {data.session && (
-                    <div style={{ marginBottom: '1px' }}>
+                    <div style={{ marginBottom: '2px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>Session: </strong>
                       <span>{data.session}</span>
                     </div>
                   )}
                   {formattedDate && (
-                    <div style={{ marginTop: '2px' }}>
+                    <div style={{ marginTop: '3px' }}>
                       <strong style={{ color: '#000000', fontWeight: 700 }}>Date of Submission: </strong>
                       <span>{formattedDate}</span>
                     </div>
@@ -382,7 +392,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                 </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
           /* Side-by-Side Layout */
           <div 

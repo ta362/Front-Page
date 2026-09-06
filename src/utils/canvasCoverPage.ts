@@ -285,7 +285,7 @@ export async function renderCoverPageToCanvas(
 
   // ---- 1. SUBMISSION TYPE ----
   const submissionText = (data.submissionType || 'ASSIGNMENT').toUpperCase();
-  ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
+  ctx.font = `bold ${18 * SCALE}px ${fontFamily}`;
   ctx.fillStyle = '#1e293b';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
@@ -298,10 +298,10 @@ export async function renderCoverPageToCanvas(
   } catch {
     ctx.fillText(submissionText.split('').join(' '), centerX, currentY);
   }
-  currentY += 30 * SCALE;
+  currentY += 28 * SCALE;
 
   // ---- 2. COLLEGE / UNIVERSITY NAME ----
-  ctx.font = `bold ${25.5 * SCALE}px ${fontFamily}`;
+  ctx.font = `bold ${26.5 * SCALE}px ${fontFamily}`;
   ctx.fillStyle = '#000000';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'top';
@@ -309,7 +309,7 @@ export async function renderCoverPageToCanvas(
   const collegeLines = wrapText(ctx, (data.college || 'Techno College of Engineering Agartala').toUpperCase(), maxContentWidth);
   for (const line of collegeLines) {
     ctx.fillText(line, centerX, currentY);
-    currentY += 35 * SCALE;
+    currentY += 36 * SCALE;
   }
   currentY += 8 * SCALE;
 
@@ -324,9 +324,9 @@ export async function renderCoverPageToCanvas(
         currentY,
         centerX,
         fontFamily,
-        16 * SCALE
+        17.5 * SCALE
       );
-      currentY += 24 * SCALE;
+      currentY += 25 * SCALE;
     } else {
       // First line with label
       drawLabeledCenteredText(
@@ -336,15 +336,15 @@ export async function renderCoverPageToCanvas(
         currentY,
         centerX,
         fontFamily,
-        16 * SCALE
+        17.5 * SCALE
       );
-      currentY += 23 * SCALE;
+      currentY += 24 * SCALE;
       // Continuation lines
-      ctx.font = `normal ${16 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${17.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#1e293b';
       for (let i = 1; i < courseLines.length; i++) {
         ctx.fillText(courseLines[i], centerX, currentY);
-        currentY += 23 * SCALE;
+        currentY += 24 * SCALE;
       }
     }
   }
@@ -357,16 +357,16 @@ export async function renderCoverPageToCanvas(
       currentY,
       centerX,
       fontFamily,
-      16 * SCALE
+      17.5 * SCALE
     );
-    currentY += 26 * SCALE;
+    currentY += 28 * SCALE;
   }
 
-  // ---- 4. CENTER LOGO ----
-  const logoTargetCenterY = 1140; // Balanced vertical anchor for emblem
+  // ---- 4. CENTER LOGO (Enlarged and lifted up) ----
+  const logoTargetCenterY = 960; // Lifted higher up
   if (logoImg) {
-    const maxLogoW = Math.min((data.logoSize || 145) * SCALE, 155 * SCALE);
-    const maxLogoH = 125 * SCALE;
+    const maxLogoW = Math.min((data.logoSize || 170) * SCALE, 185 * SCALE);
+    const maxLogoH = 150 * SCALE;
 
     const imgAspect = (logoImg.naturalWidth || logoImg.width) / (logoImg.naturalHeight || logoImg.height);
     let drawW = maxLogoW;
@@ -376,11 +376,11 @@ export async function renderCoverPageToCanvas(
       drawW = drawH * imgAspect;
     }
 
-    const logoY = Math.max(currentY + 20 * SCALE, logoTargetCenterY - drawH / 2);
+    const logoY = Math.max(currentY + 14 * SCALE, logoTargetCenterY - drawH / 2);
     ctx.drawImage(logoImg, centerX - drawW / 2, logoY, drawW, drawH);
-    currentY = logoY + drawH + 32 * SCALE;
+    currentY = logoY + drawH + 24 * SCALE;
   } else {
-    currentY = Math.max(currentY + 40 * SCALE, 1280);
+    currentY = Math.max(currentY + 30 * SCALE, 1050);
   }
 
   // Formatted date string calculation
@@ -399,7 +399,7 @@ export async function renderCoverPageToCanvas(
 
   // ---- 5 & 6. SUBMITTED TO & SUBMITTED BY ----
   if (data.layoutMode !== 'stacked') {
-    // ======== SIDE-BY-SIDE LAYOUT (পাশাপাশি) ========
+    // ======== SIDE-BY-SIDE LAYOUT (Side-by-Side) ========
     const startSectionY = Math.max(currentY + 15 * SCALE, 1480);
     let leftY = startSectionY;
     let rightY = startSectionY;
@@ -534,11 +534,11 @@ export async function renderCoverPageToCanvas(
       );
     }
   } else {
-    // ======== STACKED / CENTERED LAYOUT (Larger text & tighter spacing) ========
-    currentY = Math.max(currentY, 1380);
+    // ======== STACKED / CENTERED LAYOUT (Larger text & tight, cohesive spacing) ========
+    currentY = Math.max(currentY, 1260);
 
     // Section Heading: SUBMITTED TO
-    ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -550,46 +550,46 @@ export async function renderCoverPageToCanvas(
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1.3 * SCALE;
     ctx.beginPath();
-    ctx.moveTo(centerX - subToWidth / 2, currentY + 19 * SCALE);
-    ctx.lineTo(centerX + subToWidth / 2, currentY + 19 * SCALE);
+    ctx.moveTo(centerX - subToWidth / 2, currentY + 21 * SCALE);
+    ctx.lineTo(centerX + subToWidth / 2, currentY + 21 * SCALE);
     ctx.stroke();
 
-    currentY += 25 * SCALE;
+    currentY += 26 * SCALE;
 
     // Teacher Name
-    ctx.font = `bold ${19 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${20.5 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.fillText(data.teacher || 'Mr. Sudip Deb', centerX, currentY);
-    currentY += 24 * SCALE;
+    currentY += 26 * SCALE;
 
     // Designation
     if (data.designation) {
-      ctx.font = `normal ${16 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${17 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#1e293b';
       ctx.fillText(data.designation, centerX, currentY);
-      currentY += 21 * SCALE;
+      currentY += 23 * SCALE;
     }
 
     // Department
     if (data.department) {
-      ctx.font = `normal ${16 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${17 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#1e293b';
       ctx.fillText(data.department, centerX, currentY);
-      currentY += 21 * SCALE;
+      currentY += 23 * SCALE;
     }
 
     // College Name
     if (data.college) {
-      ctx.font = `normal ${15.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `normal ${16.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#334155';
       ctx.fillText(data.college.split('\n')[0], centerX, currentY);
-      currentY += 23 * SCALE;
+      currentY += 24 * SCALE;
     }
 
-    // Section Heading: SUBMITTED BY
-    currentY = Math.max(currentY + 16 * SCALE, 2080);
+    // Section Heading: SUBMITTED BY (moderate spacing right after faculty, no giant gap)
+    currentY += 28 * SCALE;
 
-    ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -601,21 +601,21 @@ export async function renderCoverPageToCanvas(
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 1.3 * SCALE;
     ctx.beginPath();
-    ctx.moveTo(centerX - subByWidth / 2, currentY + 19 * SCALE);
-    ctx.lineTo(centerX + subByWidth / 2, currentY + 19 * SCALE);
+    ctx.moveTo(centerX - subByWidth / 2, currentY + 21 * SCALE);
+    ctx.lineTo(centerX + subByWidth / 2, currentY + 21 * SCALE);
     ctx.stroke();
 
-    currentY += 25 * SCALE;
-
-    // Student Name
-    ctx.font = `bold ${20 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#000000';
-    ctx.fillText((data.student || 'TANMOY DAS').toUpperCase(), centerX, currentY);
     currentY += 26 * SCALE;
 
+    // Student Name
+    ctx.font = `bold ${21.5 * SCALE}px ${fontFamily}`;
+    ctx.fillStyle = '#000000';
+    ctx.fillText((data.student || 'TANMOY DAS').toUpperCase(), centerX, currentY);
+    currentY += 28 * SCALE;
+
     // Student Details
-    const detailFontSize = 16 * SCALE;
-    const detailRowHeight = 22 * SCALE;
+    const detailFontSize = 17 * SCALE;
+    const detailRowHeight = 24 * SCALE;
 
     if (data.studentId) {
       drawLabeledCenteredText(ctx, 'Student ID: ', data.studentId, currentY, centerX, fontFamily, detailFontSize);
@@ -650,7 +650,7 @@ export async function renderCoverPageToCanvas(
 
     // Date of Submission
     if (formattedDate) {
-      currentY += 14 * SCALE;
+      currentY += 18 * SCALE;
       drawLabeledCenteredText(ctx, 'Date of Submission: ', formattedDate, currentY, centerX, fontFamily, detailFontSize, '#000000', '#000000');
     }
   }

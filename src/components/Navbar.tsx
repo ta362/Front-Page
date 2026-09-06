@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Sparkles,
-  Smartphone,
   Printer,
   Download,
   FileSpreadsheet,
-  Layers,
-  RotateCcw,
   ArrowDownToLine
 } from 'lucide-react';
 
 interface NavbarProps {
   onOpenPresets: () => void;
-  onOpenAndroidModal: () => void;
   onClearForm: () => void;
   onPrint: () => void;
   onDownloadJPG: () => void;
@@ -25,7 +21,6 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenPresets,
-  onOpenAndroidModal,
   onClearForm,
   onPrint,
   onDownloadJPG,
@@ -51,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Cover Page App
             </h1>
             <p className="text-[10px] sm:text-xs text-slate-500 font-semibold leading-none truncate">
-              Liquid Glass Edition • A4 Lab & Assignment
+              Liquid Glass Edition • A4 Lab &amp; Assignment • Created by Tanmoy Das
             </p>
           </div>
         </div>
@@ -80,17 +75,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Sparkles className="w-3.5 h-3.5 text-teal-600 animate-pulse" />
             <span className="hidden sm:inline">Templates</span>
-          </button>
-
-          {/* Android Project Modal Trigger (Liquid Violet Pill) */}
-          <button
-            type="button"
-            onClick={onOpenAndroidModal}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-purple-800 bg-purple-500/15 hover:bg-purple-500/25 active:scale-95 border border-purple-500/30 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
-            title="View Kotlin Android Studio project source"
-          >
-            <Smartphone className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-            <span>Android APK</span>
           </button>
 
           {/* Direct Print (Desktop / Tablet) */}
