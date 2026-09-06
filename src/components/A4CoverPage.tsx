@@ -215,8 +215,8 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               src={data.logoUrl}
               alt="Emblem"
               style={{
-                maxWidth: `${Math.min(Math.max(data.logoSize || 170, 160), 185)}px`,
-                maxHeight: '145px',
+                maxWidth: `${Math.min(Math.max(data.logoSize || 170, 150), 195)}px`,
+                maxHeight: '170px',
                 objectFit: 'contain',
                 display: 'block',
               }}
@@ -333,7 +333,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                     lineHeight: 1.3,
                   }}
                 >
-                  {data.student || 'TANMOY DAS'}
+                  {data.student || 'STUDENT NAME'}
                 </div>
 
                 <div 
@@ -480,7 +480,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                   lineHeight: 1.35,
                 }}
               >
-                {data.student || 'TANMOY DAS'}
+                {data.student || 'STUDENT NAME'}
               </div>
 
               <div 

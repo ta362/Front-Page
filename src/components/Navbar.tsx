@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               Cover Page App
             </h1>
             <p className="text-[10px] sm:text-xs text-slate-500 font-semibold leading-none truncate">
-              Liquid Glass Edition • A4 Lab &amp; Assignment • Created by Tanmoy Das
+              Liquid Glass Edition • A4 Lab &amp; Assignment • By Tanmoy Das
             </p>
           </div>
         </div>

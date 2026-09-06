@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CoverPageFormData, ValidationErrors, ToastMessage } from './types';
-import { INITIAL_FORM_DATA } from './utils/academicPresets';
+import { INITIAL_FORM_DATA, TCEA_LOGO_SVG } from './utils/academicPresets';
 import { Navbar } from './components/Navbar';
 import { CoverForm } from './components/CoverForm';
 import { A4CoverPage } from './components/A4CoverPage';
@@ -32,8 +32,15 @@ export default function App() {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        // Clear previous user's personal details if it was the hardcoded example
+        const isOldPersonalName = parsed.student === 'TANMOY DAS';
         return {
           ...parsed,
+          student: isOldPersonalName ? '' : (parsed.student || ''),
+          studentId: (isOldPersonalName || parsed.studentId === '24304033011') ? '' : (parsed.studentId || ''),
+          roll: (isOldPersonalName || parsed.roll === '2467030082') ? '' : (parsed.roll || ''),
+          reg: (isOldPersonalName || parsed.reg === '003732') ? '' : (parsed.reg || ''),
+          logoUrl: (!parsed.logoUrl || parsed.logoUrl === '/tcea_emblem.jpg' || parsed.logoUrl === '/tcea_emblem.png' || parsed.logoUrl.startsWith('data:image/jpeg') || parsed.logoUrl.startsWith('data:image/svg+xml') || parsed.logoUrl.length < 50000) ? TCEA_LOGO_SVG : parsed.logoUrl,
           borderStyle: parsed.borderStyle === 'classic-double' ? 'none' : (parsed.borderStyle || 'none'),
           layoutMode: 'stacked',
         };

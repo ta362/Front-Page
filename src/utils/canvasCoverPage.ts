@@ -365,8 +365,8 @@ export async function renderCoverPageToCanvas(
   // ---- 4. CENTER LOGO ----
   const logoTargetCenterY = 1040; // Balanced vertical placement
   if (logoImg) {
-    const maxLogoW = Math.min((data.logoSize || 170) * SCALE, 185 * SCALE);
-    const maxLogoH = 150 * SCALE;
+    const maxLogoW = Math.min((data.logoSize || 170) * SCALE, 195 * SCALE);
+    const maxLogoH = 170 * SCALE;
 
     const imgAspect = (logoImg.naturalWidth || logoImg.width) / (logoImg.naturalHeight || logoImg.height);
     let drawW = maxLogoW;
@@ -478,7 +478,7 @@ export async function renderCoverPageToCanvas(
     // Student Name
     ctx.font = `bold ${18 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
-    ctx.fillText((data.student || 'TANMOY DAS').toUpperCase(), colRightX, rightY);
+    ctx.fillText((data.student || 'STUDENT NAME').toUpperCase(), colRightX, rightY);
     rightY += 27 * SCALE;
 
     // Student Details
@@ -610,7 +610,7 @@ export async function renderCoverPageToCanvas(
     // Student Name
     ctx.font = `bold ${21.5 * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
-    ctx.fillText((data.student || 'TANMOY DAS').toUpperCase(), centerX, currentY);
+    ctx.fillText((data.student || 'STUDENT NAME').toUpperCase(), centerX, currentY);
     currentY += 28 * SCALE;
 
     // Student Details

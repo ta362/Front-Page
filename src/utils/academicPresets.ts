@@ -1,7 +1,8 @@
 import { CoverPageFormData } from '../types';
+import { TCEA_RED_EMBLEM_BASE64 } from './tceaEmblemBase64';
 
-// Techno College of Engineering Agartala (TCEA) - Official Emblem Image
-export const TCEA_LOGO_SVG = '/tcea_emblem.jpg';
+// Techno College of Engineering Agartala (TCEA) - Official Red Emblem Image
+export const TCEA_LOGO_SVG = TCEA_RED_EMBLEM_BASE64;
 
 export const DEFAULT_ACADEMIC_LOGO_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
@@ -120,10 +121,10 @@ export const SAMPLE_PRESETS: PresetItem[] = [
       teacher: 'Mr. Sudip Deb',
       designation: 'Assistant Professor',
       department: 'Department of Electronics & Communication Engineering',
-      student: 'TANMOY DAS',
-      studentId: '24304033011',
-      roll: '2467030082',
-      reg: '003732',
+      student: 'STUDENT NAME',
+      studentId: '2026ECE001',
+      roll: '2467000001',
+      reg: '001234',
       semester: 'B.Tech. 6th Sem',
       session: '2026-27',
       logoUrl: TCEA_LOGO_SVG,
@@ -145,10 +146,10 @@ export const SAMPLE_PRESETS: PresetItem[] = [
       teacher: 'Dr. Debabrata Roy, Ph.D.',
       designation: 'Associate Professor & HOD',
       department: 'Department of Computer Science & Engineering',
-      student: 'TANMOY DAS',
-      studentId: '24304033011',
-      roll: '2467030082',
-      reg: '003732',
+      student: 'STUDENT NAME',
+      studentId: '2026CSE001',
+      roll: '2467000002',
+      reg: '001235',
       semester: 'B.Tech. 6th Sem',
       session: '2026-27',
       logoUrl: TCEA_LOGO_SVG,
@@ -170,10 +171,10 @@ export const SAMPLE_PRESETS: PresetItem[] = [
       teacher: 'Prof. Subhash Chandra Saha',
       designation: 'Professor',
       department: 'Department of Electrical Engineering',
-      student: 'TANMOY DAS',
-      studentId: '24304033011',
-      roll: '2467030082',
-      reg: '003732',
+      student: 'STUDENT NAME',
+      studentId: '2026EE001',
+      roll: '2467000003',
+      reg: '001236',
       semester: 'B.Tech. 6th Sem',
       session: '2026-27',
       logoUrl: TCEA_LOGO_SVG,
@@ -193,10 +194,10 @@ export const INITIAL_FORM_DATA: CoverPageFormData = {
   teacher: 'Mr. Sudip Deb',
   designation: 'Assistant Professor',
   department: 'Department of Electronics & Communication Engineering',
-  student: 'TANMOY DAS',
-  studentId: '24304033011',
-  roll: '2467030082',
-  reg: '003732',
+  student: '',
+  studentId: '',
+  roll: '',
+  reg: '',
   semester: 'B.Tech. 6th Sem',
   session: '2026-27',
   date: new Date().toISOString().split('T')[0],
