@@ -1,19 +1,16 @@
 import React from 'react';
 import {
-  Sparkles,
   Printer,
-  Download,
   FileSpreadsheet,
   ArrowDownToLine,
-  RotateCcw,
-  Smartphone
+  RotateCcw
 } from 'lucide-react';
 
 interface NavbarProps {
-  onOpenPresets: () => void;
+  onOpenPresets?: () => void;
   onClearForm: () => void;
   onPrint: () => void;
-  onDownloadJPG: () => void;
+  onDownloadJPG?: () => void;
   onDownloadPDF: () => void;
   isPreviewGenerated: boolean;
   isExporting: boolean;
@@ -64,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Always Visible Install App Button (Identical to user's reference screenshot) */}
+          {/* Compact Install App Button */}
           <button
             type="button"
             onClick={() => {
@@ -74,33 +71,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onOpenInstallModal();
               }
             }}
-            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 text-xs font-extrabold text-emerald-900 bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-95 border border-emerald-500/40 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
+            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-emerald-900 bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-95 border border-emerald-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md"
             title="Install Cover Page App on Android / Phone"
           >
-            <ArrowDownToLine className="w-3.5 h-3.5 text-emerald-700 animate-bounce" />
+            <ArrowDownToLine className="w-3 h-3 text-emerald-700 animate-bounce" />
             <span>Install App</span>
           </button>
 
-          {/* Quick Presets Button (Liquid Cyan Pill) */}
-          <button
-            type="button"
-            onClick={onOpenPresets}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs font-bold text-teal-800 bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 border border-teal-500/30 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
-            title="Load university sample presets"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-            <span className="hidden sm:inline">Templates</span>
-          </button>
-
-          {/* Header Reset Button */}
+          {/* Compact Header Reset Button */}
           <button
             type="button"
             onClick={onClearForm}
-            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 active:scale-95 border border-rose-500/25 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
+            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 active:scale-95 border border-rose-500/20 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md"
             title="Reset and clear all fields"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span className="hidden md:inline">Reset</span>
+            <RotateCcw className="w-3 h-3" />
+            <span>Reset</span>
           </button>
 
           {/* Direct Print (Desktop / Tablet) */}
@@ -113,21 +99,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Printer className="w-3.5 h-3.5 text-slate-600" />
             <span>Print</span>
-          </button>
-
-          {/* Quick Download JPG (Liquid Blue Pill) */}
-          <button
-            type="button"
-            onClick={onDownloadJPG}
-            disabled={!isPreviewGenerated || isExporting}
-            className={`flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold liquid-pill-blue cursor-pointer ${
-              isPreviewGenerated && !isExporting
-                ? 'opacity-100 active:scale-95'
-                : 'opacity-60 cursor-not-allowed'
-            }`}
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>{isExporting ? 'Exporting...' : 'Save JPG'}</span>
           </button>
         </div>
 

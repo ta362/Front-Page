@@ -4,7 +4,6 @@ import {
   School,
   BookOpen,
   Code2,
-  FileText,
   UserCheck,
   Briefcase,
   GraduationCap,
@@ -19,7 +18,6 @@ import {
   CheckCircle2,
   Eye,
   Download,
-  Printer,
   RotateCcw,
   Check
 } from 'lucide-react';
@@ -31,9 +29,9 @@ interface CoverFormProps {
   onChange: (data: Partial<CoverPageFormData>) => void;
   onGeneratePreview: () => void;
   onDownloadJPG: () => void;
-  onDownloadPNG: () => void;
-  onDownloadPDF: () => void;
-  onPrint: () => void;
+  onDownloadPNG?: () => void;
+  onDownloadPDF?: () => void;
+  onPrint?: () => void;
   onClearForm?: () => void;
   onOpenPresets?: () => void;
   isPreviewGenerated: boolean;
@@ -618,37 +616,6 @@ export const CoverForm: React.FC<CoverFormProps> = ({
           >
             <Download className="w-5 h-5" />
             <span>{isExporting ? 'Generating...' : 'Download JPG (300 DPI)'}</span>
-          </button>
-        </div>
-
-        {/* Extra Export Formats (PDF, PNG, Print) */}
-        <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 pt-1">
-          <button
-            type="button"
-            onClick={onDownloadPDF}
-            disabled={!isPreviewGenerated || isExporting}
-            className="px-4 py-2 bg-white/80 hover:bg-white text-slate-700 border border-white rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm backdrop-blur-md"
-          >
-            <FileText className="w-4 h-4 text-rose-500" />
-            <span>A4 PDF Document</span>
-          </button>
-          <button
-            type="button"
-            onClick={onDownloadPNG}
-            disabled={!isPreviewGenerated || isExporting}
-            className="px-4 py-2 bg-white/80 hover:bg-white text-slate-700 border border-white rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm backdrop-blur-md"
-          >
-            <Download className="w-4 h-4 text-sky-500" />
-            <span>PNG Image</span>
-          </button>
-          <button
-            type="button"
-            onClick={onPrint}
-            disabled={!isPreviewGenerated || isExporting}
-            className="px-4 py-2 bg-white/80 hover:bg-white text-slate-700 border border-white rounded-full text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm backdrop-blur-md"
-          >
-            <Printer className="w-4 h-4 text-teal-600" />
-            <span>Print Directly</span>
           </button>
         </div>
       </div>
