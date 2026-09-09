@@ -21,6 +21,33 @@
   }
 }
 
+/* 🚀 Natural Readable Infinite Marquee (Right to Left ticker for easy reading) */
+@keyframes marquee-readable {
+  0% {
+    transform: translate3d(0%, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee-readable {
+  display: inline-flex;
+  width: max-content;
+  animation: marquee-readable 26s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-readable:hover {
+  animation-play-state: paused;
+}
+
+/* Edge fade mask for smooth text appearance */
+.mask-marquee-fade {
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
 /* 🫧 Optimized Liquid Glass Background Canvas 🫧 */
 .liquid-bg-canvas {
   background: radial-gradient(circle at 15% 15%, rgba(216, 180, 254, 0.4) 0%, transparent 40%),

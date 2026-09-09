@@ -45,13 +45,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               <FileSpreadsheet className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
             </div>
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1 max-w-[190px] xs:max-w-[240px] sm:max-w-xs md:max-w-md lg:max-w-xl">
             <h1 className="text-sm sm:text-base font-extrabold text-slate-800 tracking-tight leading-tight truncate">
               Cover Page App
             </h1>
-            <p className="text-[10px] sm:text-xs text-slate-500 font-semibold leading-none truncate">
-              Liquid Glass Edition • A4 Lab &amp; Assignment • By Tanmoy Das
-            </p>
+            <div className="overflow-hidden whitespace-nowrap relative mask-marquee-fade py-0.5" title="Liquid Glass Edition • A4 Lab & Assignment • By Tanmoy Das • ECE Department • Batch no 2024-27 • Techno College Of Engineering Agartala">
+              <div className="animate-marquee-readable text-[10px] sm:text-xs text-slate-500 font-semibold leading-none">
+                <span className="inline-block px-4">
+                  Liquid Glass Edition • A4 Lab &amp; Assignment • By Tanmoy Das • ECE Department • Batch no 2024-27 • Techno College Of Engineering Agartala
+                </span>
+                <span className="inline-block px-4">
+                  Liquid Glass Edition • A4 Lab &amp; Assignment • By Tanmoy Das • ECE Department • Batch no 2024-27 • Techno College Of Engineering Agartala
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
