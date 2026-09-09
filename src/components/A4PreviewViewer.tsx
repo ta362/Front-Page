@@ -63,11 +63,13 @@ export const A4PreviewViewer: React.FC<A4PreviewViewerProps> = ({ data }) => {
           style={{
             width: `${CANONICAL_WIDTH}px`,
             height: `${CANONICAL_HEIGHT}px`,
-            transform: `scale(${scale})`,
+            transform: `scale(${scale}) translateZ(0)`,
             transformOrigin: 'top left',
             position: 'absolute',
             top: 0,
             left: 0,
+            willChange: 'transform',
+            transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
         >
           <A4CoverPage data={data} id="preview-cover-stage" />

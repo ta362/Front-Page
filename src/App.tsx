@@ -6,6 +6,8 @@ import { CoverForm } from './components/CoverForm';
 import { A4CoverPage } from './components/A4CoverPage';
 import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
+import { ResetConfirmModal } from './components/ResetConfirmModal';
+import { InstallPwaModal } from './components/InstallPwaModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
@@ -56,6 +58,8 @@ export default function App() {
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isPresetsOpen, setIsPresetsOpen] = useState<boolean>(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
@@ -93,15 +97,20 @@ export default function App() {
 
   const handleInstallApp = async () => {
     if (deferredInstallPrompt) {
-      deferredInstallPrompt.prompt();
-      const { outcome } = await deferredInstallPrompt.userChoice;
-      if (outcome === 'accepted') {
-        addToast('success', 'App installed successfully on your phone!');
-        setShowInstallBanner(false);
+      try {
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') {
+          addToast('success', 'App installed successfully on your phone!');
+          setShowInstallBanner(false);
+        }
+        setDeferredInstallPrompt(null);
+      } catch (err) {
+        console.error('Install prompt error', err);
+        setIsInstallModalOpen(true);
       }
-      setDeferredInstallPrompt(null);
     } else {
-      addToast('info', 'To install: Tap browser menu (⋮) and tap "Install App" or "Add to Home Screen".');
+      setIsInstallModalOpen(true);
     }
   };
 
@@ -221,35 +230,43 @@ export default function App() {
   };
 
   const handleClearForm = () => {
-    if (window.confirm('Are you sure you want to reset all fields?')) {
-      const emptyData: CoverPageFormData = {
-        college: '',
-        course: '',
-        courseCode: '',
-        submissionType: 'Assignment',
-        teacher: '',
-        designation: '',
-        department: '',
-        student: '',
-        studentId: '',
-        roll: '',
-        reg: '',
-        semester: '',
-        session: '',
-        date: new Date().toISOString().split('T')[0],
-        logoUrl: '',
-        logoSize: 140,
-        borderStyle: 'classic-double',
-        showWatermark: false,
-        fontTheme: 'times',
-        accentColor: '#1e3a8a',
-      };
-      setFormData(emptyData);
-      setErrors({});
-      setIsPreviewGenerated(false);
-      localStorage.removeItem(STORAGE_KEY);
-      addToast('info', 'All form fields have been cleared.');
+    setIsResetModalOpen(true);
+  };
+
+  const confirmResetBlank = () => {
+    const emptyData: CoverPageFormData = {
+      college: '',
+      course: '',
+      courseCode: '',
+      submissionType: 'Assignment',
+      teacher: '',
+      designation: '',
+      department: '',
+      student: '',
+      studentId: '',
+      roll: '',
+      reg: '',
+      semester: '',
+      session: '',
+      date: '',
+      logoUrl: '',
+      logoSize: 155,
+      borderStyle: 'none',
+      showWatermark: false,
+      fontTheme: 'times',
+      accentColor: '#dc2626',
+      layoutMode: 'stacked',
+    };
+    setFormData(emptyData);
+    setErrors({});
+    setIsPreviewGenerated(false);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(emptyData));
+    } catch (e) {
+      console.error('Failed to clear local storage', e);
     }
+    setIsResetModalOpen(false);
+    addToast('info', 'All details have been completely cleared! ↺');
   };
 
   const handleSelectPreset = (presetData: Partial<CoverPageFormData>) => {
@@ -276,6 +293,7 @@ export default function App() {
         isExporting={isExporting}
         installPrompt={deferredInstallPrompt}
         onTriggerInstall={handleInstallApp}
+        onOpenInstallModal={() => setIsInstallModalOpen(true)}
       />
 
       {/* Main Layout Container */}
@@ -472,6 +490,22 @@ export default function App() {
           onClose={() => setIsPresetsOpen(false)}
         />
       )}
+
+      {/* Reset Confirmation Modal (Instant and reliable across all devices and iframes) */}
+      <ResetConfirmModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        onConfirmResetBlank={confirmResetBlank}
+      />
+
+      {/* Install PWA Modal (Dedicated Android & Mobile guidance) */}
+      <InstallPwaModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        deferredPrompt={deferredInstallPrompt}
+        onTriggerNativeInstall={handleInstallApp}
+        onAddToast={addToast}
+      />
 
       {/* Floating Toast Alerts */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-3 pointer-events-none">

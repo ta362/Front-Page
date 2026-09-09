@@ -133,36 +133,40 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
         {/* 1. TOP HEADER SECTION */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {/* Submission Type (e.g. ASSIGNMENT) */}
-          <div 
-            style={{
-              fontSize: '18px',
-              fontWeight: 700,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              color: '#1e293b',
-              marginBottom: '8px',
-              lineHeight: 1.4,
-            }}
-          >
-            {data.submissionType || 'ASSIGNMENT'}
-          </div>
+          {data.submissionType ? (
+            <div 
+              style={{
+                fontSize: '18px',
+                fontWeight: 700,
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: '#1e293b',
+                marginBottom: '8px',
+                lineHeight: 1.4,
+              }}
+            >
+              {data.submissionType}
+            </div>
+          ) : null}
 
           {/* College / University Name */}
-          <div 
-            style={{
-              fontSize: '26.5px',
-              fontWeight: 800,
-              letterSpacing: '0.01em',
-              textTransform: 'uppercase',
-              color: '#000000',
-              lineHeight: 1.35,
-              maxWidth: '680px',
-              margin: '0 auto 10px auto',
-              wordWrap: 'break-word',
-            }}
-          >
-            {data.college || 'Techno College of Engineering Agartala'}
-          </div>
+          {data.college ? (
+            <div 
+              style={{
+                fontSize: '26.5px',
+                fontWeight: 800,
+                letterSpacing: '0.01em',
+                textTransform: 'uppercase',
+                color: '#000000',
+                lineHeight: 1.35,
+                maxWidth: '680px',
+                margin: '0 auto 10px auto',
+                wordWrap: 'break-word',
+              }}
+            >
+              {data.college}
+            </div>
+          ) : null}
 
           {/* Course Title */}
           {data.course && (
@@ -238,103 +242,110 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
             }}
           >
             {/* Stacked Layout: SUBMITTED TO */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div 
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: '#000000',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
-                  marginBottom: '5px',
-                  lineHeight: 1.3,
-                }}
-              >
-                SUBMITTED TO:
-              </div>
-
-              <div 
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  width: '100%',
-                  maxWidth: '640px',
-                  margin: '0 auto',
-                  lineHeight: 1.45,
-                }}
-              >
+            {(data.teacher || data.designation || data.department) ? (
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div 
                   style={{
-                    fontSize: '20.5px',
-                    fontWeight: 700,
-                    color: '#000000',
-                    marginBottom: '2px',
-                  }}
-                >
-                  {data.teacher || 'Mr. Sudip Deb'}
-                </div>
-                {data.designation && (
-                  <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
-                    {data.designation}
-                  </div>
-                )}
-                {data.department && (
-                  <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
-                    {data.department}
-                  </div>
-                )}
-                {data.college && (
-                  <div style={{ fontSize: '16.5px', color: '#334155' }}>
-                    {data.college.split('\n')[0]}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Stacked Layout: SUBMITTED BY (shifted ~3 lines lower) */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '36px' }}>
-              <div 
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  letterSpacing: '0.14em',
-                  textTransform: 'uppercase',
-                  color: '#000000',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
-                  marginBottom: '5px',
-                  lineHeight: 1.3,
-                }}
-              >
-                SUBMITTED BY:
-              </div>
-
-              <div 
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  width: '100%',
-                  maxWidth: '640px',
-                  margin: '0 auto',
-                }}
-              >
-                <div 
-                  style={{
-                    fontSize: '21.5px',
+                    fontSize: '18px',
                     fontWeight: 800,
-                    letterSpacing: '0.06em',
+                    letterSpacing: '0.14em',
                     textTransform: 'uppercase',
                     color: '#000000',
-                    marginBottom: '4px',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '4px',
+                    marginBottom: '5px',
                     lineHeight: 1.3,
                   }}
                 >
-                  {data.student || 'STUDENT NAME'}
+                  SUBMITTED TO:
                 </div>
+
+                <div 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    width: '100%',
+                    maxWidth: '640px',
+                    margin: '0 auto',
+                    lineHeight: 1.45,
+                  }}
+                >
+                  {data.teacher ? (
+                    <div 
+                      style={{
+                        fontSize: '20.5px',
+                        fontWeight: 700,
+                        color: '#000000',
+                        marginBottom: '2px',
+                      }}
+                    >
+                      {data.teacher}
+                    </div>
+                  ) : null}
+                  {data.designation && (
+                    <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
+                      {data.designation}
+                    </div>
+                  )}
+                  {data.department && (
+                    <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>
+                      {data.department}
+                    </div>
+                  )}
+                  {data.college && (
+                    <div style={{ fontSize: '16.5px', color: '#334155' }}>
+                      {data.college.split('\n')[0]}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Stacked Layout: SUBMITTED BY (shifted ~3 lines lower) */}
+            {(data.student || data.studentId || data.roll || data.reg || data.department || data.semester || data.session) ? (
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: (data.teacher || data.designation || data.department) ? '36px' : '0' }}>
+                <div 
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: 800,
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase',
+                    color: '#000000',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '4px',
+                    marginBottom: '5px',
+                    lineHeight: 1.3,
+                  }}
+                >
+                  SUBMITTED BY:
+                </div>
+
+                <div 
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    width: '100%',
+                    maxWidth: '640px',
+                    margin: '0 auto',
+                  }}
+                >
+                  {data.student ? (
+                    <div 
+                      style={{
+                        fontSize: '21.5px',
+                        fontWeight: 800,
+                        letterSpacing: '0.06em',
+                        textTransform: 'uppercase',
+                        color: '#000000',
+                        marginBottom: '4px',
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {data.student}
+                    </div>
+                  ) : null}
 
                 <div 
                   style={{
@@ -392,6 +403,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                 </div>
               </div>
             </div>
+            ) : null}
           </div>
         ) : (
           /* Side-by-Side Layout */
@@ -406,82 +418,89 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
             }}
           >
             {/* Left: SUBMITTED TO */}
-            <div style={{ width: '47%', textAlign: 'left' }}>
-              <div 
-                style={{
-                  fontSize: '15.5px',
-                  fontWeight: 800,
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: '#000000',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
-                  marginBottom: '10px',
-                  lineHeight: 1.4,
-                }}
-              >
-                SUBMITTED TO:
-              </div>
+            {(data.teacher || data.designation || data.department) ? (
+              <div style={{ width: '47%', textAlign: 'left' }}>
+                <div 
+                  style={{
+                    fontSize: '15.5px',
+                    fontWeight: 800,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: '#000000',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '4px',
+                    marginBottom: '10px',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  SUBMITTED TO:
+                </div>
 
-              <div 
-                style={{
-                  fontSize: '17.5px',
-                  fontWeight: 700,
-                  color: '#000000',
-                  marginBottom: '4px',
-                  lineHeight: 1.35,
-                }}
-              >
-                {data.teacher || 'Mr. Sudip Deb'}
+                {data.teacher ? (
+                  <div 
+                    style={{
+                      fontSize: '17.5px',
+                      fontWeight: 700,
+                      color: '#000000',
+                      marginBottom: '4px',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {data.teacher}
+                  </div>
+                ) : null}
+                {data.designation && (
+                  <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px', lineHeight: 1.4 }}>
+                    {data.designation}
+                  </div>
+                )}
+                {data.department && (
+                  <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px', lineHeight: 1.4 }}>
+                    {data.department}
+                  </div>
+                )}
+                {data.college && (
+                  <div style={{ fontSize: '14.5px', color: '#334155', lineHeight: 1.4 }}>
+                    {data.college.split('\n')[0]}
+                  </div>
+                )}
               </div>
-              {data.designation && (
-                <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px', lineHeight: 1.4 }}>
-                  {data.designation}
-                </div>
-              )}
-              {data.department && (
-                <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px', lineHeight: 1.4 }}>
-                  {data.department}
-                </div>
-              )}
-              {data.college && (
-                <div style={{ fontSize: '14.5px', color: '#334155', lineHeight: 1.4 }}>
-                  {data.college.split('\n')[0]}
-                </div>
-              )}
-            </div>
+            ) : <div style={{ width: '47%' }} />}
 
             {/* Right: SUBMITTED BY */}
-            <div style={{ width: '49%', textAlign: 'left' }}>
-              <div 
-                style={{
-                  fontSize: '15.5px',
-                  fontWeight: 800,
-                  letterSpacing: '0.12em',
-                  textTransform: 'uppercase',
-                  color: '#000000',
-                  textDecoration: 'underline',
-                  textUnderlineOffset: '4px',
-                  marginBottom: '10px',
-                  lineHeight: 1.4,
-                }}
-              >
-                SUBMITTED BY:
-              </div>
+            {(data.student || data.studentId || data.roll || data.reg || data.department || data.semester || data.session) ? (
+              <div style={{ width: '49%', textAlign: 'left' }}>
+                <div 
+                  style={{
+                    fontSize: '15.5px',
+                    fontWeight: 800,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: '#000000',
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '4px',
+                    marginBottom: '10px',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  SUBMITTED BY:
+                </div>
 
-              <div 
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
-                  color: '#000000',
-                  marginBottom: '6px',
-                  lineHeight: 1.35,
-                }}
-              >
-                {data.student || 'STUDENT NAME'}
-              </div>
+                {data.student ? (
+                  <div 
+                    style={{
+                      fontSize: '18px',
+                      fontWeight: 800,
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      color: '#000000',
+                      marginBottom: '6px',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {data.student}
+                  </div>
+                ) : null}
 
               <div 
                 style={{
@@ -530,6 +549,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
                 )}
               </div>
             </div>
+            ) : <div style={{ width: '49%' }} />}
           </div>
         )}
 
