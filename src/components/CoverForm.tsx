@@ -34,8 +34,8 @@ interface CoverFormProps {
   onDownloadPNG: () => void;
   onDownloadPDF: () => void;
   onPrint: () => void;
-  onClearForm: () => void;
-  onOpenPresets: () => void;
+  onClearForm?: () => void;
+  onOpenPresets?: () => void;
   isPreviewGenerated: boolean;
   isExporting: boolean;
 }
@@ -86,43 +86,20 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   return (
     <div className="liquid-panel p-5 sm:p-7 shadow-2xl space-y-6">
       
-      {/* 1. Header with Glass Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-200/80">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 p-[1.5px] shadow-md shadow-purple-500/20 flex items-center justify-center">
-            <div className="w-full h-full bg-white/90 rounded-[14px] flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-purple-600" />
-            </div>
-          </div>
-          <div>
-            <h2 className="text-lg sm:text-xl font-extrabold text-slate-800 tracking-tight">
-              Cover Page Details
-            </h2>
-            <p className="text-xs text-slate-500 font-medium">
-              Enter academic information below to generate your A4 cover page.
-            </p>
+      {/* 1. Header */}
+      <div className="flex items-center gap-3 pb-5 border-b border-slate-200/80">
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-500 to-indigo-500 p-[1.5px] shadow-md shadow-purple-500/20 flex items-center justify-center shrink-0">
+          <div className="w-full h-full bg-white/90 rounded-[14px] flex items-center justify-center">
+            <GraduationCap className="w-5 h-5 text-purple-600" />
           </div>
         </div>
-
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button
-            type="button"
-            onClick={onOpenPresets}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-teal-800 bg-teal-500/15 hover:bg-teal-500/25 active:scale-95 border border-teal-500/30 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
-            title="Load sample university presets"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-teal-600 animate-pulse" />
-            <span>Templates</span>
-          </button>
-          <button
-            type="button"
-            onClick={onClearForm}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 active:scale-95 border border-rose-500/25 rounded-full transition-all cursor-pointer shadow-sm backdrop-blur-md"
-            title="Reset all fields"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset</span>
-          </button>
+        <div>
+          <h2 className="text-lg sm:text-xl font-extrabold text-slate-800 tracking-tight">
+            Cover Page Details
+          </h2>
+          <p className="text-xs text-slate-500 font-medium">
+            Enter academic information below to generate your A4 cover page.
+          </p>
         </div>
       </div>
 
