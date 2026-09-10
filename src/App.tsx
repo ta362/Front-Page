@@ -8,6 +8,7 @@ import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
 import { InstallPwaModal } from './components/InstallPwaModal';
+import { AdBanner } from './components/AdBanner';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
@@ -454,6 +455,9 @@ export default function App() {
 
             </div>
           </div>
+
+          {/* Google AdMob / AdSense Banner */}
+          <AdBanner className="mt-8 mb-4" />
 
         </div>
       </main>
