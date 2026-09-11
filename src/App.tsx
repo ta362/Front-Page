@@ -270,6 +270,31 @@ export default function App() {
     addToast('info', 'All details have been completely cleared! ↺');
   };
 
+  const handleShareApp = async () => {
+    const shareData = {
+      title: 'Cover Page App - A4 Lab & Assignment Creator',
+      text: 'Create and download professional A4 college cover pages instantly with Cover Page App!',
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        addToast('success', 'Thank you for sharing the app! 🚀');
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      addToast('success', 'App link copied to clipboard! Share it with your friends. 📋');
+    } catch {
+      addToast('info', 'Please copy URL from the browser address bar.');
+    }
+  };
+
   const handleSelectPreset = (presetData: Partial<CoverPageFormData>) => {
     setFormData((prev) => ({
       ...prev,
@@ -292,6 +317,7 @@ export default function App() {
         onDownloadPDF={handleDownloadPDF}
         isPreviewGenerated={isPreviewGenerated}
         isExporting={isExporting}
+        onShareApp={handleShareApp}
         installPrompt={deferredInstallPrompt}
         onTriggerInstall={handleInstallApp}
         onOpenInstallModal={() => setIsInstallModalOpen(true)}

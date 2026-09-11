@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Printer,
   FileSpreadsheet,
-  ArrowDownToLine,
+  Share2,
   RotateCcw
 } from 'lucide-react';
 
@@ -14,9 +14,10 @@ interface NavbarProps {
   onDownloadPDF: () => void;
   isPreviewGenerated: boolean;
   isExporting: boolean;
-  installPrompt: any;
-  onTriggerInstall: () => void;
-  onOpenInstallModal: () => void;
+  onShareApp: () => void;
+  installPrompt?: any;
+  onTriggerInstall?: () => void;
+  onOpenInstallModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -27,9 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onDownloadPDF,
   isPreviewGenerated,
   isExporting,
-  installPrompt,
-  onTriggerInstall,
-  onOpenInstallModal,
+  onShareApp,
 }) => {
   return (
     <header className="sticky top-0 z-40 w-full px-3 sm:px-6 lg:px-8 pt-3 pb-2 safe-top">
@@ -61,21 +60,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Compact Install App Button */}
+          {/* Compact Share App Button */}
           <button
             type="button"
-            onClick={() => {
-              if (installPrompt) {
-                onTriggerInstall();
-              } else {
-                onOpenInstallModal();
-              }
-            }}
-            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-emerald-900 bg-emerald-500/20 hover:bg-emerald-500/30 active:scale-95 border border-emerald-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md"
-            title="Install Cover Page App on Android / Phone"
+            onClick={onShareApp}
+            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-indigo-900 bg-indigo-500/20 hover:bg-indigo-500/30 active:scale-95 border border-indigo-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md"
+            title="Share Cover Page App with friends and classmates"
           >
-            <ArrowDownToLine className="w-3 h-3 text-emerald-700 animate-bounce" />
-            <span>Install App</span>
+            <Share2 className="w-3 h-3 text-indigo-700" />
+            <span>Share App</span>
           </button>
 
           {/* Compact Header Reset Button */}
