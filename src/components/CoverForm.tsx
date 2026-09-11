@@ -19,9 +19,12 @@ import {
   Eye,
   Download,
   RotateCcw,
-  Check
+  Check,
+  Building2,
+  Users
 } from 'lucide-react';
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
+import { DEPARTMENT_FACULTY_LIST, getFacultyGroupForDepartment } from '../data/facultyData';
 
 interface CoverFormProps {
   formData: CoverPageFormData;
@@ -317,66 +320,200 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       </div>
 
       {/* SECTION 3: Faculty Details (Submitted To) */}
-      <div className="liquid-card p-4 sm:p-5 space-y-4">
-        <div className="flex items-center gap-2.5">
-          <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-            3
-          </span>
-          <h3 className="text-sm sm:text-base font-bold text-slate-800">
-            Faculty Details (Submitted To)
-          </h3>
-        </div>
+      {(() => {
+        const activeFacultyGroup = getFacultyGroupForDepartment(formData.department);
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Faculty / Teacher Name <span className="text-rose-500">*</span>
-            </label>
-            <div className="relative">
-              <UserCheck className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                value={formData.teacher}
-                onChange={(e) => onChange({ teacher: e.target.value })}
-                placeholder=""
-                className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
-                  errors.teacher ? 'border-rose-400 ring-2 ring-rose-300' : ''
-                }`}
-              />
+        return (
+          <div className="liquid-card p-4 sm:p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  3
+                </span>
+                <h3 className="text-sm sm:text-base font-bold text-slate-800">
+                  Faculty Details (Submitted To)
+                </h3>
+              </div>
+
+              {/* Department Quick Filter Tags */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] text-slate-500 hidden sm:inline">Quick Dept:</span>
+                {DEPARTMENT_FACULTY_LIST.map((dept) => {
+                  const isActive = activeFacultyGroup?.shortCode === dept.shortCode;
+                  return (
+                    <button
+                      key={dept.shortCode}
+                      type="button"
+                      onClick={() => onChange({ department: dept.departmentName })}
+                      className={`px-2.5 py-0.5 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-600 hover:bg-purple-50 hover:text-purple-700'
+                      }`}
+                      title={`Select ${dept.departmentName}`}
+                    >
+                      {dept.shortCode}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-            {errors.teacher && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.teacher}</p>}
-          </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Designation
-            </label>
-            <div className="relative">
-              <Briefcase className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                value={formData.designation}
-                onChange={(e) => onChange({ designation: e.target.value })}
-                placeholder=""
-                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
-              />
+            <div className="space-y-3.5">
+              {/* 1. Department Field (Placed at the TOP) */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Department
+                  </label>
+                  {activeFacultyGroup && (
+                    <span className="text-[11px] font-semibold text-purple-700 flex items-center gap-1">
+                      <Users className="w-3 h-3" />
+                      {activeFacultyGroup.shortCode} Faculty Loaded ({activeFacultyGroup.faculties.length})
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <Building2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={formData.department}
+                    onChange={(e) => onChange({ department: e.target.value })}
+                    placeholder=""
+                    className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* 2. Interactive Faculty List shown when Department matches */}
+              {activeFacultyGroup && (
+                <div className="p-3 bg-purple-50/70 border border-purple-200/70 rounded-xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-purple-600" />
+                      {activeFacultyGroup.shortCode} Faculty Profiles (Click to auto-fill Name & Designation):
+                    </span>
+                    <span className="text-[10.5px] text-purple-600 font-medium">
+                      {activeFacultyGroup.faculties.length} Teachers
+                    </span>
+                  </div>
+
+                  {/* Faculty Quick Select Grid / Pills */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1">
+                    {activeFacultyGroup.faculties.map((fac) => {
+                      const isSelected = formData.teacher.trim() === fac.name.trim();
+
+                      return (
+                        <button
+                          key={fac.name}
+                          type="button"
+                          onClick={() => {
+                            onChange({
+                              teacher: fac.name,
+                              designation: fac.designation,
+                            });
+                          }}
+                          className={`text-left p-2 rounded-lg text-xs transition-all flex flex-col justify-between border cursor-pointer ${
+                            isSelected
+                              ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
+                              : 'bg-white/90 hover:bg-white text-slate-700 hover:text-purple-800 border-purple-100 hover:border-purple-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between font-bold leading-tight">
+                            <span>{fac.name}</span>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0 ml-1" />}
+                          </div>
+                          <div className="flex items-center justify-between mt-1 text-[10px] leading-tight opacity-90">
+                            <span className={isSelected ? 'text-purple-100 font-medium' : 'text-purple-700 font-medium'}>
+                              {fac.designation}
+                            </span>
+                            {fac.qualification && (
+                              <span className={isSelected ? 'text-purple-200' : 'text-slate-400'}>
+                                {fac.qualification}
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* 3. Teacher Name & Designation Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700">
+                      Faculty / Teacher Name <span className="text-rose-500">*</span>
+                    </label>
+                    {activeFacultyGroup && (
+                      <select
+                        onChange={(e) => {
+                          const selected = activeFacultyGroup.faculties.find((f) => f.name === e.target.value);
+                          if (selected) {
+                            onChange({
+                              teacher: selected.name,
+                              designation: selected.designation,
+                            });
+                          }
+                        }}
+                        value={formData.teacher}
+                        className="text-[11px] font-medium text-purple-700 bg-transparent border-0 underline cursor-pointer focus:outline-none"
+                      >
+                        <option value="">Choose teacher...</option>
+                        {activeFacultyGroup.faculties.map((f) => (
+                          <option key={f.name} value={f.name}>
+                            {f.name} ({f.designation})
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <UserCheck className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={formData.teacher}
+                      onChange={(e) => {
+                        const newTeacher = e.target.value;
+                        const match = activeFacultyGroup?.faculties.find(
+                          (f) => f.name.toLowerCase() === newTeacher.trim().toLowerCase()
+                        );
+                        onChange({
+                          teacher: newTeacher,
+                          ...(match ? { designation: match.designation } : {}),
+                        });
+                      }}
+                      placeholder=""
+                      className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
+                        errors.teacher ? 'border-rose-400 ring-2 ring-rose-300' : ''
+                      }`}
+                    />
+                  </div>
+                  {errors.teacher && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.teacher}</p>}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Designation
+                  </label>
+                  <div className="relative">
+                    <Briefcase className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      value={formData.designation}
+                      onChange={(e) => onChange({ designation: e.target.value })}
+                      placeholder=""
+                      className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Department
-            </label>
-            <input
-              type="text"
-              value={formData.department}
-              onChange={(e) => onChange({ department: e.target.value })}
-              placeholder=""
-              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
-            />
-          </div>
-        </div>
-      </div>
+        );
+      })()}
 
       {/* SECTION 4: Student Details (Submitted By) */}
       <div className="liquid-card p-4 sm:p-5 space-y-4">
