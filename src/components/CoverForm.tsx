@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { CoverPageFormData, SubmissionType, BorderStyle, ValidationErrors } from '../types';
 import {
   School,
@@ -21,7 +21,8 @@ import {
   RotateCcw,
   Check,
   Building2,
-  Users
+  Users,
+  ChevronDown
 } from 'lucide-react';
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
 import { DEPARTMENT_FACULTY_LIST, getFacultyGroupForDepartment } from '../data/facultyData';
@@ -56,6 +57,24 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   isExporting,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const facultyDropdownRef = useRef<HTMLDivElement>(null);
+  const [isFacultyDropdownOpen, setIsFacultyDropdownOpen] = useState(false);
+
+  // Close faculty dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        facultyDropdownRef.current &&
+        !facultyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsFacultyDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -324,7 +343,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         const activeFacultyGroup = getFacultyGroupForDepartment(formData.department);
 
         return (
-          <div className="liquid-card p-4 sm:p-5 space-y-4">
+          <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
@@ -360,19 +379,11 @@ export const CoverForm: React.FC<CoverFormProps> = ({
             </div>
 
             <div className="space-y-3.5">
-              {/* 1. Department Field (Placed at the TOP) */}
+              {/* 1. Department Field */}
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-bold text-slate-700">
-                    Department
-                  </label>
-                  {activeFacultyGroup && (
-                    <span className="text-[11px] font-semibold text-purple-700 flex items-center gap-1">
-                      <Users className="w-3 h-3" />
-                      {activeFacultyGroup.shortCode} Faculty Loaded ({activeFacultyGroup.faculties.length})
-                    </span>
-                  )}
-                </div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Department
+                </label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
                   <input
@@ -385,89 +396,22 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 </div>
               </div>
 
-              {/* 2. Interactive Faculty List shown when Department matches */}
-              {activeFacultyGroup && (
-                <div className="p-3 bg-purple-50/70 border border-purple-200/70 rounded-xl space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-purple-900 flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-purple-600" />
-                      {activeFacultyGroup.shortCode} Faculty Profiles (Click to auto-fill Name & Designation):
-                    </span>
-                    <span className="text-[10.5px] text-purple-600 font-medium">
-                      {activeFacultyGroup.faculties.length} Teachers
-                    </span>
-                  </div>
-
-                  {/* Faculty Quick Select Grid / Pills */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5 max-h-48 overflow-y-auto pr-1">
-                    {activeFacultyGroup.faculties.map((fac) => {
-                      const isSelected = formData.teacher.trim() === fac.name.trim();
-
-                      return (
-                        <button
-                          key={fac.name}
-                          type="button"
-                          onClick={() => {
-                            onChange({
-                              teacher: fac.name,
-                              designation: fac.designation,
-                            });
-                          }}
-                          className={`text-left p-2 rounded-lg text-xs transition-all flex flex-col justify-between border cursor-pointer ${
-                            isSelected
-                              ? 'bg-purple-600 text-white border-purple-600 shadow-xs'
-                              : 'bg-white/90 hover:bg-white text-slate-700 hover:text-purple-800 border-purple-100 hover:border-purple-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between font-bold leading-tight">
-                            <span>{fac.name}</span>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-white shrink-0 ml-1" />}
-                          </div>
-                          <div className="flex items-center justify-between mt-1 text-[10px] leading-tight opacity-90">
-                            <span className={isSelected ? 'text-purple-100 font-medium' : 'text-purple-700 font-medium'}>
-                              {fac.designation}
-                            </span>
-                            {fac.qualification && (
-                              <span className={isSelected ? 'text-purple-200' : 'text-slate-400'}>
-                                {fac.qualification}
-                              </span>
-                            )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* 3. Teacher Name & Designation Inputs */}
+              {/* 2. Teacher Name & Designation Inputs */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
+                <div ref={facultyDropdownRef} className="relative">
                   <div className="flex items-center justify-between mb-1">
                     <label className="block text-xs font-bold text-slate-700">
                       Faculty / Teacher Name <span className="text-rose-500">*</span>
                     </label>
-                    {activeFacultyGroup && (
-                      <select
-                        onChange={(e) => {
-                          const selected = activeFacultyGroup.faculties.find((f) => f.name === e.target.value);
-                          if (selected) {
-                            onChange({
-                              teacher: selected.name,
-                              designation: selected.designation,
-                            });
-                          }
-                        }}
-                        value={formData.teacher}
-                        className="text-[11px] font-medium text-purple-700 bg-transparent border-0 underline cursor-pointer focus:outline-none"
-                      >
-                        <option value="">Choose teacher...</option>
-                        {activeFacultyGroup.faculties.map((f) => (
-                          <option key={f.name} value={f.name}>
-                            {f.name} ({f.designation})
-                          </option>
-                        ))}
-                      </select>
+                    {activeFacultyGroup ? (
+                      <span className="text-[11px] text-purple-700 font-semibold flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {activeFacultyGroup.shortCode} Teachers: {activeFacultyGroup.faculties.length} available
+                      </span>
+                    ) : (
+                      <span className="text-[11px] text-slate-400 italic">
+                        (Type Department above to load list)
+                      </span>
                     )}
                   </div>
                   <div className="relative">
@@ -485,12 +429,102 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                           ...(match ? { designation: match.designation } : {}),
                         });
                       }}
-                      placeholder=""
-                      className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
+                      onFocus={() => {
+                        if (activeFacultyGroup) {
+                          setIsFacultyDropdownOpen(true);
+                        }
+                      }}
+                      placeholder={activeFacultyGroup ? `Select or type ${activeFacultyGroup.shortCode} teacher...` : 'Select or type teacher...'}
+                      className={`w-full pl-10 pr-10 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
                         errors.teacher ? 'border-rose-400 ring-2 ring-rose-300' : ''
                       }`}
                     />
+
+                    {/* Arrow Symbol inside the Faculty / Teacher Name input */}
+                    {activeFacultyGroup ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsFacultyDropdownOpen(!isFacultyDropdownOpen)}
+                        className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                        title={`Click to view all ${activeFacultyGroup.faculties.length} teachers in ${activeFacultyGroup.shortCode}`}
+                      >
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 ${
+                            isFacultyDropdownOpen ? 'rotate-180' : ''
+                          }`}
+                        />
+                      </button>
+                    ) : (
+                      <div
+                        className="absolute right-2 top-2 p-1.5 text-slate-300 pointer-events-none"
+                        title="Enter Department first to view teacher list"
+                      >
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    )}
                   </div>
+
+                  {/* Serial-wise Faculty Dropdown list */}
+                  {activeFacultyGroup && isFacultyDropdownOpen && (
+                    <div className="absolute left-0 w-full sm:w-[520px] max-w-[92vw] mt-1.5 bg-white rounded-xl shadow-2xl border-2 border-purple-400/80 py-1 z-[100] max-h-80 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                      <div className="sticky top-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-purple-50 px-3.5 py-2.5 text-xs font-extrabold text-purple-950 flex items-center justify-between border-b border-purple-200 z-10 shadow-2xs">
+                        <span className="flex items-center gap-1.5">
+                          <Users className="w-4 h-4 text-purple-700 shrink-0" />
+                          {activeFacultyGroup.shortCode} Faculty Details ({activeFacultyGroup.faculties.length} Serial-wise)
+                        </span>
+                        <span className="text-[10.5px] text-purple-800 font-bold bg-white/90 px-2.5 py-0.5 rounded-full border border-purple-200 shadow-2xs">
+                          Click name to fill
+                        </span>
+                      </div>
+                      {activeFacultyGroup.faculties.map((fac, idx) => {
+                        const isSelected = (formData.teacher || '').trim().toLowerCase() === fac.name.trim().toLowerCase();
+
+                        return (
+                          <button
+                            key={fac.name}
+                            type="button"
+                            onClick={() => {
+                              onChange({
+                                teacher: fac.name,
+                                designation: fac.designation,
+                              });
+                              setIsFacultyDropdownOpen(false);
+                            }}
+                            className={`w-full px-3.5 py-2.5 text-left text-xs transition-all flex items-center justify-between cursor-pointer hover:bg-purple-50/90 group ${
+                              isSelected ? 'bg-purple-100/90 font-bold text-purple-950' : 'text-slate-800'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className={`w-5 h-5 rounded-full text-[10.5px] font-extrabold flex items-center justify-center shrink-0 transition-colors ${
+                                isSelected ? 'bg-purple-600 text-white shadow-xs' : 'bg-purple-100 text-purple-800 group-hover:bg-purple-600 group-hover:text-white'
+                              }`}>
+                                {idx + 1}
+                              </span>
+                              <div className="truncate">
+                                <span className="font-bold text-slate-900 group-hover:text-purple-900 block truncate">
+                                  {fac.name}
+                                </span>
+                                <span className="text-[11px] text-purple-700 font-medium block truncate">
+                                  {fac.designation} {fac.qualification ? `• ${fac.qualification}` : ''}
+                                </span>
+                              </div>
+                            </div>
+                            {isSelected ? (
+                              <span className="flex items-center gap-1 text-[11px] font-bold text-purple-700 shrink-0 ml-2">
+                                <Check className="w-4 h-4 text-purple-700" />
+                                Selected
+                              </span>
+                            ) : (
+                              <span className="text-[10px] text-purple-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2 bg-white px-2 py-0.5 rounded-md border border-purple-200">
+                                Select
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   {errors.teacher && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.teacher}</p>}
                 </div>
 
@@ -516,7 +550,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       })()}
 
       {/* SECTION 4: Student Details (Submitted By) */}
-      <div className="liquid-card p-4 sm:p-5 space-y-4">
+      <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-10">
         <div className="flex items-center gap-2.5">
           <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
             4
@@ -635,7 +669,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       </div>
 
       {/* SECTION 5: Information Layout (Side-by-Side vs Stacked) */}
-      <div className="liquid-card p-4 sm:p-5 space-y-3.5">
+      <div className="liquid-card p-4 sm:p-5 space-y-3.5 relative z-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
