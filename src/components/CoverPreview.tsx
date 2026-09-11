@@ -208,7 +208,7 @@ export const CoverPreview = forwardRef<HTMLDivElement, CoverPreviewProps>(
                     className="text-[23px] font-black uppercase tracking-tight text-slate-950 leading-tight"
                     style={{ fontFamily: "'Times New Roman', Georgia, serif" }}
                   >
-                    {college || 'Techno College of Engineering Agartala'}
+                    {college || 'COLLEGE / UNIVERSITY NAME'}
                   </h1>
                   <div className="w-40 h-[2px] bg-slate-900 mx-auto mt-2 mb-1" />
                 </div>
@@ -354,9 +354,11 @@ export const CoverPreview = forwardRef<HTMLDivElement, CoverPreviewProps>(
                           {department}
                         </p>
                       )}
-                      <p className="text-[11.5px] text-slate-600 leading-tight font-serif">
-                        {college || 'Techno College of Engineering Agartala'}
-                      </p>
+                      {college && (
+                        <p className="text-[11.5px] text-slate-600 leading-tight font-serif">
+                          {college.split('\n')[0]}
+                        </p>
+                      )}
                     </div>
 
                     {/* Right Column: Submitted By */}

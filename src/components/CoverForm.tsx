@@ -150,8 +150,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               rows={2}
               value={formData.college}
               onChange={(e) => onChange({ college: e.target.value })}
-              placeholder="Techno College of Engineering Agartala"
-              className={`w-full px-4 py-2.5 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all resize-none ${
+              placeholder=""
+              className={`w-full px-4 py-2.5 liquid-input text-slate-800 text-sm focus:outline-none transition-all resize-none ${
                 errors.college ? 'border-rose-400 ring-2 ring-rose-300' : ''
               }`}
             />
@@ -170,8 +170,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                   type="text"
                   value={formData.course}
                   onChange={(e) => onChange({ course: e.target.value })}
-                  placeholder="Microwave & Fiber Optic Communication Lab"
-                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all ${
+                  placeholder=""
+                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
                     errors.course ? 'border-rose-400 ring-2 ring-rose-300' : ''
                   }`}
                 />
@@ -189,8 +189,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                   type="text"
                   value={formData.courseCode}
                   onChange={(e) => onChange({ courseCode: e.target.value })}
-                  placeholder="PC EC 605"
-                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all ${
+                  placeholder=""
+                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
                     errors.courseCode ? 'border-rose-400 ring-2 ring-rose-300' : ''
                   }`}
                 />
@@ -338,8 +338,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 type="text"
                 value={formData.teacher}
                 onChange={(e) => onChange({ teacher: e.target.value })}
-                placeholder="Teacher / Faculty Name"
-                className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all ${
+                placeholder=""
+                className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
                   errors.teacher ? 'border-rose-400 ring-2 ring-rose-300' : ''
                 }`}
               />
@@ -357,8 +357,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 type="text"
                 value={formData.designation}
                 onChange={(e) => onChange({ designation: e.target.value })}
-                placeholder="Assistant Professor"
-                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+                placeholder=""
+                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -371,8 +371,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               type="text"
               value={formData.department}
               onChange={(e) => onChange({ department: e.target.value })}
-              placeholder="Department of Electronics & Communication Engineering"
-              className="w-full px-4 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+              placeholder=""
+              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
             />
           </div>
         </div>
@@ -398,8 +398,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               type="text"
               value={formData.student}
               onChange={(e) => onChange({ student: e.target.value })}
-              placeholder="Student Full Name"
-              className={`w-full px-4 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all font-bold ${
+              placeholder=""
+              className={`w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all font-bold ${
                 errors.student ? 'border-rose-400 ring-2 ring-rose-300' : ''
               }`}
             />
@@ -414,8 +414,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               type="text"
               value={formData.studentId}
               onChange={(e) => onChange({ studentId: e.target.value })}
-              placeholder="Student ID / Enrollment No."
-              className={`w-full px-4 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all font-semibold ${
+              placeholder=""
+              className={`w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all font-semibold ${
                 errors.studentId ? 'border-rose-400 ring-2 ring-rose-300' : ''
               }`}
             />
@@ -432,8 +432,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 type="text"
                 value={formData.roll}
                 onChange={(e) => onChange({ roll: e.target.value })}
-                placeholder="Roll Number"
-                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+                placeholder=""
+                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -448,8 +448,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 type="text"
                 value={formData.reg}
                 onChange={(e) => onChange({ reg: e.target.value })}
-                placeholder="Registration Number"
-                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+                placeholder=""
+                className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -462,8 +462,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               type="text"
               value={formData.semester}
               onChange={(e) => onChange({ semester: e.target.value })}
-              placeholder="B.Tech. 6th Sem"
-              className="w-full px-4 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+              placeholder=""
+              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
             />
           </div>
 
@@ -475,8 +475,8 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               type="text"
               value={formData.session}
               onChange={(e) => onChange({ session: e.target.value })}
-              placeholder="2026-27"
-              className="w-full px-4 py-2 liquid-input text-slate-800 placeholder:text-slate-400 text-sm focus:outline-none transition-all"
+              placeholder=""
+              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
             />
           </div>
 

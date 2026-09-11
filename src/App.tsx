@@ -27,25 +27,32 @@ import {
   ArrowDownToLine
 } from 'lucide-react';
 
-const STORAGE_KEY = 'assignment_cover_page_data_liquid_v2';
+const STORAGE_KEY = 'assignment_cover_page_data_liquid_v3';
 
 export default function App() {
   const [formData, setFormData] = useState<CoverPageFormData>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('assignment_cover_page_data_liquid_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Clear previous user's personal details if it was the hardcoded example
-        const isOldPersonalName = parsed.student === 'TANMOY DAS';
+        // Clear any old hardcoded demo values so all input boxes remain completely blank
         return {
+          ...INITIAL_FORM_DATA,
           ...parsed,
-          student: isOldPersonalName ? '' : (parsed.student || ''),
-          studentId: (isOldPersonalName || parsed.studentId === '24304033011') ? '' : (parsed.studentId || ''),
-          roll: (isOldPersonalName || parsed.roll === '2467030082') ? '' : (parsed.roll || ''),
-          reg: (isOldPersonalName || parsed.reg === '003732') ? '' : (parsed.reg || ''),
-          logoUrl: (!parsed.logoUrl || parsed.logoUrl === '/tcea_emblem.jpg' || parsed.logoUrl === '/tcea_emblem.png' || parsed.logoUrl.startsWith('data:image/jpeg') || parsed.logoUrl.startsWith('data:image/svg+xml') || parsed.logoUrl.length < 50000) ? TCEA_LOGO_SVG : parsed.logoUrl,
-          borderStyle: parsed.borderStyle === 'classic-double' ? 'none' : (parsed.borderStyle || 'none'),
-          layoutMode: 'stacked',
+          college: (parsed.college === 'Techno College of Engineering Agartala') ? '' : (parsed.college || ''),
+          course: (parsed.course === 'Microwave and Fiber Optic Communication Lab') ? '' : (parsed.course || ''),
+          courseCode: (parsed.courseCode === 'PC EC 605') ? '' : (parsed.courseCode || ''),
+          teacher: (parsed.teacher === 'Mr. Sudip Deb') ? '' : (parsed.teacher || ''),
+          designation: (parsed.designation === 'Assistant Professor') ? '' : (parsed.designation || ''),
+          department: (parsed.department === 'Department of Electronics & Communication Engineering') ? '' : (parsed.department || ''),
+          student: (parsed.student === 'TANMOY DAS') ? '' : (parsed.student || ''),
+          studentId: (parsed.studentId === '24304033011' || parsed.studentId === '2026EE001') ? '' : (parsed.studentId || ''),
+          roll: (parsed.roll === '2467030082' || parsed.roll === '2467000003') ? '' : (parsed.roll || ''),
+          reg: (parsed.reg === '003732' || parsed.reg === '001236') ? '' : (parsed.reg || ''),
+          semester: (parsed.semester === 'B.Tech. 6th Sem') ? '' : (parsed.semester || ''),
+          session: (parsed.session === '2026-27') ? '' : (parsed.session || ''),
+          borderStyle: parsed.borderStyle || 'none',
+          layoutMode: parsed.layoutMode || 'stacked',
         };
       }
     } catch (e) {
