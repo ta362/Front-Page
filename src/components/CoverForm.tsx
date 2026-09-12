@@ -23,19 +23,19 @@ import {
   Building2,
   Users,
   ChevronDown,
-  RefreshCw
+  RefreshCw,
 } from 'lucide-react';
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
 import { DepartmentFacultyGroup } from '../data/facultyData';
 import {
   getSavedFacultyGroups,
   saveFacultyGroups,
-  getSyncUrl,
-  isAutoSyncEnabled,
-  syncFacultyFromRemote,
   getFacultyGroupFromList,
 } from '../utils/facultyStore';
-import { FacultyManagerModal } from './FacultyManagerModal';
+import {
+  checkAndTriggerMonthlyTceaScan,
+  getLastTceaWebsiteScanTime,
+} from '../utils/tceaWebsiteScanner';
 
 interface CoverFormProps {
   formData: CoverPageFormData;
@@ -74,7 +74,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
 
   // Dynamic faculty directory state
   const [facultyGroups, setFacultyGroups] = useState<DepartmentFacultyGroup[]>(() => getSavedFacultyGroups());
-  const [isFacultyManagerOpen, setIsFacultyManagerOpen] = useState(false);
+  const [lastScanTime, setLastScanTime] = useState<string>(() => getLastTceaWebsiteScanTime());
 
   // Listen to external faculty updates
   useEffect(() => {
@@ -82,6 +82,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       const customEvent = e as CustomEvent<DepartmentFacultyGroup[]>;
       if (customEvent.detail && Array.isArray(customEvent.detail)) {
         setFacultyGroups(customEvent.detail);
+        setLastScanTime(getLastTceaWebsiteScanTime());
       }
     };
     window.addEventListener('tcea_faculty_data_updated', handleFacultyUpdate);
@@ -90,20 +91,18 @@ export const CoverForm: React.FC<CoverFormProps> = ({
     };
   }, []);
 
-  // Background auto-sync if configured on startup
+  // Automatically scan & update faculty from Techno College Of Engineering Agartala website on the 1st and 2nd of every month
   useEffect(() => {
-    const syncUrl = getSyncUrl();
-    if (syncUrl && isAutoSyncEnabled()) {
-      syncFacultyFromRemote(syncUrl, getSavedFacultyGroups())
-        .then((res) => {
-          if (res.success && res.groups) {
-            setFacultyGroups(res.groups);
-          }
-        })
-        .catch((err) => {
-          console.warn('Initial background faculty sync notice:', err.message);
-        });
-    }
+    checkAndTriggerMonthlyTceaScan()
+      .then((updatedGroups) => {
+        if (updatedGroups) {
+          setFacultyGroups(updatedGroups);
+          setLastScanTime(getLastTceaWebsiteScanTime());
+        }
+      })
+      .catch((err) => {
+        console.warn('Monthly TCEA scan check notice:', err);
+      });
   }, []);
 
   // Close dropdowns when clicking outside
@@ -406,21 +405,18 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 </h3>
               </div>
 
-              {/* Auto-Update & Manage Faculty Button */}
-              <button
-                type="button"
-                onClick={() => setIsFacultyManagerOpen(true)}
-                className="text-[11px] font-bold text-purple-800 hover:text-purple-950 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border border-purple-200/80 px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs group"
-                title="Manage Faculty Directory & Online Auto-Sync"
+              {/* Compact subtle last scan date indicator with live pulsing green dot */}
+              <div
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-900 select-none shadow-2xs"
+                title="Techno College of Engineering Agartala (tiaedu.org) faculty directory automatically scans on the 1st & 2nd of each month"
               >
-                <RefreshCw className="w-3.5 h-3.5 text-purple-600 group-hover:rotate-180 transition-transform duration-500" />
-                <span>Auto-Update / Manage</span>
-                {getSyncUrl() ? (
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Cloud / Online Sync Active" />
-                ) : (
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-                )}
-              </button>
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="text-slate-500 font-medium">Last scan:</span>
+                <span className="font-bold text-slate-800">{lastScanTime}</span>
+              </div>
             </div>
 
             <div className="space-y-3.5">
@@ -918,17 +914,6 @@ export const CoverForm: React.FC<CoverFormProps> = ({
           </button>
         </div>
       </div>
-
-      {/* Dynamic Faculty Manager & Auto-Sync Modal */}
-      <FacultyManagerModal
-        isOpen={isFacultyManagerOpen}
-        onClose={() => setIsFacultyManagerOpen(false)}
-        facultyGroups={facultyGroups}
-        onFacultyGroupsChange={(updated) => {
-          setFacultyGroups(updated);
-          saveFacultyGroups(updated);
-        }}
-      />
 
     </div>
   );
