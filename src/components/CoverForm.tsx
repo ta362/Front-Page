@@ -57,12 +57,20 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   isExporting,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const departmentDropdownRef = useRef<HTMLDivElement>(null);
   const facultyDropdownRef = useRef<HTMLDivElement>(null);
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
   const [isFacultyDropdownOpen, setIsFacultyDropdownOpen] = useState(false);
 
-  // Close faculty dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      if (
+        departmentDropdownRef.current &&
+        !departmentDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDepartmentDropdownOpen(false);
+      }
       if (
         facultyDropdownRef.current &&
         !facultyDropdownRef.current.contains(event.target as Node)
@@ -344,56 +352,114 @@ export const CoverForm: React.FC<CoverFormProps> = ({
 
         return (
           <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-30">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-                  3
-                </span>
-                <h3 className="text-sm sm:text-base font-bold text-slate-800">
-                  Faculty Details (Submitted To)
-                </h3>
-              </div>
-
-              {/* Department Quick Filter Tags */}
-              <div className="flex items-center gap-1.5">
-                <span className="text-[11px] text-slate-500 hidden sm:inline">Quick Dept:</span>
-                {DEPARTMENT_FACULTY_LIST.map((dept) => {
-                  const isActive = activeFacultyGroup?.shortCode === dept.shortCode;
-                  return (
-                    <button
-                      key={dept.shortCode}
-                      type="button"
-                      onClick={() => onChange({ department: dept.departmentName })}
-                      className={`px-2.5 py-0.5 text-[11px] font-bold rounded-md transition-all cursor-pointer ${
-                        isActive
-                          ? 'bg-purple-600 text-white shadow-xs'
-                          : 'bg-slate-100 text-slate-600 hover:bg-purple-50 hover:text-purple-700'
-                      }`}
-                      title={`Select ${dept.departmentName}`}
-                    >
-                      {dept.shortCode}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="flex items-center gap-2.5">
+              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                3
+              </span>
+              <h3 className="text-sm sm:text-base font-bold text-slate-800">
+                Faculty Details (Submitted To)
+              </h3>
             </div>
 
             <div className="space-y-3.5">
-              {/* 1. Department Field */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Department
-                </label>
+              {/* 1. Department Field with Arrow Dropdown & Full Names */}
+              <div ref={departmentDropdownRef} className="relative">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Department
+                  </label>
+                  <span className="text-[11px] text-purple-700 font-semibold">
+                    {activeFacultyGroup ? `${activeFacultyGroup.shortCode} • Full Name` : 'Select Full Department Name'}
+                  </span>
+                </div>
                 <div className="relative">
                   <Building2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
                   <input
                     type="text"
                     value={formData.department}
                     onChange={(e) => onChange({ department: e.target.value })}
-                    placeholder=""
-                    className="w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
+                    onFocus={() => setIsDepartmentDropdownOpen(true)}
+                    placeholder="Select or type full department name..."
+                    className="w-full pl-10 pr-10 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
                   />
+                  {/* Arrow (ChevronDown) button for Department */}
+                  <button
+                    type="button"
+                    onClick={() => setIsDepartmentDropdownOpen(!isDepartmentDropdownOpen)}
+                    className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                    title="Click to view all departments with full names"
+                  >
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isDepartmentDropdownOpen ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
                 </div>
+
+                {/* Department Dropdown List with Full Names */}
+                {isDepartmentDropdownOpen && (
+                  <div className="absolute left-0 w-full sm:w-[520px] max-w-[92vw] mt-1.5 bg-white rounded-xl shadow-2xl border-2 border-purple-400/80 py-1 z-[120] max-h-72 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="sticky top-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-purple-50 px-3.5 py-2.5 text-xs font-extrabold text-purple-950 flex items-center justify-between border-b border-purple-200 z-10 shadow-2xs">
+                      <span className="flex items-center gap-1.5">
+                        <Building2 className="w-4 h-4 text-purple-700 shrink-0" />
+                        Departments (Select Full Name)
+                      </span>
+                      <span className="text-[10.5px] text-purple-800 font-bold bg-white/90 px-2.5 py-0.5 rounded-full border border-purple-200 shadow-2xs">
+                        6 Departments Available
+                      </span>
+                    </div>
+                    {DEPARTMENT_FACULTY_LIST.map((dept) => {
+                      const isSelected =
+                        activeFacultyGroup?.shortCode === dept.shortCode ||
+                        formData.department.trim().toLowerCase() === dept.departmentName.toLowerCase();
+
+                      return (
+                        <button
+                          key={dept.shortCode}
+                          type="button"
+                          onClick={() => {
+                            onChange({ department: dept.departmentName });
+                            setIsDepartmentDropdownOpen(false);
+                          }}
+                          className={`w-full px-3.5 py-2.5 text-left text-xs transition-all flex items-center justify-between cursor-pointer hover:bg-purple-50/90 group ${
+                            isSelected ? 'bg-purple-100/90 font-bold text-purple-950' : 'text-slate-800'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <span
+                              className={`w-9 h-6 rounded-md text-[11px] font-extrabold flex items-center justify-center shrink-0 transition-colors ${
+                                isSelected
+                                  ? 'bg-purple-600 text-white shadow-xs'
+                                  : 'bg-purple-100 text-purple-800 group-hover:bg-purple-600 group-hover:text-white'
+                              }`}
+                            >
+                              {dept.shortCode}
+                            </span>
+                            <div className="truncate">
+                              <span className="font-bold text-slate-900 group-hover:text-purple-900 block truncate">
+                                {dept.departmentName}
+                              </span>
+                              <span className="text-[11px] text-purple-700 font-medium block truncate">
+                                {dept.faculties.length} Faculty Members
+                              </span>
+                            </div>
+                          </div>
+                          {isSelected ? (
+                            <span className="flex items-center gap-1 text-[11px] font-bold text-purple-700 shrink-0 ml-2">
+                              <Check className="w-4 h-4 text-purple-700" />
+                              Selected
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-purple-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2 bg-white px-2 py-0.5 rounded-md border border-purple-200">
+                              Select
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* 2. Teacher Name & Designation Inputs */}
