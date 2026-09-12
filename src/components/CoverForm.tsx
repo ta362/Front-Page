@@ -24,6 +24,8 @@ import {
   Users,
   ChevronDown,
   RefreshCw,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
 import { DepartmentFacultyGroup } from '../data/facultyData';
@@ -67,8 +69,10 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   isExporting,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const collegeDropdownRef = useRef<HTMLDivElement>(null);
   const departmentDropdownRef = useRef<HTMLDivElement>(null);
   const facultyDropdownRef = useRef<HTMLDivElement>(null);
+  const [isCollegeDropdownOpen, setIsCollegeDropdownOpen] = useState(false);
   const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
   const [isFacultyDropdownOpen, setIsFacultyDropdownOpen] = useState(false);
 
@@ -109,6 +113,12 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
+        collegeDropdownRef.current &&
+        !collegeDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCollegeDropdownOpen(false);
+      }
+      if (
         departmentDropdownRef.current &&
         !departmentDropdownRef.current.contains(event.target as Node)
       ) {
@@ -144,14 +154,14 @@ export const CoverForm: React.FC<CoverFormProps> = ({
     }
   };
 
-  const submissionTypes: { type: SubmissionType; label: string; desc: string }[] = [
-    { type: 'Assignment', label: 'Assignment', desc: 'Course Work' },
-    { type: 'Lab Copy', label: 'Lab Copy', desc: 'Laboratory' },
-    { type: 'Project Report', label: 'Project Report', desc: 'Major / Minor' },
-    { type: 'Thesis / Dissertation', label: 'Thesis', desc: 'Research' },
-    { type: 'Term Paper', label: 'Term Paper', desc: 'Semester Paper' },
-    { type: 'Practical Notebook', label: 'Practical Notebook', desc: 'Lab Practical' },
-    { type: 'Case Study', label: 'Case Study', desc: 'Analysis' },
+  const baseSubmissionTypes: { type: string; label: string }[] = [
+    { type: 'Assignment', label: 'Assignment' },
+    { type: 'Lab Copy', label: 'Lab Copy' },
+    { type: 'Practical Notebook', label: 'Practical Notebook' },
+    { type: 'Project Report', label: 'Project Report' },
+    { type: 'Term Paper', label: 'Term Paper' },
+    { type: 'Thesis / Dissertation', label: 'Thesis' },
+    { type: 'Case Study', label: 'Case Study' },
   ];
 
   return (
@@ -186,48 +196,157 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         </div>
 
         <div className="space-y-3.5 pt-1">
-          {/* Submission Type Buttons (Liquid Glass Capsules) */}
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Submission Type <span className="text-rose-500">*</span>
-            </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {submissionTypes.map((item) => (
-                <button
-                  key={item.type}
-                  type="button"
-                  onClick={() => onChange({ submissionType: item.type })}
-                  className={`px-3 py-2.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-                    formData.submissionType === item.type
-                      ? 'liquid-pill-purple shadow-md font-bold'
-                      : 'bg-white/60 hover:bg-white/90 text-slate-700 border-white/80 shadow-sm'
-                  }`}
-                >
-                  <span className="text-xs leading-tight">{item.label}</span>
-                  <span className={`text-[10px] mt-0.5 ${formData.submissionType === item.type ? 'text-purple-100' : 'text-slate-400'}`}>
-                    {item.desc}
-                  </span>
-                </button>
-              ))}
+          {/* Submission Type Buttons (Compact Capsules + Minimal Stepper) */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-slate-700">
+                Submission Type <span className="text-rose-500">*</span>
+              </label>
+
+              {/* Pure Minimal [- 1 +] Stepper as shown in screenshot */}
+              {(() => {
+                const match = (formData.submissionType || '').match(/\s+(\d+)$/);
+                const currentNum = match ? parseInt(match[1], 10) : 0;
+                const baseName = (formData.submissionType || 'Assignment').replace(/\s+\d+$/, '');
+
+                const handleDecrement = () => {
+                  if (currentNum <= 1) {
+                    onChange({ submissionType: baseName });
+                  } else {
+                    onChange({ submissionType: `${baseName} ${currentNum - 1}` });
+                  }
+                };
+
+                const handleIncrement = () => {
+                  const nextNum = currentNum === 0 ? 1 : currentNum + 1;
+                  onChange({ submissionType: `${baseName} ${nextNum}` });
+                };
+
+                return (
+                  <div className="inline-flex items-center bg-white border border-slate-200/90 rounded-xl px-1.5 py-0.5 shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={handleDecrement}
+                      disabled={currentNum === 0}
+                      className={`w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer ${
+                        currentNum === 0
+                          ? 'opacity-30 cursor-not-allowed text-slate-400'
+                          : 'hover:bg-slate-100 text-slate-700 active:scale-95'
+                      }`}
+                      title="Decrease number"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="min-w-[24px] text-center px-1 text-xs font-bold text-purple-950 select-none">
+                      {currentNum > 0 ? currentNum : '—'}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleIncrement}
+                      className="w-5 h-5 rounded flex items-center justify-center hover:bg-slate-100 text-slate-700 active:scale-95 transition-all cursor-pointer"
+                      title="Increase number"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Core Type Chips */}
+            <div className="flex flex-wrap gap-1.5">
+              {baseSubmissionTypes.map((item) => {
+                // Check if current submissionType starts with this base type
+                const isSelected = formData.submissionType === item.type || formData.submissionType.startsWith(`${item.type} `);
+                return (
+                  <button
+                    key={item.type}
+                    type="button"
+                    onClick={() => {
+                      // Extract any existing number at end
+                      const match = formData.submissionType?.match(/\d+$/);
+                      const currentNum = match ? match[0] : '';
+                      const newType = currentNum ? `${item.type} ${currentNum}` : item.type;
+                      onChange({ submissionType: newType });
+                    }}
+                    className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer select-none ${
+                      isSelected
+                        ? 'bg-purple-700 text-white border-purple-700 shadow-sm scale-[1.02]'
+                        : 'bg-white/80 hover:bg-purple-50 text-slate-700 border-slate-200/90 hover:border-purple-300'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* College Name */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-bold text-slate-700">
-                College / University Name <span className="text-rose-500">*</span>
-              </label>
+          <div ref={collegeDropdownRef} className="relative">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              College / University Name <span className="text-rose-500">*</span>
+            </label>
+
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.college}
+                onChange={(e) => onChange({ college: e.target.value })}
+                onFocus={() => setIsCollegeDropdownOpen(true)}
+                placeholder=""
+                className={`w-full pl-4 pr-11 py-2.5 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
+                  errors.college ? 'border-rose-400 ring-2 ring-rose-300' : ''
+                }`}
+              />
+              {/* Arrow (ChevronDown) inside the box */}
+              <button
+                type="button"
+                onClick={() => setIsCollegeDropdownOpen(!isCollegeDropdownOpen)}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                title="Click to select Techno College Of Engineering Agartala"
+              >
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isCollegeDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
             </div>
-            <textarea
-              rows={2}
-              value={formData.college}
-              onChange={(e) => onChange({ college: e.target.value })}
-              placeholder=""
-              className={`w-full px-4 py-2.5 liquid-input text-slate-800 text-sm focus:outline-none transition-all resize-none ${
-                errors.college ? 'border-rose-400 ring-2 ring-rose-300' : ''
-              }`}
-            />
+
+            {/* College Dropdown Options Menu */}
+            {isCollegeDropdownOpen && (
+              <div className="absolute left-0 right-0 mt-1 bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-purple-200 py-1.5 z-50 max-h-56 overflow-y-auto animate-in fade-in duration-100">
+                <div className="px-3 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  Select College / University
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange({
+                      college: 'Techno College Of Engineering Agartala',
+                      logoUrl: TCEA_LOGO_SVG,
+                    });
+                    setIsCollegeDropdownOpen(false);
+                  }}
+                  className="w-full px-3.5 py-2.5 text-left text-xs font-bold text-purple-950 hover:bg-purple-50 flex items-center justify-between transition-colors cursor-pointer group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-purple-600 group-hover:scale-125 transition-transform shrink-0" />
+                    <div>
+                      <span className="block text-sm font-bold text-slate-900 group-hover:text-purple-900">
+                        Techno College Of Engineering Agartala
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        Official College (Agartala, Tripura) • Auto-selects TCEA Logo
+                      </span>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-extrabold shrink-0">
+                    TCEA
+                  </span>
+                </button>
+              </div>
+            )}
+
             {errors.college && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.college}</p>}
           </div>
 
@@ -350,20 +469,6 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                     className="px-3 py-1.5 text-xs bg-red-500/15 hover:bg-red-500/25 text-red-700 font-bold rounded-full border border-red-500/30 cursor-pointer shadow-sm transition-all"
                   >
                     ★ TCEA Red Emblem
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onChange({ logoUrl: TECH_INSTITUTE_LOGO_SVG, logoSize: 140 })}
-                    className="px-3 py-1.5 text-xs bg-sky-500/15 hover:bg-sky-500/25 text-sky-700 font-bold rounded-full border border-sky-500/30 cursor-pointer shadow-sm transition-all"
-                  >
-                    Engineering Crest
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onChange({ logoUrl: DEFAULT_ACADEMIC_LOGO_SVG, logoSize: 140 })}
-                    className="px-3 py-1.5 text-xs bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-700 font-bold rounded-full border border-indigo-500/30 cursor-pointer shadow-sm transition-all"
-                  >
-                    Classic Shield
                   </button>
                 </div>
               </div>
