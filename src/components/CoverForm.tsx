@@ -22,10 +22,20 @@ import {
   Check,
   Building2,
   Users,
-  ChevronDown
+  ChevronDown,
+  RefreshCw
 } from 'lucide-react';
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
-import { DEPARTMENT_FACULTY_LIST, getFacultyGroupForDepartment } from '../data/facultyData';
+import { DepartmentFacultyGroup } from '../data/facultyData';
+import {
+  getSavedFacultyGroups,
+  saveFacultyGroups,
+  getSyncUrl,
+  isAutoSyncEnabled,
+  syncFacultyFromRemote,
+  getFacultyGroupFromList,
+} from '../utils/facultyStore';
+import { FacultyManagerModal } from './FacultyManagerModal';
 
 interface CoverFormProps {
   formData: CoverPageFormData;
@@ -61,6 +71,40 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   const facultyDropdownRef = useRef<HTMLDivElement>(null);
   const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
   const [isFacultyDropdownOpen, setIsFacultyDropdownOpen] = useState(false);
+
+  // Dynamic faculty directory state
+  const [facultyGroups, setFacultyGroups] = useState<DepartmentFacultyGroup[]>(() => getSavedFacultyGroups());
+  const [isFacultyManagerOpen, setIsFacultyManagerOpen] = useState(false);
+
+  // Listen to external faculty updates
+  useEffect(() => {
+    const handleFacultyUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<DepartmentFacultyGroup[]>;
+      if (customEvent.detail && Array.isArray(customEvent.detail)) {
+        setFacultyGroups(customEvent.detail);
+      }
+    };
+    window.addEventListener('tcea_faculty_data_updated', handleFacultyUpdate);
+    return () => {
+      window.removeEventListener('tcea_faculty_data_updated', handleFacultyUpdate);
+    };
+  }, []);
+
+  // Background auto-sync if configured on startup
+  useEffect(() => {
+    const syncUrl = getSyncUrl();
+    if (syncUrl && isAutoSyncEnabled()) {
+      syncFacultyFromRemote(syncUrl, getSavedFacultyGroups())
+        .then((res) => {
+          if (res.success && res.groups) {
+            setFacultyGroups(res.groups);
+          }
+        })
+        .catch((err) => {
+          console.warn('Initial background faculty sync notice:', err.message);
+        });
+    }
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -348,17 +392,35 @@ export const CoverForm: React.FC<CoverFormProps> = ({
 
       {/* SECTION 3: Faculty Details (Submitted To) */}
       {(() => {
-        const activeFacultyGroup = getFacultyGroupForDepartment(formData.department);
+        const activeFacultyGroup = getFacultyGroupFromList(facultyGroups, formData.department);
 
         return (
           <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-30">
-            <div className="flex items-center gap-2.5">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-                3
-              </span>
-              <h3 className="text-sm sm:text-base font-bold text-slate-800">
-                Faculty Details (Submitted To)
-              </h3>
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-2.5">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+                  3
+                </span>
+                <h3 className="text-sm sm:text-base font-bold text-slate-800">
+                  Faculty Details (Submitted To)
+                </h3>
+              </div>
+
+              {/* Auto-Update & Manage Faculty Button */}
+              <button
+                type="button"
+                onClick={() => setIsFacultyManagerOpen(true)}
+                className="text-[11px] font-bold text-purple-800 hover:text-purple-950 bg-gradient-to-r from-purple-50 to-indigo-50 hover:from-purple-100 hover:to-indigo-100 border border-purple-200/80 px-2.5 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs group"
+                title="Manage Faculty Directory & Online Auto-Sync"
+              >
+                <RefreshCw className="w-3.5 h-3.5 text-purple-600 group-hover:rotate-180 transition-transform duration-500" />
+                <span>Auto-Update / Manage</span>
+                {getSyncUrl() ? (
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Cloud / Online Sync Active" />
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                )}
+              </button>
             </div>
 
             <div className="space-y-3.5">
@@ -406,10 +468,10 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                         Departments (Select Full Name)
                       </span>
                       <span className="text-[10.5px] text-purple-800 font-bold bg-white/90 px-2.5 py-0.5 rounded-full border border-purple-200 shadow-2xs">
-                        6 Departments Available
+                        {facultyGroups.length} Departments Available
                       </span>
                     </div>
-                    {DEPARTMENT_FACULTY_LIST.map((dept) => {
+                    {facultyGroups.map((dept) => {
                       const isSelected =
                         activeFacultyGroup?.shortCode === dept.shortCode ||
                         formData.department.trim().toLowerCase() === dept.departmentName.toLowerCase();
@@ -856,6 +918,17 @@ export const CoverForm: React.FC<CoverFormProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Dynamic Faculty Manager & Auto-Sync Modal */}
+      <FacultyManagerModal
+        isOpen={isFacultyManagerOpen}
+        onClose={() => setIsFacultyManagerOpen(false)}
+        facultyGroups={facultyGroups}
+        onFacultyGroupsChange={(updated) => {
+          setFacultyGroups(updated);
+          saveFacultyGroups(updated);
+        }}
+      />
 
     </div>
   );
