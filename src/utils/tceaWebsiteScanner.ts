@@ -254,6 +254,6 @@ export async function scanTceaWebsiteFaculty(
     totalFacultyCount,
     groups: scannedGroups,
     steps,
-    message: `Techno College Of Engineering Agartala-র ওয়েবসাইট (${sourceUrl}) থেকে সফলভাবে ${totalFacultyCount} জন শিক্ষকের তথ্য স্ক্যান ও আপডেট সম্পন্ন হয়েছে।`,
+    message: `Successfully scanned and updated ${totalFacultyCount} faculty records from Techno College Of Engineering Agartala website (${sourceUrl}).`,
   };
 }

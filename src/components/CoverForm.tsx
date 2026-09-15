@@ -92,6 +92,25 @@ const LAYOUT_OPTIONS: Array<{
     icon: Grid,
   },
 ];
+
+const BORDER_OPTIONS: Array<{
+  id: BorderStyle;
+  label: string;
+  desc: string;
+  tag: string;
+}> = [
+  { id: 'classic-double', label: 'Classic Double Line Frame', desc: 'Outer thick line with inner fine line (Formal academic standard)', tag: 'Traditional Academic' },
+  { id: 'simple-single', label: 'Single Line Frame', desc: 'Clean thin solid perimeter border around the entire page', tag: 'Minimal Single' },
+  { id: 'ornate-corners', label: 'Ornate Corner Brackets', desc: 'Perimeter border with stylized L-shaped corner brackets', tag: 'Decorative Corners' },
+  { id: 'academic-crest', label: 'Academic Solid & Dashed', desc: 'Solid outer border with elegant inner dashed inset line', tag: 'Formal Crest' },
+  { id: 'thick-thin-frame', label: 'Thick & Thin Executive Frame', desc: 'Bold outer border (4px) with a refined inner hairline border', tag: 'Executive Heavy' },
+  { id: 'triple-line', label: 'Triple Line Classic', desc: 'Three parallel concentric framing lines creating a vintage border', tag: 'Vintage Triple' },
+  { id: 'corner-box', label: 'Corner Box Accents', desc: 'Solid perimeter frame accented with four filled corner squares', tag: 'Modern Geometric' },
+  { id: 'dashed-formal', label: 'Dashed Perimeter & Nodes', desc: 'Subtle dashed outer frame with corner circular nodes', tag: 'Dashed Modern' },
+  { id: 'top-bottom-bars', label: 'Header & Footer Thick Bars', desc: 'Top and bottom solid header/footer accent bars without side lines', tag: 'Header/Footer Bars' },
+  { id: 'minimal', label: 'Minimal Top & Bottom Rules', desc: 'Delicate horizontal rules at top and bottom margins', tag: 'Subtle Rules' },
+  { id: 'none', label: 'No Border (Clean Page)', desc: 'Remove all outer border lines for a pure clean white page', tag: 'Frameless' },
+];
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
 import { DepartmentFacultyGroup } from '../data/facultyData';
 import {
@@ -1455,38 +1474,43 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       </div>
 
       {/* SECTION 6: Border & Framing Style */}
-      <div className="liquid-card p-4 sm:p-5 space-y-3.5">
-        <div className="flex items-center gap-2.5">
-          <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-            6
+      <div className="liquid-card p-4 sm:p-5 space-y-3 relative z-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
+              6
+            </span>
+            <h3 className="text-sm sm:text-base font-bold text-slate-800">
+              Border & Framing Style
+            </h3>
+          </div>
+          <span className="text-xs px-2.5 py-1 rounded-full font-extrabold bg-indigo-100 text-indigo-900 border border-indigo-200/80 self-start sm:self-auto">
+            {BORDER_OPTIONS.find((b) => b.id === (formData.borderStyle || 'classic-double'))?.label || 'Classic Double Line'}
           </span>
-          <h3 className="text-sm sm:text-base font-bold text-slate-800">
-            Border & Framing Style
-          </h3>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          {[
-            { id: 'none', label: 'No Border (Clean)', desc: 'Remove side borders' },
-            { id: 'classic-double', label: 'Classic Double', desc: 'Double lines' },
-            { id: 'simple-single', label: 'Single Line', desc: 'Clean border' },
-            { id: 'ornate-corners', label: 'Ornate Corners', desc: 'Accent corners' },
-            { id: 'minimal', label: 'Minimal', desc: 'Frameless' },
-          ].map((style) => (
-            <button
-              key={style.id}
-              type="button"
-              onClick={() => onChange({ borderStyle: style.id as BorderStyle })}
-              className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-                formData.borderStyle === style.id || (!formData.borderStyle && style.id === 'none')
-                  ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm'
-                  : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
-              }`}
+        {/* Dropdown Selector Box */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-slate-700">
+            Select Border Design
+          </label>
+          <div className="relative">
+            <select
+              value={formData.borderStyle || 'classic-double'}
+              onChange={(e) => onChange({ borderStyle: e.target.value as BorderStyle })}
+              className="w-full pl-3.5 pr-10 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-800 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm appearance-none cursor-pointer"
             >
-              <span className="text-xs">{style.label}</span>
-              <span className="text-[10px] text-slate-400 mt-0.5">{style.desc}</span>
-            </button>
-          ))}
+              {BORDER_OPTIONS.map((opt) => (
+                <option key={opt.id} value={opt.id}>
+                  {opt.label} — {opt.tag}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-4 h-4 absolute right-3.5 top-3.5 text-slate-500 pointer-events-none" />
+          </div>
+          <p className="text-[11.5px] text-slate-500 pt-0.5">
+            {BORDER_OPTIONS.find((b) => b.id === (formData.borderStyle || 'classic-double'))?.desc}
+          </p>
         </div>
       </div>
 

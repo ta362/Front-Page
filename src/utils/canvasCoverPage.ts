@@ -250,7 +250,7 @@ export async function renderCoverPageToCanvas(
       CANONICAL_A4_HEIGHT - 32 * SCALE
     );
     // Dashed inner border
-    ctx.setLineDash([12, 10]);
+    ctx.setLineDash([12 * SCALE, 10 * SCALE]);
     ctx.strokeStyle = '#334155';
     ctx.lineWidth = 1 * SCALE;
     ctx.strokeRect(
@@ -260,6 +260,60 @@ export async function renderCoverPageToCanvas(
       CANONICAL_A4_HEIGHT - 48 * SCALE
     );
     ctx.setLineDash([]);
+  } else if (borderStyle === 'thick-thin-frame') {
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 4 * SCALE;
+    ctx.strokeRect(
+      16 * SCALE,
+      16 * SCALE,
+      CANONICAL_A4_WIDTH - 32 * SCALE,
+      CANONICAL_A4_HEIGHT - 32 * SCALE
+    );
+    ctx.lineWidth = 1 * SCALE;
+    ctx.strokeRect(
+      25 * SCALE,
+      25 * SCALE,
+      CANONICAL_A4_WIDTH - 50 * SCALE,
+      CANONICAL_A4_HEIGHT - 50 * SCALE
+    );
+  } else if (borderStyle === 'triple-line') {
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 1.5 * SCALE;
+    ctx.strokeRect(14 * SCALE, 14 * SCALE, CANONICAL_A4_WIDTH - 28 * SCALE, CANONICAL_A4_HEIGHT - 28 * SCALE);
+    ctx.lineWidth = 1 * SCALE;
+    ctx.strokeRect(20 * SCALE, 20 * SCALE, CANONICAL_A4_WIDTH - 40 * SCALE, CANONICAL_A4_HEIGHT - 40 * SCALE);
+    ctx.lineWidth = 1.5 * SCALE;
+    ctx.strokeRect(26 * SCALE, 26 * SCALE, CANONICAL_A4_WIDTH - 52 * SCALE, CANONICAL_A4_HEIGHT - 52 * SCALE);
+  } else if (borderStyle === 'corner-box') {
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2 * SCALE;
+    ctx.strokeRect(18 * SCALE, 18 * SCALE, CANONICAL_A4_WIDTH - 36 * SCALE, CANONICAL_A4_HEIGHT - 36 * SCALE);
+    ctx.fillStyle = '#000000';
+    const boxSz = 14 * SCALE;
+    ctx.fillRect(12 * SCALE, 12 * SCALE, boxSz, boxSz);
+    ctx.fillRect(CANONICAL_A4_WIDTH - 26 * SCALE, 12 * SCALE, boxSz, boxSz);
+    ctx.fillRect(12 * SCALE, CANONICAL_A4_HEIGHT - 26 * SCALE, boxSz, boxSz);
+    ctx.fillRect(CANONICAL_A4_WIDTH - 26 * SCALE, CANONICAL_A4_HEIGHT - 26 * SCALE, boxSz, boxSz);
+  } else if (borderStyle === 'top-bottom-bars') {
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(24 * SCALE, 16 * SCALE, CANONICAL_A4_WIDTH - 48 * SCALE, 4 * SCALE);
+    ctx.fillRect(24 * SCALE, CANONICAL_A4_HEIGHT - 20 * SCALE, CANONICAL_A4_WIDTH - 48 * SCALE, 4 * SCALE);
+  } else if (borderStyle === 'dashed-formal') {
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2 * SCALE;
+    ctx.setLineDash([12 * SCALE, 8 * SCALE]);
+    ctx.strokeRect(18 * SCALE, 18 * SCALE, CANONICAL_A4_WIDTH - 36 * SCALE, CANONICAL_A4_HEIGHT - 36 * SCALE);
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#000000';
+    const r = 5 * SCALE;
+    ctx.beginPath(); ctx.arc(14 * SCALE + r, 14 * SCALE + r, r, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(CANONICAL_A4_WIDTH - 24 * SCALE + r, 14 * SCALE + r, r, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(14 * SCALE + r, CANONICAL_A4_HEIGHT - 24 * SCALE + r, r, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(CANONICAL_A4_WIDTH - 24 * SCALE + r, CANONICAL_A4_HEIGHT - 24 * SCALE + r, r, 0, Math.PI * 2); ctx.fill();
+  } else if (borderStyle === 'minimal') {
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(40 * SCALE, 20 * SCALE, CANONICAL_A4_WIDTH - 80 * SCALE, 2 * SCALE);
+    ctx.fillRect(40 * SCALE, CANONICAL_A4_HEIGHT - 22 * SCALE, CANONICAL_A4_WIDTH - 80 * SCALE, 2 * SCALE);
   }
 
   // 3. Watermark (if enabled)
@@ -286,19 +340,26 @@ export async function renderCoverPageToCanvas(
 
   let currentY = 56 * SCALE; // starting padding-top: 168px
 
+  const scaleMap = {
+    medium: 1.18,
+    large: 1.35,
+    'extra-large': 1.52,
+  };
+  const fMult = scaleMap[data.fontSizeScale || 'large'] || 1.35;
+
   // ---- 1. SUBMISSION TYPE ----
   if (data.submissionType) {
-    ctx.font = `bold ${18 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${18 * fMult * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillText(data.submissionType, centerX, currentY);
-    currentY += 28 * SCALE;
+    currentY += 28 * fMult * SCALE;
   }
 
   // ---- 2. COLLEGE / UNIVERSITY NAME ----
   if (data.college) {
-    ctx.font = `bold ${26 * SCALE}px ${fontFamily}`;
+    ctx.font = `bold ${26 * fMult * SCALE}px ${fontFamily}`;
     ctx.fillStyle = '#000000';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -306,14 +367,16 @@ export async function renderCoverPageToCanvas(
     const collegeLines = wrapText(ctx, data.college, maxContentWidth);
     for (const line of collegeLines) {
       ctx.fillText(line, centerX, currentY);
-      currentY += 36 * SCALE;
+      currentY += 36 * fMult * SCALE;
     }
-    currentY += 12 * SCALE;
+    currentY += 10 * SCALE;
   }
 
   // ---- 3. COURSE TITLE & COURSE CODE ----
   if (data.course) {
-    const courseLines = wrapText(ctx, data.course, maxContentWidth - 140 * SCALE);
+    const courseFontSize = 14.5 * fMult * SCALE;
+    ctx.font = `bold ${courseFontSize}px ${fontFamily}`;
+    const courseLines = wrapText(ctx, data.course, maxContentWidth - 20 * SCALE);
     if (courseLines.length === 1) {
       drawLabeledCenteredText(
         ctx,
@@ -322,12 +385,12 @@ export async function renderCoverPageToCanvas(
         currentY,
         centerX,
         fontFamily,
-        17.5 * SCALE,
+        courseFontSize,
         '#000000',
         '#000000',
         true
       );
-      currentY += 26 * SCALE;
+      currentY += 24 * fMult * SCALE;
     } else {
       drawLabeledCenteredText(
         ctx,
@@ -336,22 +399,23 @@ export async function renderCoverPageToCanvas(
         currentY,
         centerX,
         fontFamily,
-        17.5 * SCALE,
+        courseFontSize,
         '#000000',
         '#000000',
         true
       );
-      currentY += 24 * SCALE;
-      ctx.font = `bold ${17.5 * SCALE}px ${fontFamily}`;
+      currentY += 22 * fMult * SCALE;
+      ctx.font = `bold ${courseFontSize}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       for (let i = 1; i < courseLines.length; i++) {
         ctx.fillText(courseLines[i], centerX, currentY);
-        currentY += 24 * SCALE;
+        currentY += 22 * fMult * SCALE;
       }
     }
   }
 
   if (data.courseCode) {
+    const codeFontSize = 14.5 * fMult * SCALE;
     drawLabeledCenteredText(
       ctx,
       'Course Code: ',
@@ -359,12 +423,12 @@ export async function renderCoverPageToCanvas(
       currentY,
       centerX,
       fontFamily,
-      17.5 * SCALE,
+      codeFontSize,
       '#000000',
       '#000000',
       true
     );
-    currentY += 30 * SCALE;
+    currentY += 28 * fMult * SCALE;
   }
 
   // ---- 4. CENTER LOGO ----

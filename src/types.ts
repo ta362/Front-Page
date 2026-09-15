@@ -7,7 +7,18 @@ export type SubmissionType =
   | 'Practical Notebook'
   | 'Case Study';
 
-export type BorderStyle = 'none' | 'classic-double' | 'simple-single' | 'ornate-corners' | 'minimal' | 'academic-crest';
+export type BorderStyle = 
+  | 'none' 
+  | 'classic-double' 
+  | 'simple-single' 
+  | 'ornate-corners' 
+  | 'minimal' 
+  | 'academic-crest'
+  | 'thick-thin-frame'
+  | 'triple-line'
+  | 'corner-box'
+  | 'top-bottom-bars'
+  | 'dashed-formal';
 
 export type LayoutMode = 
   | 'stacked' 
@@ -40,6 +51,7 @@ export interface CoverPageFormData {
   fontTheme: 'times' | 'garamond' | 'cinzel';
   accentColor: string;
   layoutMode?: LayoutMode;
+  fontSizeScale?: 'medium' | 'large' | 'extra-large';
 }
 
 export interface ValidationErrors {

@@ -56,8 +56,56 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
             <div style={{ position: 'absolute', top: 24, left: 24, right: 24, bottom: 24, border: '1px dashed #334155', pointerEvents: 'none' }} />
           </>
         );
-      case 'none':
+      case 'thick-thin-frame':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 16, left: 16, right: 16, bottom: 16, border: '4px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 25, left: 25, right: 25, bottom: 25, border: '1px solid #000000', pointerEvents: 'none' }} />
+          </>
+        );
+      case 'triple-line':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 14, left: 14, right: 14, bottom: 14, border: '1.5px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 20, left: 20, right: 20, bottom: 20, border: '1px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 26, left: 26, right: 26, bottom: 26, border: '1.5px solid #000000', pointerEvents: 'none' }} />
+          </>
+        );
+      case 'corner-box':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 18, left: 18, right: 18, bottom: 18, border: '2px solid #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 12, left: 12, width: 14, height: 14, backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 12, right: 12, width: 14, height: 14, backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 12, left: 12, width: 14, height: 14, backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 12, right: 12, width: 14, height: 14, backgroundColor: '#000000', pointerEvents: 'none' }} />
+          </>
+        );
+      case 'top-bottom-bars':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 16, left: 24, right: 24, height: 4, backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 16, left: 24, right: 24, height: 4, backgroundColor: '#000000', pointerEvents: 'none' }} />
+          </>
+        );
+      case 'dashed-formal':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 18, left: 18, right: 18, bottom: 18, border: '2px dashed #000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 14, left: 14, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: 14, right: 14, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 14, left: 14, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 14, right: 14, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#000000', pointerEvents: 'none' }} />
+          </>
+        );
       case 'minimal':
+        return (
+          <>
+            <div style={{ position: 'absolute', top: 20, left: 40, right: 40, height: 2, backgroundColor: '#000000', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: 20, left: 40, right: 40, height: 2, backgroundColor: '#000000', pointerEvents: 'none' }} />
+          </>
+        );
+      case 'none':
       default:
         return null;
     }
@@ -68,6 +116,14 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
     garamond: "'EB Garamond', Georgia, serif",
     cinzel: "'Cinzel', serif",
   }[data.fontTheme || 'times'];
+
+  const scaleMap = {
+    medium: 1.18,
+    large: 1.35,
+    'extra-large': 1.52,
+  };
+  const fMult = scaleMap[data.fontSizeScale || 'large'] || 1.35;
+  const fs = (px: number) => `${(px * fMult).toFixed(1)}px`;
 
   return (
     <div
@@ -121,7 +177,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           zIndex: 10,
           width: '794px',
           height: '1123px',
-          padding: '44px 60px 34px 60px',
+          padding: '40px 54px 30px 54px',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
@@ -136,13 +192,13 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.submissionType ? (
             <div 
               style={{
-                fontSize: '18px',
-                fontWeight: 700,
+                fontSize: fs(18),
+                fontWeight: 800,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 color: '#1e293b',
                 marginBottom: '8px',
-                lineHeight: 1.4,
+                lineHeight: 1.35,
               }}
             >
               {data.submissionType}
@@ -153,13 +209,13 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.college ? (
             <div 
               style={{
-                fontSize: '26.5px',
+                fontSize: fs(26.5),
                 fontWeight: 800,
                 letterSpacing: '0.01em',
                 textTransform: 'uppercase',
                 color: '#000000',
-                lineHeight: 1.35,
-                maxWidth: '680px',
+                lineHeight: 1.3,
+                maxWidth: '690px',
                 margin: '0 auto 10px auto',
                 wordWrap: 'break-word',
               }}
@@ -172,10 +228,10 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.course && (
             <div 
               style={{
-                fontSize: '17.5px',
-                lineHeight: 1.5,
+                fontSize: fs(14.5),
+                lineHeight: 1.38,
                 color: '#1e293b',
-                maxWidth: '660px',
+                maxWidth: '680px',
                 margin: '0 auto 4px auto',
                 wordWrap: 'break-word',
               }}
@@ -189,10 +245,10 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           {data.courseCode && (
             <div 
               style={{
-                fontSize: '17.5px',
-                lineHeight: 1.5,
+                fontSize: fs(14.5),
+                lineHeight: 1.38,
                 color: '#1e293b',
-                maxWidth: '660px',
+                maxWidth: '680px',
                 margin: '0 auto',
                 wordWrap: 'break-word',
               }}
@@ -211,8 +267,8 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '18px 0 16px 0',
-              minHeight: '135px',
+              margin: '14px 0 12px 0',
+              minHeight: '125px',
             }}
           >
             <img
@@ -220,7 +276,7 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
               alt="Emblem"
               style={{
                 maxWidth: `${Math.min(Math.max(data.logoSize || 170, 150), 195)}px`,
-                maxHeight: '170px',
+                maxHeight: '160px',
                 objectFit: 'contain',
                 display: 'block',
               }}
@@ -241,25 +297,25 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           // 1. VERTICAL STACKED (CENTERED)
           if (data.layoutMode === 'stacked') {
             return (
-              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px', marginTop: '16px', marginBottom: 'auto' }}>
+              <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: '12px', marginBottom: 'auto' }}>
                 {/* SUBMITTED TO */}
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '5px' }}>
+                  <div style={{ fontSize: fs(18), fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '6px' }}>
                     SUBMITTED TO:
                   </div>
-                  <div style={{ fontSize: '20.5px', fontWeight: 700, color: '#000000', marginBottom: '2px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                  <div style={{ fontSize: '17px', color: '#1e293b', fontStyle: 'italic', marginBottom: '2px' }}>{data.designation || 'Associate Professor'}</div>
-                  <div style={{ fontSize: '17px', color: '#1e293b', marginBottom: '2px' }}>{teacherDeptText}</div>
-                  <div style={{ fontSize: '16.5px', color: '#334155' }}>{collegeLine}</div>
+                  <div style={{ fontSize: fs(20.5), fontWeight: 700, color: '#000000', marginBottom: '3px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                  <div style={{ fontSize: fs(17), color: '#1e293b', fontStyle: 'italic', marginBottom: '3px' }}>{data.designation || 'Associate Professor'}</div>
+                  <div style={{ fontSize: fs(17), color: '#1e293b', marginBottom: '3px' }}>{teacherDeptText}</div>
+                  <div style={{ fontSize: fs(16.5), color: '#334155' }}>{collegeLine}</div>
                 </div>
 
                 {/* SUBMITTED BY */}
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '16px' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '5px' }}>
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '12px' }}>
+                  <div style={{ fontSize: fs(18), fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '6px' }}>
                     SUBMITTED BY:
                   </div>
-                  <div style={{ fontSize: '21.5px', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#000000', marginBottom: '4px' }}>{data.student || 'Joy Debnath'}</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '17px', lineHeight: 1.5, color: '#1e293b' }}>
+                  <div style={{ fontSize: fs(21.5), fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: '#000000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: fs(17), lineHeight: 1.5, color: '#1e293b' }}>
                     {data.studentId && <div><strong>Student ID: </strong><span>{data.studentId}</span></div>}
                     {data.roll && <div><strong>TU Roll No.: </strong><span>{data.roll}</span></div>}
                     {data.reg && <div><strong>TU Registration No.: </strong><span>{data.reg}</span></div>}
@@ -276,19 +332,19 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           // 2. MODERN BOXED CARDS
           if (data.layoutMode === 'modern-cards') {
             return (
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', gap: '16px', marginTop: '12px', marginBottom: 'auto' }}>
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', gap: '16px', marginTop: '10px', marginBottom: 'auto' }}>
                 <div style={{ width: '48%', border: '1.5px solid #64748b', borderRadius: '12px', backgroundColor: '#f8fafc', padding: '16px 18px', textAlign: 'left' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', borderBottom: '2px solid #0f172a', paddingBottom: '3px', marginBottom: '8px', color: '#0f172a' }}>SUBMITTED TO</div>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#000', marginBottom: '3px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                  <div style={{ fontSize: '14.5px', fontStyle: 'italic', color: '#334155', marginBottom: '2px' }}>{data.designation || 'Associate Professor'}</div>
-                  <div style={{ fontSize: '14.5px', color: '#334155', marginBottom: '2px' }}>{teacherDeptText}</div>
-                  <div style={{ fontSize: '14px', color: '#475569' }}>{collegeLine}</div>
+                  <div style={{ fontSize: fs(14), fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', borderBottom: '2px solid #0f172a', paddingBottom: '3px', marginBottom: '8px', color: '#0f172a' }}>SUBMITTED TO</div>
+                  <div style={{ fontSize: fs(18), fontWeight: 800, color: '#000', marginBottom: '3px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                  <div style={{ fontSize: fs(14.5), fontStyle: 'italic', color: '#334155', marginBottom: '2px' }}>{data.designation || 'Associate Professor'}</div>
+                  <div style={{ fontSize: fs(14.5), color: '#334155', marginBottom: '2px' }}>{teacherDeptText}</div>
+                  <div style={{ fontSize: fs(14), color: '#475569' }}>{collegeLine}</div>
                 </div>
 
                 <div style={{ width: '48%', border: '1.5px solid #64748b', borderRadius: '12px', backgroundColor: '#f8fafc', padding: '16px 18px', textAlign: 'left' }}>
-                  <div style={{ fontSize: '14px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', borderBottom: '2px solid #0f172a', paddingBottom: '3px', marginBottom: '8px', color: '#0f172a' }}>SUBMITTED BY</div>
-                  <div style={{ fontSize: '18.5px', fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
-                  <div style={{ fontSize: '14.5px', lineHeight: 1.5, color: '#1e293b' }}>
+                  <div style={{ fontSize: fs(14), fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', borderBottom: '2px solid #0f172a', paddingBottom: '3px', marginBottom: '8px', color: '#0f172a' }}>SUBMITTED BY</div>
+                  <div style={{ fontSize: fs(18.5), fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
+                  <div style={{ fontSize: fs(14.5), lineHeight: 1.5, color: '#1e293b' }}>
                     {data.studentId && <div><strong>Student ID: </strong><span>{data.studentId}</span></div>}
                     {data.roll && <div><strong>TU Roll No.: </strong><span>{data.roll}</span></div>}
                     {data.reg && <div><strong>TU Registration No.: </strong><span>{data.reg}</span></div>}
@@ -305,19 +361,19 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           // 3. LEFT ALIGNED MINIMALIST WITH VERTICAL ACCENT
           if (data.layoutMode === 'left-aligned') {
             return (
-              <div style={{ width: '100%', textAlign: 'left', borderLeft: '4px solid #0f172a', paddingLeft: '22px', marginTop: '14px', marginBottom: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ width: '100%', textAlign: 'left', borderLeft: '4px solid #0f172a', paddingLeft: '22px', marginTop: '12px', marginBottom: 'auto', display: 'flex', flexDirection: 'column', gap: '18px' }}>
                 <div>
-                  <div style={{ fontSize: '15px', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#475569', marginBottom: '4px' }}>SUBMITTED TO</div>
-                  <div style={{ fontSize: '19px', fontWeight: 800, color: '#000', marginBottom: '2px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                  <div style={{ fontSize: '15.5px', fontStyle: 'italic', color: '#1e293b' }}>{data.designation || 'Associate Professor'}</div>
-                  <div style={{ fontSize: '15.5px', color: '#1e293b' }}>{teacherDeptText}</div>
-                  <div style={{ fontSize: '15px', color: '#334155' }}>{collegeLine}</div>
+                  <div style={{ fontSize: fs(15), fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#475569', marginBottom: '4px' }}>SUBMITTED TO</div>
+                  <div style={{ fontSize: fs(19), fontWeight: 800, color: '#000', marginBottom: '2px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                  <div style={{ fontSize: fs(15.5), fontStyle: 'italic', color: '#1e293b' }}>{data.designation || 'Associate Professor'}</div>
+                  <div style={{ fontSize: fs(15.5), color: '#1e293b' }}>{teacherDeptText}</div>
+                  <div style={{ fontSize: fs(15), color: '#334155' }}>{collegeLine}</div>
                 </div>
 
-                <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '16px' }}>
-                  <div style={{ fontSize: '15px', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#475569', marginBottom: '4px' }}>SUBMITTED BY</div>
-                  <div style={{ fontSize: '20px', fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
-                  <div style={{ fontSize: '15.5px', lineHeight: 1.55, color: '#1e293b' }}>
+                <div style={{ borderTop: '1px solid #cbd5e1', paddingTop: '14px' }}>
+                  <div style={{ fontSize: fs(15), fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#475569', marginBottom: '4px' }}>SUBMITTED BY</div>
+                  <div style={{ fontSize: fs(20), fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
+                  <div style={{ fontSize: fs(15.5), lineHeight: 1.55, color: '#1e293b' }}>
                     {data.studentId && <div><strong>Student ID: </strong><span>{data.studentId}</span></div>}
                     {data.roll && <div><strong>TU Roll No.: </strong><span>{data.roll}</span></div>}
                     {data.reg && <div><strong>TU Registration No.: </strong><span>{data.reg}</span></div>}
@@ -334,19 +390,19 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           // 4. RIGHT SPLIT EDGE (ASYMMETRIC)
           if (data.layoutMode === 'right-aligned') {
             return (
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginTop: '14px', marginBottom: 'auto' }}>
+              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginTop: '12px', marginBottom: 'auto' }}>
                 <div style={{ width: '48%', textAlign: 'left' }}>
-                  <div style={{ fontSize: '15.5px', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#000', marginBottom: '6px' }}>SUBMITTED TO:</div>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#000', marginBottom: '3px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                  <div style={{ fontSize: '15px', fontStyle: 'italic', color: '#1e293b' }}>{data.designation || 'Associate Professor'}</div>
-                  <div style={{ fontSize: '15px', color: '#1e293b' }}>{teacherDeptText}</div>
-                  <div style={{ fontSize: '14.5px', color: '#334155' }}>{collegeLine}</div>
+                  <div style={{ fontSize: fs(15.5), fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#000', marginBottom: '6px' }}>SUBMITTED TO:</div>
+                  <div style={{ fontSize: fs(18), fontWeight: 800, color: '#000', marginBottom: '3px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                  <div style={{ fontSize: fs(15), fontStyle: 'italic', color: '#1e293b' }}>{data.designation || 'Associate Professor'}</div>
+                  <div style={{ fontSize: fs(15), color: '#1e293b' }}>{teacherDeptText}</div>
+                  <div style={{ fontSize: fs(14.5), color: '#334155' }}>{collegeLine}</div>
                 </div>
 
                 <div style={{ width: '48%', textAlign: 'right', borderRight: '3px solid #0f172a', paddingRight: '16px' }}>
-                  <div style={{ fontSize: '15.5px', fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#000', marginBottom: '6px' }}>SUBMITTED BY:</div>
-                  <div style={{ fontSize: '19px', fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
-                  <div style={{ fontSize: '15px', lineHeight: 1.5, color: '#1e293b' }}>
+                  <div style={{ fontSize: fs(15.5), fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#000', marginBottom: '6px' }}>SUBMITTED BY:</div>
+                  <div style={{ fontSize: fs(19), fontWeight: 800, color: '#000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
+                  <div style={{ fontSize: fs(15), lineHeight: 1.5, color: '#1e293b' }}>
                     {data.studentId && <div><strong>ID: </strong><span>{data.studentId}</span></div>}
                     {data.roll && <div><strong>Roll: </strong><span>{data.roll}</span></div>}
                     {data.reg && <div><strong>Reg: </strong><span>{data.reg}</span></div>}
@@ -363,18 +419,18 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
           // 5. STRUCTURED TABULAR MATRIX (GRID)
           if (data.layoutMode === 'compact-grid') {
             return (
-              <div style={{ width: '100%', marginTop: '12px', marginBottom: 'auto', textAlign: 'left' }}>
+              <div style={{ width: '100%', marginTop: '10px', marginBottom: 'auto', textAlign: 'left' }}>
                 <div style={{ border: '2px solid #0f172a', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#fff' }}>
                   <div style={{ padding: '12px 16px', backgroundColor: '#f1f5f9', borderBottom: '2px solid #0f172a' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#475569', marginBottom: '2px' }}>SUBMITTED TO</div>
-                    <div style={{ fontSize: '17.5px', fontWeight: 800, color: '#0f172a' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                    <div style={{ fontSize: '14px', color: '#334155' }}>{data.designation || 'Associate Professor'} • {teacherDeptText}</div>
+                    <div style={{ fontSize: fs(12), fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#475569', marginBottom: '2px' }}>SUBMITTED TO</div>
+                    <div style={{ fontSize: fs(17.5), fontWeight: 800, color: '#0f172a' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                    <div style={{ fontSize: fs(14), color: '#334155' }}>{data.designation || 'Associate Professor'} • {teacherDeptText}</div>
                   </div>
 
                   <div style={{ padding: '14px 16px' }}>
-                    <div style={{ fontSize: '12px', fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#475569', marginBottom: '2px' }}>SUBMITTED BY</div>
-                    <div style={{ fontSize: '18px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>{data.student || 'Joy Debnath'}</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px', fontSize: '14px', color: '#1e293b' }}>
+                    <div style={{ fontSize: fs(12), fontWeight: 900, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#475569', marginBottom: '2px' }}>SUBMITTED BY</div>
+                    <div style={{ fontSize: fs(18), fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>{data.student || 'Joy Debnath'}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 16px', fontSize: fs(14), color: '#1e293b' }}>
                       {data.studentId && <div><strong>Student ID:</strong> {data.studentId}</div>}
                       {data.roll && <div><strong>Roll:</strong> {data.roll}</div>}
                       {data.reg && <div><strong>Reg:</strong> {data.reg}</div>}
@@ -391,19 +447,19 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
 
           // 6. DEFAULT: SIDE-BY-SIDE
           return (
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0 12px', marginTop: '8px', marginBottom: 'auto' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0 8px', marginTop: '6px', marginBottom: 'auto' }}>
               <div style={{ width: '47%', textAlign: 'left' }}>
-                <div style={{ fontSize: '15.5px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '10px' }}>SUBMITTED TO:</div>
-                <div style={{ fontSize: '17.5px', fontWeight: 700, color: '#000000', marginBottom: '4px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
-                {data.designation && <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px' }}>{data.designation}</div>}
-                {data.department && <div style={{ fontSize: '15px', color: '#1e293b', marginBottom: '3px' }}>{data.department}</div>}
-                {data.college && <div style={{ fontSize: '14.5px', color: '#334155' }}>{collegeLine}</div>}
+                <div style={{ fontSize: fs(15.5), fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '10px' }}>SUBMITTED TO:</div>
+                <div style={{ fontSize: fs(17.5), fontWeight: 700, color: '#000000', marginBottom: '4px' }}>{data.teacher || 'Dr. Tutan Nama'}</div>
+                {data.designation && <div style={{ fontSize: fs(15), color: '#1e293b', marginBottom: '3px' }}>{data.designation}</div>}
+                {data.department && <div style={{ fontSize: fs(15), color: '#1e293b', marginBottom: '3px' }}>{data.department}</div>}
+                {data.college && <div style={{ fontSize: fs(14.5), color: '#334155' }}>{collegeLine}</div>}
               </div>
 
               <div style={{ width: '49%', textAlign: 'left' }}>
-                <div style={{ fontSize: '15.5px', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '10px' }}>SUBMITTED BY:</div>
-                <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#000000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
-                <div style={{ display: 'flex', flexDirection: 'column', fontSize: '14.5px', lineHeight: 1.6, color: '#1e293b' }}>
+                <div style={{ fontSize: fs(15.5), fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#000000', textDecoration: 'underline', textUnderlineOffset: '4px', marginBottom: '10px' }}>SUBMITTED BY:</div>
+                <div style={{ fontSize: fs(18), fontWeight: 800, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#000000', marginBottom: '6px' }}>{data.student || 'Joy Debnath'}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', fontSize: fs(14.5), lineHeight: 1.55, color: '#1e293b' }}>
                   {data.studentId && <div style={{ marginBottom: '2px' }}><strong>Student ID: </strong><span>{data.studentId}</span></div>}
                   {data.roll && <div style={{ marginBottom: '2px' }}><strong>TU Roll No.: </strong><span>{data.roll}</span></div>}
                   {data.reg && <div style={{ marginBottom: '2px' }}><strong>TU Registration No.: </strong><span>{data.reg}</span></div>}

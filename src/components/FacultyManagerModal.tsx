@@ -268,12 +268,11 @@ export const FacultyManagerModal: React.FC<FacultyManagerModalProps> = ({
               <div className="bg-purple-50/80 border border-purple-200 rounded-xl p-3.5 text-xs text-purple-950 space-y-1.5">
                 <div className="flex items-center gap-1.5 font-bold text-purple-900 text-sm">
                   <Sparkles className="w-4 h-4 text-purple-600" />
-                  ভবিষ্যতে শিক্ষক পরিবর্তন হলে স্বয়ংক্রিয় আপডেট (Auto-Upgrade)
+                  Auto-Sync & Upgrade Faculty Directory
                 </div>
                 <p className="text-slate-600 leading-relaxed">
-                  যদি ভবিষ্যতে কোনো শিক্ষক যোগ দেন, বাদ পড়েন বা পদবী পরিবর্তিত হয়, তবে আপনি একটি{' '}
-                  <strong className="text-purple-900">Google Sheet</strong> তৈরি করে সেই লিংক এখানে দিয়ে দিতে পারেন।
-                  অ্যাপটি প্রতিবার ওপেন হওয়ার সময় বা রিলোড দিলে স্বয়ংক্রিয়ভাবে সর্বশেষ শিক্ষক তালিকা আপডেট করে নেবে!
+                  If faculty details change or new teachers join in the future, you can connect a{' '}
+                  <strong className="text-purple-900">Google Sheet</strong> CSV link here. The app will automatically sync and update the latest faculty roster whenever opened or reloaded.
                 </p>
               </div>
 
@@ -353,10 +352,10 @@ export const FacultyManagerModal: React.FC<FacultyManagerModalProps> = ({
               <div className="p-3.5 bg-amber-50/70 border border-amber-200 rounded-xl text-xs space-y-2 text-amber-950">
                 <span className="font-bold flex items-center gap-1.5 text-amber-900">
                   <HelpCircle className="w-3.5 h-3.5 text-amber-700" />
-                  Google Sheet কিভাবে তৈরি করবেন? (Columns Format)
+                  How to create a Google Sheet for sync? (Column Format)
                 </span>
                 <p className="text-[11.5px] text-amber-800">
-                  Google Sheet-এর ১ম লাইনে এই চারটি হেডার লিখবেন:
+                  Include these four headers in row 1 of your Google Sheet:
                 </p>
                 <div className="bg-white/80 p-2.5 rounded-lg border border-amber-300 font-mono text-[11px] text-slate-800 space-y-1">
                   <div className="text-purple-700 font-bold">Department, Name, Designation, Qualification</div>
@@ -365,7 +364,7 @@ export const FacultyManagerModal: React.FC<FacultyManagerModalProps> = ({
                   <div className="text-slate-600">CSE, Dr. Abhijit Biswas, Assistant Professor & HOD, PhD.</div>
                 </div>
                 <p className="text-[11px] text-amber-700">
-                  এরপর Google Sheets এ <strong>File → Share → Publish to web → CSV</strong> নির্বাচন করে প্রাপ্ত লিংকটি উপরে বসিয়ে দিন!
+                  Then select <strong>File → Share → Publish to web → CSV</strong> in Google Sheets and paste the link above!
                 </p>
               </div>
             </div>
