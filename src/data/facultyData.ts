@@ -521,6 +521,64 @@ export const DEPARTMENT_FACULTY_LIST: DepartmentFacultyGroup[] = [
       },
     ],
   },
+  {
+    departmentName: 'Department of Electronics & Computer Science Engineering',
+    shortCode: 'ECSE',
+    aliases: [
+      'ecse',
+      'electronics & computer science',
+      'electronics and computer science',
+      'electronics & computer science engineering',
+      'electronics and computer science engineering',
+      'dept of ecse',
+      'department of ecse',
+      'department of electronics and computer science engineering',
+      'department of electronics & computer science engineering',
+    ],
+    faculties: [
+      {
+        name: 'Faculty Member',
+        designation: 'Assistant Professor & Head of Department',
+        qualification: 'B.Tech, M.Tech, Ph.D.',
+      },
+      {
+        name: 'Faculty Member',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+    ],
+  },
+  {
+    departmentName: 'Department of Artificial Intelligence & Data Science',
+    shortCode: 'AIDS',
+    aliases: [
+      'aids',
+      'ai & ds',
+      'ai and ds',
+      'artificial intelligence',
+      'data science',
+      'artificial intelligence and data science',
+      'artificial intelligence & data science',
+      'dept of aids',
+      'dept of ai & ds',
+      'department of aids',
+      'department of ai & ds',
+      'department of artificial intelligence & data science',
+      'department of artificial intelligence and data science',
+    ],
+    faculties: [
+      {
+        name: 'Faculty Member',
+        designation: 'Assistant Professor & Head of Department',
+        qualification: 'B.Tech, M.Tech, Ph.D.',
+      },
+      {
+        name: 'Faculty Member',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+    ],
+  },
 ];
 
 /**

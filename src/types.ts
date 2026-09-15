@@ -9,6 +9,14 @@ export type SubmissionType =
 
 export type BorderStyle = 'none' | 'classic-double' | 'simple-single' | 'ornate-corners' | 'minimal' | 'academic-crest';
 
+export type LayoutMode = 
+  | 'stacked' 
+  | 'side-by-side' 
+  | 'modern-cards' 
+  | 'left-aligned' 
+  | 'right-aligned' 
+  | 'compact-grid';
+
 export interface CoverPageFormData {
   college: string;
   course: string;
@@ -19,6 +27,7 @@ export interface CoverPageFormData {
   department: string;
   student: string;
   studentId: string;
+  studentDepartment?: string;
   roll: string;
   reg: string;
   semester: string;
@@ -30,7 +39,7 @@ export interface CoverPageFormData {
   showWatermark: boolean;
   fontTheme: 'times' | 'garamond' | 'cinzel';
   accentColor: string;
-  layoutMode?: 'side-by-side' | 'stacked';
+  layoutMode?: LayoutMode;
 }
 
 export interface ValidationErrors {
@@ -43,6 +52,7 @@ export interface ValidationErrors {
   department?: string;
   student?: string;
   studentId?: string;
+  studentDepartment?: string;
   roll?: string;
   reg?: string;
   semester?: string;

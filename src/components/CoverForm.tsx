@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { CoverPageFormData, SubmissionType, BorderStyle, ValidationErrors } from '../types';
+import { CoverPageFormData, SubmissionType, BorderStyle, ValidationErrors, LayoutMode } from '../types';
 import {
   School,
   BookOpen,
@@ -26,7 +26,72 @@ import {
   RefreshCw,
   Plus,
   Minus,
+  X,
+  Layers,
+  Columns,
+  Box,
+  AlignLeft,
+  AlignRight,
+  Grid,
 } from 'lucide-react';
+
+const LAYOUT_OPTIONS: Array<{
+  id: LayoutMode;
+  label: string;
+  shortDesc: string;
+  desc: string;
+  tag: string;
+  icon: React.ElementType;
+}> = [
+  {
+    id: 'side-by-side',
+    label: 'Side-by-Side (Split)',
+    shortDesc: '2 Column Left/Right',
+    desc: 'Submitted To (Left) and Submitted By (Right) in two balanced columns',
+    tag: 'Classic 2-Column',
+    icon: Columns,
+  },
+  {
+    id: 'stacked',
+    label: 'Centered Stack',
+    shortDesc: 'Vertical Centered',
+    desc: 'Centered column layout with teacher stacked neatly above student details',
+    tag: 'Centered Formal',
+    icon: Layers,
+  },
+  {
+    id: 'modern-cards',
+    label: 'Boxed Cards',
+    shortDesc: 'Framed Background Cards',
+    desc: 'Teacher and student details enclosed in clean rounded framed cards',
+    tag: 'Modern Framed',
+    icon: Box,
+  },
+  {
+    id: 'left-aligned',
+    label: 'Left Minimalist',
+    shortDesc: 'Left-aligned with Accent Line',
+    desc: 'Entire info left-aligned with a dark vertical accent bar on the edge',
+    tag: 'Linear Slate',
+    icon: AlignLeft,
+  },
+  {
+    id: 'right-aligned',
+    label: 'Split Edge (Asymmetric)',
+    shortDesc: 'Teacher Left / Student Right',
+    desc: 'Teacher info on the left, student details flush to the right edge',
+    tag: 'Editorial Asymmetric',
+    icon: AlignRight,
+  },
+  {
+    id: 'compact-grid',
+    label: 'Structured Grid',
+    shortDesc: 'Tabular Key-Value Matrix',
+    desc: 'Structured key-value table grid with horizontal divider lines',
+    tag: 'Academic Matrix',
+    icon: Grid,
+  },
+];
 import { DEFAULT_ACADEMIC_LOGO_SVG, TECH_INSTITUTE_LOGO_SVG, MEDICAL_INSTITUTE_LOGO_SVG, TCEA_LOGO_SVG } from '../utils/academicPresets';
 import { DepartmentFacultyGroup } from '../data/facultyData';
 import {
@@ -38,6 +103,14 @@ import {
   checkAndTriggerMonthlyTceaScan,
   getLastTceaWebsiteScanTime,
 } from '../utils/tceaWebsiteScanner';
+import {
+  lookupTripuraCourseCode,
+  lookupTripuraCourseVariants,
+  searchTripuraCourses,
+  TRIPURA_UNIVERSITY_COURSES,
+  CourseMapping,
+} from '../data/tripuraCourseDatabase';
+import { SyllabusPdfImporter } from './SyllabusPdfImporter';
 
 interface CoverFormProps {
   formData: CoverPageFormData;
@@ -69,12 +142,23 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   isExporting,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const submissionTypeDropdownRef = useRef<HTMLDivElement>(null);
   const collegeDropdownRef = useRef<HTMLDivElement>(null);
+  const courseDropdownRef = useRef<HTMLDivElement>(null);
   const departmentDropdownRef = useRef<HTMLDivElement>(null);
   const facultyDropdownRef = useRef<HTMLDivElement>(null);
+  const semesterDropdownRef = useRef<HTMLDivElement>(null);
+  const sessionDropdownRef = useRef<HTMLDivElement>(null);
+  const studentDepartmentDropdownRef = useRef<HTMLDivElement>(null);
+  const [isSubmissionTypeDropdownOpen, setIsSubmissionTypeDropdownOpen] = useState(false);
   const [isCollegeDropdownOpen, setIsCollegeDropdownOpen] = useState(false);
+  const [isCourseSuggestionsOpen, setIsCourseSuggestionsOpen] = useState(false);
   const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] = useState(false);
   const [isFacultyDropdownOpen, setIsFacultyDropdownOpen] = useState(false);
+  const [isSemesterDropdownOpen, setIsSemesterDropdownOpen] = useState(false);
+  const [isSessionDropdownOpen, setIsSessionDropdownOpen] = useState(false);
+  const [isStudentDepartmentDropdownOpen, setIsStudentDepartmentDropdownOpen] = useState(false);
+  const [isSyllabusImporterOpen, setIsSyllabusImporterOpen] = useState(false);
 
   // Dynamic faculty directory state
   const [facultyGroups, setFacultyGroups] = useState<DepartmentFacultyGroup[]>(() => getSavedFacultyGroups());
@@ -113,10 +197,22 @@ export const CoverForm: React.FC<CoverFormProps> = ({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
+        submissionTypeDropdownRef.current &&
+        !submissionTypeDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSubmissionTypeDropdownOpen(false);
+      }
+      if (
         collegeDropdownRef.current &&
         !collegeDropdownRef.current.contains(event.target as Node)
       ) {
         setIsCollegeDropdownOpen(false);
+      }
+      if (
+        courseDropdownRef.current &&
+        !courseDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCourseSuggestionsOpen(false);
       }
       if (
         departmentDropdownRef.current &&
@@ -129,6 +225,24 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         !facultyDropdownRef.current.contains(event.target as Node)
       ) {
         setIsFacultyDropdownOpen(false);
+      }
+      if (
+        semesterDropdownRef.current &&
+        !semesterDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSemesterDropdownOpen(false);
+      }
+      if (
+        sessionDropdownRef.current &&
+        !sessionDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSessionDropdownOpen(false);
+      }
+      if (
+        studentDepartmentDropdownRef.current &&
+        !studentDepartmentDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsStudentDepartmentDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -156,12 +270,20 @@ export const CoverForm: React.FC<CoverFormProps> = ({
 
   const baseSubmissionTypes: { type: string; label: string }[] = [
     { type: 'Assignment', label: 'Assignment' },
-    { type: 'Lab Copy', label: 'Lab Copy' },
-    { type: 'Practical Notebook', label: 'Practical Notebook' },
+    { type: 'Mini Project Report', label: 'Mini Project' },
+    { type: 'Major Project Report', label: 'Major Project' },
     { type: 'Project Report', label: 'Project Report' },
+    { type: 'Industrial Training Report', label: 'Industrial Training' },
+    { type: 'Internship Report', label: 'Internship Report' },
+    { type: 'Seminar Report', label: 'Seminar Report' },
+    { type: 'Workshop Report', label: 'Workshop Report' },
+    { type: 'Practical Notebook', label: 'Practical Notebook' },
+    { type: 'Lab Copy', label: 'Lab Copy' },
     { type: 'Term Paper', label: 'Term Paper' },
     { type: 'Thesis / Dissertation', label: 'Thesis' },
     { type: 'Case Study', label: 'Case Study' },
+    { type: 'Comprehensive Viva Voce', label: 'Viva Voce' },
+    { type: 'Synopsis / Research Proposal', label: 'Synopsis' },
   ];
 
   return (
@@ -185,7 +307,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       </div>
 
       {/* SECTION 1: Submission Type & College Info */}
-      <div className="liquid-card p-4 sm:p-5 space-y-4">
+      <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-50">
         <div className="flex items-center gap-2.5">
           <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
             1
@@ -196,14 +318,14 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         </div>
 
         <div className="space-y-3.5 pt-1">
-          {/* Submission Type Buttons (Compact Capsules + Minimal Stepper) */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between mb-1">
+          {/* Submission Type Field (Input Box + Right Dropdown Arrow + Stepper) */}
+          <div ref={submissionTypeDropdownRef} className="space-y-1.5">
+            <div className="flex items-center justify-between">
               <label className="block text-xs font-bold text-slate-700">
                 Submission Type <span className="text-rose-500">*</span>
               </label>
 
-              {/* Pure Minimal [- 1 +] Stepper as shown in screenshot */}
+              {/* Pure Minimal [- 1 +] Stepper */}
               {(() => {
                 const match = (formData.submissionType || '').match(/\s+(\d+)$/);
                 const currentNum = match ? parseInt(match[1], 10) : 0;
@@ -255,32 +377,56 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               })()}
             </div>
 
-            {/* Core Type Chips */}
-            <div className="flex flex-wrap gap-1.5">
-              {baseSubmissionTypes.map((item) => {
-                // Check if current submissionType starts with this base type
-                const isSelected = formData.submissionType === item.type || formData.submissionType.startsWith(`${item.type} `);
-                return (
-                  <button
-                    key={item.type}
-                    type="button"
-                    onClick={() => {
-                      // Extract any existing number at end
-                      const match = formData.submissionType?.match(/\d+$/);
-                      const currentNum = match ? match[0] : '';
-                      const newType = currentNum ? `${item.type} ${currentNum}` : item.type;
-                      onChange({ submissionType: newType });
-                    }}
-                    className={`px-2.5 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer select-none ${
-                      isSelected
-                        ? 'bg-purple-700 text-white border-purple-700 shadow-sm scale-[1.02]'
-                        : 'bg-white/80 hover:bg-purple-50 text-slate-700 border-slate-200/90 hover:border-purple-300'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
+            {/* Input Box with Dropdown Arrow Icon on the right */}
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.submissionType}
+                onChange={(e) => onChange({ submissionType: e.target.value })}
+                onFocus={() => setIsSubmissionTypeDropdownOpen(true)}
+                placeholder="e.g. Assignment 1, Lab Copy, Project Report..."
+                className="w-full pl-4 pr-10 py-2.5 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
+              />
+
+              <button
+                type="button"
+                onClick={() => setIsSubmissionTypeDropdownOpen(!isSubmissionTypeDropdownOpen)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-purple-600 hover:text-purple-800 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                title="View options list"
+              >
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isSubmissionTypeDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Options List */}
+              {isSubmissionTypeDropdownOpen && (
+                <div className="absolute z-30 left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden max-h-60 overflow-y-auto divide-y divide-slate-100 animate-in fade-in slide-in-from-top-1">
+                  {baseSubmissionTypes.map((item) => {
+                    const match = formData.submissionType?.match(/\d+$/);
+                    const currentNum = match ? match[0] : '';
+                    const fullValue = currentNum ? `${item.type} ${currentNum}` : item.type;
+                    const isSelected = formData.submissionType === item.type || formData.submissionType?.startsWith(`${item.type} `);
+
+                    return (
+                      <button
+                        key={item.type}
+                        type="button"
+                        onClick={() => {
+                          onChange({ submissionType: fullValue });
+                          setIsSubmissionTypeDropdownOpen(false);
+                        }}
+                        className={`w-full px-4 py-2.5 text-left text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer ${
+                          isSelected
+                            ? 'bg-purple-50 text-purple-900 font-bold'
+                            : 'hover:bg-slate-50 text-slate-700'
+                        }`}
+                      >
+                        <span>{item.type}</span>
+                        {isSelected && <Check className="w-3.5 h-3.5 text-purple-600" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 
@@ -350,51 +496,151 @@ export const CoverForm: React.FC<CoverFormProps> = ({
             {errors.college && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.college}</p>}
           </div>
 
-          {/* Course Title and Course Code */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Course Title <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <BookOpen className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
-                <input
-                  type="text"
-                  value={formData.course}
-                  onChange={(e) => onChange({ course: e.target.value })}
-                  placeholder=""
-                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
-                    errors.course ? 'border-rose-400 ring-2 ring-rose-300' : ''
-                  }`}
-                />
-              </div>
-              {errors.course && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.course}</p>}
+          {/* Course Title and Course Code (Auto-Fill Integration) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <BookOpen className="w-3.5 h-3.5 text-purple-600" />
+                Course Details & University Syllabus Code
+              </span>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Course Code <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <Code2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
-                <input
-                  type="text"
-                  value={formData.courseCode}
-                  onChange={(e) => onChange({ courseCode: e.target.value })}
-                  placeholder=""
-                  className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
-                    errors.courseCode ? 'border-rose-400 ring-2 ring-rose-300' : ''
-                  }`}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {/* Course Title Field */}
+              <div ref={courseDropdownRef} className="relative">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Course Title <span className="text-rose-500">*</span>
+                  </label>
+                  <span className="text-[10px] text-purple-700 font-bold bg-purple-50 px-1.5 py-0.5 rounded border border-purple-200/60">
+                    Tripura Univ Directory
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <BookOpen className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={formData.course}
+                    onChange={(e) => {
+                      const newCourse = e.target.value;
+                      const matchedCourse = lookupTripuraCourseCode(newCourse);
+                      if (matchedCourse && newCourse.trim().toLowerCase() === matchedCourse.title.toLowerCase()) {
+                        onChange({ course: newCourse, courseCode: matchedCourse.code });
+                      } else {
+                        onChange({ course: newCourse });
+                      }
+                      setIsCourseSuggestionsOpen(true);
+                    }}
+                    onFocus={() => setIsCourseSuggestionsOpen(true)}
+                    placeholder=""
+                    className={`w-full pl-10 pr-9 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
+                      errors.course ? 'border-rose-400 ring-2 ring-rose-300' : ''
+                    }`}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setIsCourseSuggestionsOpen(!isCourseSuggestionsOpen)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1 text-purple-600 hover:bg-purple-50 rounded cursor-pointer"
+                    title="Show Tripura University Course Directory"
+                  >
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isCourseSuggestionsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
+
+                {/* Tripura University Live Suggestions Dropdown */}
+                {isCourseSuggestionsOpen && (
+                  <div className="absolute left-0 right-0 mt-1 bg-white border border-purple-200 rounded-2xl shadow-xl z-50 max-h-60 overflow-y-auto divide-y divide-slate-100 animate-in fade-in duration-100">
+                    <div className="px-3 py-1.5 bg-slate-50/90 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                      <span>Tripura University & TCEA Courses</span>
+                      <span className="text-purple-600">Auto-Fills Paper Code</span>
+                    </div>
+                    {(() => {
+                      const results = searchTripuraCourses(formData.course, formData.department, formData.semester);
+                      if (results.length === 0) {
+                        return (
+                          <div className="px-4 py-3 text-xs text-slate-500 text-center font-medium">
+                            No exact syllabus match for &quot;{formData.course}&quot;. You can keep your custom title.
+                          </div>
+                        );
+                      }
+                      return results.map((courseItem, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            onChange({
+                              course: courseItem.title,
+                              courseCode: courseItem.code,
+                            });
+                            setIsCourseSuggestionsOpen(false);
+                          }}
+                          className="w-full px-3.5 py-2 text-left hover:bg-purple-50/90 flex items-center justify-between transition-colors cursor-pointer group"
+                        >
+                          <div className="min-w-0 pr-2">
+                            <span className="block text-xs font-bold text-slate-800 group-hover:text-purple-900 truncate">
+                              {courseItem.title}
+                            </span>
+                            <span className="text-[10px] text-slate-400 font-medium">
+                              {courseItem.semester ? `Sem ${courseItem.semester} • ` : ''}Dept: {courseItem.department || 'General'} • {courseItem.scheme || courseItem.degree || 'B.Tech'}
+                            </span>
+                          </div>
+                          <span className="px-2 py-0.5 rounded-lg bg-purple-100 text-purple-900 text-[11px] font-extrabold shrink-0 border border-purple-200/80">
+                            {courseItem.code}
+                          </span>
+                        </button>
+                      ));
+                    })()}
+                  </div>
+                )}
+
+
+
+                {errors.course && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.course}</p>}
               </div>
-              {errors.courseCode && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.courseCode}</p>}
+
+              {/* Course Code Field */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-xs font-bold text-slate-700">
+                    Paper / Course Code <span className="text-rose-500">*</span>
+                  </label>
+                  {(() => {
+                    const match = lookupTripuraCourseCode(formData.course);
+                    if (match && match.code === formData.courseCode) {
+                      return (
+                        <span className="text-[10px] text-teal-700 font-bold bg-teal-50 px-1.5 py-0.5 rounded border border-teal-200 flex items-center gap-1">
+                          <Sparkles className="w-2.5 h-2.5 text-teal-600 animate-pulse" /> Auto-filled
+                        </span>
+                      );
+                    }
+                    return null;
+                  })()}
+                </div>
+
+                <div className="relative">
+                  <Code2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={formData.courseCode}
+                    onChange={(e) => onChange({ courseCode: e.target.value })}
+                    placeholder=""
+                    className={`w-full pl-10 pr-3 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all ${
+                      errors.courseCode ? 'border-rose-400 ring-2 ring-rose-300' : ''
+                    }`}
+                  />
+                </div>
+
+                {errors.courseCode && <p className="text-xs text-rose-500 mt-1 font-semibold">{errors.courseCode}</p>}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* SECTION 2: Logo & Academic Emblem */}
-      <div className="liquid-card p-4 sm:p-5 space-y-4">
+      <div className="liquid-card p-4 sm:p-5 space-y-4 relative z-40">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
@@ -710,7 +956,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
 
                         return (
                           <button
-                            key={fac.name}
+                            key={`${fac.name}-${fac.designation}-${idx}`}
                             type="button"
                             onClick={() => {
                               onChange({
@@ -854,30 +1100,300 @@ export const CoverForm: React.FC<CoverFormProps> = ({
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Semester
-            </label>
-            <input
-              type="text"
-              value={formData.semester}
-              onChange={(e) => onChange({ semester: e.target.value })}
-              placeholder=""
-              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
-            />
+          {/* Student Department Field with Dropdown */}
+          <div ref={studentDepartmentDropdownRef} className="sm:col-span-2 relative">
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-slate-700">
+                Student Department / Discipline
+              </label>
+              {formData.department && (
+                <button
+                  type="button"
+                  onClick={() => onChange({ studentDepartment: formData.department })}
+                  className="text-[11px] font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded-md border border-purple-200 transition-all cursor-pointer"
+                  title="Copy department from Teacher Details above"
+                >
+                  Same as Teacher&apos;s Dept
+                </button>
+              )}
+            </div>
+
+            <div className="relative">
+              <Building2 className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={formData.studentDepartment ?? ''}
+                onChange={(e) => onChange({ studentDepartment: e.target.value })}
+                onFocus={() => setIsStudentDepartmentDropdownOpen(true)}
+                placeholder={formData.department ? `e.g. ${formData.department}` : "Select or type student department..."}
+                className="w-full pl-10 pr-10 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all font-semibold"
+              />
+              <button
+                type="button"
+                onClick={() => setIsStudentDepartmentDropdownOpen(!isStudentDepartmentDropdownOpen)}
+                className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                title="Select Student Department"
+              >
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isStudentDepartmentDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Student Department Dropdown Menu */}
+            {isStudentDepartmentDropdownOpen && (
+              <div className="absolute left-0 w-full sm:w-[520px] max-w-[92vw] mt-1.5 bg-white rounded-xl shadow-2xl border-2 border-purple-400/80 py-1 z-[120] max-h-72 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                <div className="sticky top-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-purple-50 px-3.5 py-2.5 text-xs font-extrabold text-purple-950 flex items-center justify-between border-b border-purple-200 z-10 shadow-2xs">
+                  <span className="flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-purple-700 shrink-0" />
+                    Student Departments
+                  </span>
+                  <span className="text-[10.5px] text-purple-800 font-bold bg-white/90 px-2.5 py-0.5 rounded-full border border-purple-200 shadow-2xs">
+                    {facultyGroups.length} Departments Available
+                  </span>
+                </div>
+
+                {facultyGroups.map((dept) => {
+                  const currentVal = formData.studentDepartment ?? '';
+                  const isSelected = currentVal.trim().toLowerCase() === dept.departmentName.toLowerCase();
+
+                  return (
+                    <button
+                      key={`student-dept-${dept.shortCode}`}
+                      type="button"
+                      onClick={() => {
+                        onChange({ studentDepartment: dept.departmentName });
+                        setIsStudentDepartmentDropdownOpen(false);
+                      }}
+                      className={`w-full px-3.5 py-2.5 text-left text-xs transition-all flex items-center justify-between cursor-pointer hover:bg-purple-50/90 group ${
+                        isSelected ? 'bg-purple-100/90 font-bold text-purple-950' : 'text-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span
+                          className={`w-9 h-6 rounded-md text-[11px] font-extrabold flex items-center justify-center shrink-0 transition-colors ${
+                            isSelected
+                              ? 'bg-purple-600 text-white shadow-xs'
+                              : 'bg-purple-100 text-purple-800 group-hover:bg-purple-600 group-hover:text-white'
+                          }`}
+                        >
+                          {dept.shortCode}
+                        </span>
+                        <div className="truncate">
+                          <span className="font-bold text-slate-900 group-hover:text-purple-900 block truncate">
+                            {dept.departmentName}
+                          </span>
+                        </div>
+                      </div>
+                      {isSelected ? (
+                        <span className="flex items-center gap-1 text-[11px] font-bold text-purple-700 shrink-0 ml-2">
+                          <Check className="w-4 h-4 text-purple-700" />
+                          Selected
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-purple-600 font-bold opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2 bg-white px-2 py-0.5 rounded-md border border-purple-200">
+                          Select
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
-              Session
-            </label>
-            <input
-              type="text"
-              value={formData.session}
-              onChange={(e) => onChange({ session: e.target.value })}
-              placeholder=""
-              className="w-full px-4 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all"
-            />
+          {/* Semester Field with Dropdown + Quick Chips for B.Tech 1-8 */}
+          <div ref={semesterDropdownRef} className="relative">
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-slate-700">
+                Program Level & Semester
+              </label>
+              <span className="text-[11px] text-purple-700 font-semibold">
+                B.Tech 1st to 8th Sem
+              </span>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.semester}
+                onChange={(e) => onChange({ semester: e.target.value })}
+                onFocus={() => setIsSemesterDropdownOpen(true)}
+                placeholder="Select or type semester (e.g. B.Tech. 6th Sem)..."
+                className="w-full pl-4 pr-10 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all font-semibold"
+              />
+              <button
+                type="button"
+                onClick={() => setIsSemesterDropdownOpen(!isSemesterDropdownOpen)}
+                className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                title="Select B.Tech 1st to 8th Semester"
+              >
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isSemesterDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Semester Dropdown Menu */}
+            {isSemesterDropdownOpen && (
+              <div className="absolute left-0 w-full mt-1.5 bg-white rounded-xl shadow-2xl border-2 border-purple-400/80 py-1 z-[110] max-h-64 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                <div className="sticky top-0 bg-gradient-to-r from-purple-100 via-indigo-50 to-purple-50 px-3.5 py-2 text-xs font-extrabold text-purple-950 flex items-center justify-between border-b border-purple-200 z-10 shadow-2xs">
+                  <span>B.Tech & Academic Semesters</span>
+                  <span className="text-[10.5px] text-purple-800 bg-white px-2 py-0.5 rounded-full border border-purple-200 font-bold">
+                    Click to select
+                  </span>
+                </div>
+                
+                {/* B.Tech 1-8 Semesters Group */}
+                <div className="p-1">
+                  <div className="px-2 py-1 text-[10px] font-extrabold text-purple-600 uppercase tracking-wider">
+                    B.Tech Semesters (1st - 8th)
+                  </div>
+                  {[
+                    'B.Tech. 1st Sem',
+                    'B.Tech. 2nd Sem',
+                    'B.Tech. 3rd Sem',
+                    'B.Tech. 4th Sem',
+                    'B.Tech. 5th Sem',
+                    'B.Tech. 6th Sem',
+                    'B.Tech. 7th Sem',
+                    'B.Tech. 8th Sem',
+                  ].map((sem) => {
+                    const isSelected = (formData.semester || '').trim().toLowerCase() === sem.toLowerCase();
+                    return (
+                      <button
+                        key={sem}
+                        type="button"
+                        onClick={() => {
+                          onChange({ semester: sem });
+                          setIsSemesterDropdownOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 text-left text-xs transition-all rounded-lg flex items-center justify-between cursor-pointer hover:bg-purple-50/90 ${
+                          isSelected ? 'bg-purple-100 font-bold text-purple-950' : 'text-slate-800'
+                        }`}
+                      >
+                        <span>{sem}</span>
+                        {isSelected && <Check className="w-4 h-4 text-purple-700" />}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Additional Degrees Group */}
+                <div className="p-1">
+                  <div className="px-2 py-1 text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">
+                    Other Programs (M.Tech & Diploma)
+                  </div>
+                  {[
+                    'M.Tech. 1st Sem',
+                    'M.Tech. 2nd Sem',
+                    'M.Tech. 3rd Sem',
+                    'M.Tech. 4th Sem',
+                    'Diploma 1st Sem',
+                    'Diploma 2nd Sem',
+                    'Diploma 3rd Sem',
+                    'Diploma 4th Sem',
+                    'Diploma 5th Sem',
+                    'Diploma 6th Sem',
+                  ].map((sem) => {
+                    const isSelected = (formData.semester || '').trim().toLowerCase() === sem.toLowerCase();
+                    return (
+                      <button
+                        key={sem}
+                        type="button"
+                        onClick={() => {
+                          onChange({ semester: sem });
+                          setIsSemesterDropdownOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 text-left text-xs transition-all rounded-lg flex items-center justify-between cursor-pointer hover:bg-purple-50/90 ${
+                          isSelected ? 'bg-purple-100 font-bold text-purple-950' : 'text-slate-800'
+                        }`}
+                      >
+                        <span>{sem}</span>
+                        {isSelected && <Check className="w-4 h-4 text-purple-700" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Session Field with Interactive Year-by-Year Dropdown (2020-21 to 2050-51) */}
+          <div ref={sessionDropdownRef} className="relative">
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold text-slate-700">
+                Session
+              </label>
+              <span className="text-[11px] text-indigo-700 font-semibold">
+                2020-21 to 2050-51
+              </span>
+            </div>
+
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.session}
+                onChange={(e) => onChange({ session: e.target.value })}
+                onFocus={() => setIsSessionDropdownOpen(true)}
+                placeholder="Select or type session (e.g. 2025-26)..."
+                className="w-full pl-4 pr-10 py-2 liquid-input text-slate-800 text-sm focus:outline-none transition-all font-semibold"
+              />
+              <button
+                type="button"
+                onClick={() => setIsSessionDropdownOpen(!isSessionDropdownOpen)}
+                className="absolute right-1.5 top-1.5 p-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer shadow-xs"
+                title="Select Academic Session (2020-21 to 2050-51)"
+              >
+                <ChevronDown
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    isSessionDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Session Dropdown Menu */}
+            {isSessionDropdownOpen && (
+              <div className="absolute left-0 w-full mt-1.5 bg-white rounded-xl shadow-2xl border-2 border-indigo-400/80 py-1 z-[110] max-h-64 overflow-y-auto divide-y divide-slate-100 animate-in fade-in zoom-in-95 duration-150">
+                <div className="sticky top-0 bg-gradient-to-r from-indigo-100 via-purple-50 to-indigo-50 px-3.5 py-2 text-xs font-extrabold text-indigo-950 flex items-center justify-between border-b border-indigo-200 z-10 shadow-2xs">
+                  <span>Academic Sessions</span>
+                  <span className="text-[10.5px] text-indigo-800 bg-white px-2 py-0.5 rounded-full border border-indigo-200 font-bold">
+                    2020-21 – 2050-51
+                  </span>
+                </div>
+
+                <div className="p-1">
+                  {Array.from({ length: 31 }, (_, i) => {
+                    const startYear = 2020 + i;
+                    const endYearShort = String(startYear + 1).slice(-2);
+                    const sessionVal = `${startYear}-${endYearShort}`;
+                    const isSelected = (formData.session || '').trim() === sessionVal;
+
+                    return (
+                      <button
+                        key={sessionVal}
+                        type="button"
+                        onClick={() => {
+                          onChange({ session: sessionVal });
+                          setIsSessionDropdownOpen(false);
+                        }}
+                        className={`w-full px-3 py-1.5 text-left text-xs transition-all rounded-lg flex items-center justify-between cursor-pointer hover:bg-indigo-50/90 ${
+                          isSelected ? 'bg-indigo-100 font-bold text-indigo-950' : 'text-slate-800'
+                        }`}
+                      >
+                        <span className="font-semibold">{sessionVal}</span>
+                        {isSelected && <Check className="w-4 h-4 text-indigo-700" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
@@ -897,58 +1413,44 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         </div>
       </div>
 
-      {/* SECTION 5: Information Layout (Side-by-Side vs Stacked) */}
-      <div className="liquid-card p-4 sm:p-5 space-y-3.5 relative z-0">
-        <div className="flex items-center justify-between">
+      {/* SECTION 5: Information Layout & Text Style */}
+      <div className="liquid-card p-4 sm:p-5 space-y-3 relative z-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
               5
             </span>
             <h3 className="text-sm sm:text-base font-bold text-slate-800">
-              Information Layout
+              Information Layout & Text Style
             </h3>
           </div>
-          <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-indigo-100 text-indigo-700">
-            {formData.layoutMode === 'stacked' ? 'Centered Stack' : 'Side-by-Side'}
+          <span className="text-xs px-2.5 py-1 rounded-full font-extrabold bg-indigo-100 text-indigo-900 border border-indigo-200/80 self-start sm:self-auto">
+            {LAYOUT_OPTIONS.find((l) => l.id === (formData.layoutMode || 'side-by-side'))?.label || 'Side-by-Side'}
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <button
-            type="button"
-            onClick={() => onChange({ layoutMode: 'stacked' })}
-            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-              formData.layoutMode === 'stacked'
-                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
-                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
-            }`}
-          >
-            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
-              <span>Vertical Stack (Centered)</span>
-              {formData.layoutMode === 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
-            </span>
-            <span className="text-[11px] text-slate-500 mt-1">
-              Classic centered column layout with balanced vertical spacing
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onChange({ layoutMode: 'side-by-side' })}
-            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
-              formData.layoutMode !== 'stacked'
-                ? 'bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 border-indigo-500/60 font-bold text-indigo-900 shadow-sm ring-2 ring-indigo-500/20'
-                : 'bg-white/60 hover:bg-white/90 text-slate-600 border-white/80 shadow-sm'
-            }`}
-          >
-            <span className="text-xs sm:text-sm font-extrabold flex items-center justify-between">
-              <span>Side-by-Side</span>
-              {formData.layoutMode !== 'stacked' && <Check className="w-4 h-4 text-indigo-600 shrink-0" />}
-            </span>
-            <span className="text-[11px] text-slate-500 mt-1">
-              Submitted To (Left) and Submitted By (Right) side-by-side columns
-            </span>
-          </button>
+        {/* Dropdown Selector */}
+        <div className="space-y-1.5">
+          <label className="block text-xs font-bold text-slate-700">
+            Select Layout Style
+          </label>
+          <div className="relative">
+            <select
+              value={formData.layoutMode || 'side-by-side'}
+              onChange={(e) => onChange({ layoutMode: e.target.value as LayoutMode })}
+              className="w-full pl-3.5 pr-10 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-800 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm appearance-none cursor-pointer"
+            >
+              {LAYOUT_OPTIONS.map((opt) => (
+                <option key={opt.id} value={opt.id}>
+                  {opt.label} — {opt.shortDesc}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="w-4 h-4 absolute right-3.5 top-3.5 text-slate-500 pointer-events-none" />
+          </div>
+          <p className="text-[11.5px] text-slate-500 pt-0.5">
+            {LAYOUT_OPTIONS.find((l) => l.id === (formData.layoutMode || 'side-by-side'))?.desc}
+          </p>
         </div>
       </div>
 
@@ -1019,6 +1521,22 @@ export const CoverForm: React.FC<CoverFormProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Syllabus PDF / Text Importer Modal */}
+      <SyllabusPdfImporter
+        isOpen={isSyllabusImporterOpen}
+        onClose={() => setIsSyllabusImporterOpen(false)}
+        department={formData.department}
+        semester={formData.semester}
+        onImportComplete={(courses) => {
+          if (courses && courses.length > 0) {
+            onChange({
+              course: courses[0].title,
+              courseCode: courses[0].code,
+            });
+          }
+        }}
+      />
 
     </div>
   );

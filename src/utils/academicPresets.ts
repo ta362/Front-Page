@@ -196,6 +196,7 @@ export const INITIAL_FORM_DATA: CoverPageFormData = {
   department: '',
   student: '',
   studentId: '',
+  studentDepartment: '',
   roll: '',
   reg: '',
   semester: '',

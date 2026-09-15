@@ -9,6 +9,11 @@ import { PresetSelectorModal } from './components/PresetSelectorModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
 import { InstallPwaModal } from './components/InstallPwaModal';
 import { AdBanner } from './components/AdBanner';
+import { Footer } from './components/Footer';
+import { AcademicGuidesView } from './components/AcademicGuidesView';
+import { FaqView } from './components/FaqView';
+import { LegalPagesModal } from './components/LegalPagesModal';
+import { AdSenseApprovalGuideModal } from './components/AdSenseApprovalGuideModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
@@ -24,7 +29,8 @@ import {
   Maximize2,
   Minimize2,
   Layers,
-  ArrowDownToLine
+  ArrowDownToLine,
+  Award
 } from 'lucide-react';
 
 const STORAGE_KEY = 'assignment_cover_page_data_liquid_v3';
@@ -35,7 +41,6 @@ export default function App() {
       const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('assignment_cover_page_data_liquid_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Clear any old hardcoded demo values so all input boxes remain completely blank
         return {
           ...INITIAL_FORM_DATA,
           ...parsed,
@@ -68,8 +73,13 @@ export default function App() {
   const [isPresetsOpen, setIsPresetsOpen] = useState<boolean>(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
+  
+  // Active Navigation View State
+  const [activeView, setActiveView] = useState<'editor' | 'guides' | 'faq'>('editor');
   const [activeTab, setActiveTab] = useState<'editor' | 'preview'>('editor');
-  const [zoomLevel, setZoomLevel] = useState<number>(100);
+  const [legalModalTab, setLegalModalTab] = useState<'privacy' | 'terms' | 'about' | null>(null);
+  const [isAdSenseGuideOpen, setIsAdSenseGuideOpen] = useState<boolean>(false);
+
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState<boolean>(false);
 
@@ -82,7 +92,7 @@ export default function App() {
     }
   }, [formData]);
 
-  // Capture PWA beforeinstallprompt event for instant one-click install
+  // Capture PWA beforeinstallprompt event
   useEffect(() => {
     const handleBeforeInstall = (e: any) => {
       e.preventDefault();
@@ -92,7 +102,6 @@ export default function App() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    // Also check if running in standalone mode (already installed)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
     if (isStandalone) {
       setShowInstallBanner(false);
@@ -312,6 +321,17 @@ export default function App() {
     addToast('success', 'Preset loaded into form!');
   };
 
+  const handleFooterNavigation = (tab: 'editor' | 'guides' | 'faq' | 'privacy' | 'terms' | 'about' | 'adsense-guide') => {
+    if (tab === 'editor' || tab === 'guides' || tab === 'faq') {
+      setActiveView(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (tab === 'privacy' || tab === 'terms' || tab === 'about') {
+      setLegalModalTab(tab);
+    } else if (tab === 'adsense-guide') {
+      setIsAdSenseGuideOpen(true);
+    }
+  };
+
   return (
     <div className="min-h-screen liquid-bg-canvas text-slate-800 flex flex-col font-sans relative">
       
@@ -325,16 +345,20 @@ export default function App() {
         isPreviewGenerated={isPreviewGenerated}
         isExporting={isExporting}
         onShareApp={handleShareApp}
-        installPrompt={deferredInstallPrompt}
-        onTriggerInstall={handleInstallApp}
-        onOpenInstallModal={() => setIsInstallModalOpen(true)}
+        activeView={activeView}
+        onNavigateTab={(view) => {
+          setActiveView(view);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenAdSenseGuide={() => setIsAdSenseGuideOpen(true)}
+        onOpenLegal={(tab) => setLegalModalTab(tab)}
       />
 
       {/* Main Layout Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 pb-20 lg:pb-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6 pb-12">
         
         {/* Instant Mobile App Install Banner */}
-        {showInstallBanner && (
+        {showInstallBanner && activeView === 'editor' && (
           <div className="liquid-panel p-3.5 sm:p-4 bg-gradient-to-r from-purple-600/10 via-indigo-600/10 to-teal-600/10 border border-purple-300/40 shadow-xl flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-md shadow-purple-500/30">
@@ -369,133 +393,152 @@ export default function App() {
           </div>
         )}
 
-        {/* Mobile View Toggle Bar (Liquid Glass Capsule) */}
-        <div className="lg:hidden flex items-center liquid-panel p-1 shadow-md">
-          <button
-            onClick={() => setActiveTab('editor')}
-            className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-              activeTab === 'editor'
-                ? 'liquid-pill-purple shadow-md text-white'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>1. Edit Details</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('preview')}
-            className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
-              activeTab === 'preview'
-                ? 'liquid-pill-purple shadow-md text-white'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Eye className="w-4 h-4" />
-            <span>2. A4 Preview</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-          </button>
-        </div>
-
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          
-          {/* LEFT COLUMN: Input Form */}
-          <div className={`lg:col-span-6 space-y-4 sm:space-y-6 ${activeTab === 'editor' ? 'block' : 'hidden lg:block'}`}>
-            <CoverForm
-              formData={formData}
-              errors={errors}
-              onChange={(partial) => {
-                setFormData((prev) => ({ ...prev, ...partial }));
-                if (errors) {
-                  const updatedErrors = { ...errors };
-                  Object.keys(partial).forEach((key) => {
-                    delete updatedErrors[key as keyof ValidationErrors];
-                  });
-                  setErrors(updatedErrors);
-                }
-              }}
-              onGeneratePreview={handleGeneratePreview}
-              onDownloadJPG={handleDownloadJPG}
-              onDownloadPNG={handleDownloadPNG}
-              onDownloadPDF={handleDownloadPDF}
-              onPrint={handlePrint}
-              onClearForm={handleClearForm}
-              onOpenPresets={() => setIsPresetsOpen(true)}
-              isPreviewGenerated={isPreviewGenerated}
-              isExporting={isExporting}
-            />
-          </div>
-
-          {/* RIGHT COLUMN: Live A4 Preview & Controls */}
-          <div className={`lg:col-span-6 space-y-4 sticky top-20 ${activeTab === 'preview' ? 'block' : 'hidden lg:block'}`}>
+        {/* VIEW 1: MAIN COVER GENERATOR TOOL */}
+        {activeView === 'editor' && (
+          <div className="space-y-6">
             
-            {/* Preview Card Box */}
-            <div className="liquid-panel p-4 sm:p-6 shadow-2xl space-y-4">
+            {/* Mobile View Toggle Bar */}
+            <div className="lg:hidden flex items-center liquid-panel p-1 shadow-md">
+              <button
+                onClick={() => setActiveTab('editor')}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  activeTab === 'editor'
+                    ? 'liquid-pill-purple shadow-md text-white'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                <span>1. Edit Details</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('preview')}
+                className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
+                  activeTab === 'preview'
+                    ? 'liquid-pill-purple shadow-md text-white'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Eye className="w-4 h-4" />
+                <span>2. A4 Preview</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              </button>
+            </div>
+
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
               
-              <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-xl shadow-md shadow-blue-500/20">
-                    <FileCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-extrabold text-slate-800">A4 Page Preview</h3>
-                    <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium">Strict A4 Ratio (210mm × 297mm)</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] sm:text-[11px] text-teal-800 font-bold px-3 py-1 bg-teal-500/15 rounded-full border border-teal-500/30 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
-                    300 DPI High-Res
-                  </span>
-                </div>
+              {/* LEFT COLUMN: Input Form */}
+              <div className={`lg:col-span-6 space-y-4 sm:space-y-6 ${activeTab === 'editor' ? 'block' : 'hidden lg:block'}`}>
+                <CoverForm
+                  formData={formData}
+                  errors={errors}
+                  onChange={(partial) => {
+                    setFormData((prev) => ({ ...prev, ...partial }));
+                    if (errors) {
+                      const updatedErrors = { ...errors };
+                      Object.keys(partial).forEach((key) => {
+                        delete updatedErrors[key as keyof ValidationErrors];
+                      });
+                      setErrors(updatedErrors);
+                    }
+                  }}
+                  onGeneratePreview={handleGeneratePreview}
+                  onDownloadJPG={handleDownloadJPG}
+                  onDownloadPNG={handleDownloadPNG}
+                  onDownloadPDF={handleDownloadPDF}
+                  onPrint={handlePrint}
+                  onClearForm={handleClearForm}
+                  onOpenPresets={() => setIsPresetsOpen(true)}
+                  isPreviewGenerated={isPreviewGenerated}
+                  isExporting={isExporting}
+                />
               </div>
 
-              {/* A4 Canvas Container with smooth proportional zoom preview */}
-              <div className="w-full bg-slate-200/50 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-white/80 overflow-y-auto max-h-[75vh] flex justify-center items-start shadow-inner">
-                <A4PreviewViewer data={formData} />
-              </div>
+              {/* RIGHT COLUMN: Live A4 Preview & Controls */}
+              <div className={`lg:col-span-6 space-y-4 sticky top-20 ${activeTab === 'preview' ? 'block' : 'hidden lg:block'}`}>
+                <div className="liquid-panel p-4 sm:p-6 shadow-2xl space-y-4">
+                  
+                  <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-gradient-to-tr from-blue-500 to-indigo-500 text-white rounded-xl shadow-md shadow-blue-500/20">
+                        <FileCheck className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-extrabold text-slate-800">A4 Page Preview</h3>
+                        <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium">Strict A4 Ratio (210mm × 297mm)</p>
+                      </div>
+                    </div>
 
-              {/* Quick Action Footer in Preview Column */}
-              <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
-                <button
-                  type="button"
-                  onClick={handleDownloadJPG}
-                  disabled={!isPreviewGenerated || isExporting}
-                  className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-blue flex items-center justify-center gap-2 cursor-pointer ${
-                    isPreviewGenerated && !isExporting
-                      ? 'opacity-100 active:scale-95'
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download JPG (300 DPI)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={handleDownloadPDF}
-                  disabled={!isPreviewGenerated || isExporting}
-                  className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-purple flex items-center justify-center gap-2 cursor-pointer ${
-                    isPreviewGenerated && !isExporting
-                      ? 'opacity-100 active:scale-95'
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download PDF Document</span>
-                </button>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] sm:text-[11px] text-teal-800 font-bold px-3 py-1 bg-teal-500/15 rounded-full border border-teal-500/30 flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+                        300 DPI High-Res
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* A4 Canvas Container */}
+                  <div className="w-full bg-slate-200/50 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-white/80 overflow-y-auto max-h-[75vh] flex justify-center items-start shadow-inner">
+                    <A4PreviewViewer data={formData} />
+                  </div>
+
+                  {/* Quick Action Footer */}
+                  <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
+                    <button
+                      type="button"
+                      onClick={handleDownloadJPG}
+                      disabled={!isPreviewGenerated || isExporting}
+                      className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-blue flex items-center justify-center gap-2 cursor-pointer ${
+                        isPreviewGenerated && !isExporting
+                          ? 'opacity-100 active:scale-95'
+                          : 'opacity-60 cursor-not-allowed'
+                      }`}
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download JPG (300 DPI)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDownloadPDF}
+                      disabled={!isPreviewGenerated || isExporting}
+                      className={`flex-1 py-3 px-4 text-xs font-extrabold liquid-pill-purple flex items-center justify-center gap-2 cursor-pointer ${
+                        isPreviewGenerated && !isExporting
+                          ? 'opacity-100 active:scale-95'
+                          : 'opacity-60 cursor-not-allowed'
+                      }`}
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download PDF Document</span>
+                    </button>
+                  </div>
+
+                </div>
               </div>
 
             </div>
+
+            {/* Google AdSense Responsive Banner */}
+            <AdBanner className="mt-8 mb-4" />
+
           </div>
+        )}
 
-          {/* Google AdMob / AdSense Banner */}
-          <AdBanner className="mt-8 mb-4" />
+        {/* VIEW 2: ACADEMIC FORMATTING GUIDES & ARTICLES */}
+        {activeView === 'guides' && (
+          <AcademicGuidesView onBackToEditor={() => setActiveView('editor')} />
+        )}
 
-        </div>
+        {/* VIEW 3: FAQ & TUTORIAL */}
+        {activeView === 'faq' && (
+          <FaqView onBackToEditor={() => setActiveView('editor')} />
+        )}
+
       </main>
 
-      {/* Canonical full-size A4 export container (794px x 1123px) - Clipped and visible to DOM render pipeline */}
+      {/* Comprehensive Footer */}
+      <Footer onNavigateTab={handleFooterNavigation} />
+
+      {/* Hidden canonical full-size A4 export container */}
       <div
         id="export-mount"
         aria-hidden="true"
@@ -528,14 +571,14 @@ export default function App() {
         />
       )}
 
-      {/* Reset Confirmation Modal (Instant and reliable across all devices and iframes) */}
+      {/* Reset Confirmation Modal */}
       <ResetConfirmModal
         isOpen={isResetModalOpen}
         onClose={() => setIsResetModalOpen(false)}
         onConfirmResetBlank={confirmResetBlank}
       />
 
-      {/* Install PWA Modal (Dedicated Android & Mobile guidance) */}
+      {/* Install PWA Modal */}
       <InstallPwaModal
         isOpen={isInstallModalOpen}
         onClose={() => setIsInstallModalOpen(false)}
@@ -544,7 +587,24 @@ export default function App() {
         onAddToast={addToast}
       />
 
-      {/* Floating Toast Alerts */}
+      {/* Legal & Policy Modal (Privacy Policy, Terms of Service, About Us & Contact) */}
+      {legalModalTab && (
+        <LegalPagesModal
+          initialTab={legalModalTab}
+          onClose={() => setLegalModalTab(null)}
+        />
+      )}
+
+      {/* AdSense Approval Status & Fix Guide Modal */}
+      {isAdSenseGuideOpen && (
+        <AdSenseApprovalGuideModal
+          onClose={() => setIsAdSenseGuideOpen(false)}
+          onOpenGuides={() => setActiveView('guides')}
+          onOpenLegal={() => setLegalModalTab('privacy')}
+        />
+      )}
+
+      {/* Toast Alerts */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-3 pointer-events-none">
         {toasts.map((toast) => (
           <div
