@@ -27,71 +27,7 @@ import {
   Plus,
   Minus,
   X,
-  Layers,
-  Columns,
-  Box,
-  AlignLeft,
-  AlignRight,
-  Grid,
 } from 'lucide-react';
-
-const LAYOUT_OPTIONS: Array<{
-  id: LayoutMode;
-  label: string;
-  shortDesc: string;
-  desc: string;
-  tag: string;
-  icon: React.ElementType;
-}> = [
-  {
-    id: 'side-by-side',
-    label: 'Side-by-Side (Split)',
-    shortDesc: '2 Column Left/Right',
-    desc: 'Submitted To (Left) and Submitted By (Right) in two balanced columns',
-    tag: 'Classic 2-Column',
-    icon: Columns,
-  },
-  {
-    id: 'stacked',
-    label: 'Centered Stack',
-    shortDesc: 'Vertical Centered',
-    desc: 'Centered column layout with teacher stacked neatly above student details',
-    tag: 'Centered Formal',
-    icon: Layers,
-  },
-  {
-    id: 'modern-cards',
-    label: 'Boxed Cards',
-    shortDesc: 'Framed Background Cards',
-    desc: 'Teacher and student details enclosed in clean rounded framed cards',
-    tag: 'Modern Framed',
-    icon: Box,
-  },
-  {
-    id: 'left-aligned',
-    label: 'Left Minimalist',
-    shortDesc: 'Left-aligned with Accent Line',
-    desc: 'Entire info left-aligned with a dark vertical accent bar on the edge',
-    tag: 'Linear Slate',
-    icon: AlignLeft,
-  },
-  {
-    id: 'right-aligned',
-    label: 'Split Edge (Asymmetric)',
-    shortDesc: 'Teacher Left / Student Right',
-    desc: 'Teacher info on the left, student details flush to the right edge',
-    tag: 'Editorial Asymmetric',
-    icon: AlignRight,
-  },
-  {
-    id: 'compact-grid',
-    label: 'Structured Grid',
-    shortDesc: 'Tabular Key-Value Matrix',
-    desc: 'Structured key-value table grid with horizontal divider lines',
-    tag: 'Academic Matrix',
-    icon: Grid,
-  },
-];
 
 const BORDER_OPTIONS: Array<{
   id: BorderStyle;
@@ -1415,53 +1351,12 @@ export const CoverForm: React.FC<CoverFormProps> = ({
         </div>
       </div>
 
-      {/* SECTION 5: Information Layout & Text Style */}
+      {/* SECTION 5: Border & Framing Style */}
       <div className="liquid-card p-4 sm:p-5 space-y-3 relative z-0">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
               5
-            </span>
-            <h3 className="text-sm sm:text-base font-bold text-slate-800">
-              Information Layout & Text Style
-            </h3>
-          </div>
-          <span className="text-xs px-2.5 py-1 rounded-full font-extrabold bg-indigo-100 text-indigo-900 border border-indigo-200/80 self-start sm:self-auto">
-            {LAYOUT_OPTIONS.find((l) => l.id === (formData.layoutMode || 'side-by-side'))?.label || 'Side-by-Side'}
-          </span>
-        </div>
-
-        {/* Dropdown Selector */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-slate-700">
-            Select Layout Style
-          </label>
-          <div className="relative">
-            <select
-              value={formData.layoutMode || 'side-by-side'}
-              onChange={(e) => onChange({ layoutMode: e.target.value as LayoutMode })}
-              className="w-full pl-3.5 pr-10 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-800 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm appearance-none cursor-pointer"
-            >
-              {LAYOUT_OPTIONS.map((opt) => (
-                <option key={opt.id} value={opt.id}>
-                  {opt.label} — {opt.shortDesc}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-4 h-4 absolute right-3.5 top-3.5 text-slate-500 pointer-events-none" />
-          </div>
-          <p className="text-[11.5px] text-slate-500 pt-0.5">
-            {LAYOUT_OPTIONS.find((l) => l.id === (formData.layoutMode || 'side-by-side'))?.desc}
-          </p>
-        </div>
-      </div>
-
-      {/* SECTION 6: Border & Framing Style */}
-      <div className="liquid-card p-4 sm:p-5 space-y-3 relative z-0">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white text-xs font-bold flex items-center justify-center shadow-sm">
-              6
             </span>
             <h3 className="text-sm sm:text-base font-bold text-slate-800">
               Border & Framing Style

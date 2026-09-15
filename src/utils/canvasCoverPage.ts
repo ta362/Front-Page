@@ -475,10 +475,10 @@ export async function renderCoverPageToCanvas(
     : 'Department of Computer Science & Engineering';
   const collegeClean = (data.college || (data.teacher ? '' : 'Techno College of Engineering Agartala')).split('\n')[0];
 
-  const mode = data.layoutMode || 'side-by-side';
+  const mode = data.layoutMode || 'stacked';
 
-  // 1. STACKED / CENTERED
-  if (mode === 'stacked') {
+  // 1. STACKED / CENTERED (PERMANENT DEFAULT)
+  if (mode === 'stacked' || mode === 'side-by-side') {
     currentY = Math.max(currentY, 1220);
 
     // Section Heading: SUBMITTED TO

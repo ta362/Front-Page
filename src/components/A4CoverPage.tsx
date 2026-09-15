@@ -294,8 +294,8 @@ export const A4CoverPage: React.FC<A4CoverPageProps> = React.memo(({
             : 'Department of Computer Science & Engineering';
           const collegeLine = (data.college || 'Techno College of Engineering Agartala').split('\n')[0];
 
-          // 1. VERTICAL STACKED (CENTERED)
-          if (data.layoutMode === 'stacked') {
+          // 1. VERTICAL STACKED (CENTERED) - PERMANENT DEFAULT
+          if (data.layoutMode === 'stacked' || !data.layoutMode || data.layoutMode === 'side-by-side') {
             return (
               <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: '12px', marginBottom: 'auto' }}>
                 {/* SUBMITTED TO */}
