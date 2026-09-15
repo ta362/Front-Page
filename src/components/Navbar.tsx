@@ -145,8 +145,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {isMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-100 p-1.5 z-50 animate-fade-in text-xs">
-                <button
-                  onClick={() => {
+                <a
+                  href="#adsense-guide"
+                  onClick={(e) => {
+                    e.preventDefault();
                     setIsMenuOpen(false);
                     onOpenAdSenseGuide();
                   }}
@@ -154,12 +156,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Award className="w-4 h-4 text-emerald-600" />
                   <span>AdSense Approval Guide</span>
-                </button>
+                </a>
 
                 <div className="my-1 border-t border-slate-100" />
 
-                <button
-                  onClick={() => {
+                <a
+                  href="#guides"
+                  onClick={(e) => {
+                    e.preventDefault();
                     setIsMenuOpen(false);
                     onNavigateTab('guides');
                   }}
@@ -167,10 +171,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <BookOpen className="w-4 h-4 text-purple-600" />
                   <span>Academic Formatting Guides</span>
-                </button>
+                </a>
 
-                <button
-                  onClick={() => {
+                <a
+                  href="#faq"
+                  onClick={(e) => {
+                    e.preventDefault();
                     setIsMenuOpen(false);
                     onNavigateTab('faq');
                   }}
@@ -178,12 +184,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <HelpCircle className="w-4 h-4 text-indigo-600" />
                   <span>User Guide &amp; FAQ</span>
-                </button>
+                </a>
 
                 <div className="my-1 border-t border-slate-100" />
 
-                <button
-                  onClick={() => {
+                <a
+                  href="#privacy"
+                  onClick={(e) => {
+                    e.preventDefault();
                     setIsMenuOpen(false);
                     onOpenLegal('privacy');
                   }}
@@ -191,10 +199,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Shield className="w-4 h-4 text-slate-400" />
                   <span>Privacy Policy</span>
-                </button>
+                </a>
 
-                <button
-                  onClick={() => {
+                <a
+                  href="#about"
+                  onClick={(e) => {
+                    e.preventDefault();
                     setIsMenuOpen(false);
                     onOpenLegal('about');
                   }}
@@ -202,7 +212,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 >
                   <Info className="w-4 h-4 text-slate-400" />
                   <span>About &amp; Contact</span>
-                </button>
+                </a>
               </div>
             )}
           </div>

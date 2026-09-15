@@ -112,6 +112,31 @@ export default function App() {
     };
   }, []);
 
+  // Handle URL hash routing for direct links & Google AdSense / search crawlers
+  useEffect(() => {
+    const handleHashRouting = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash === 'guides') {
+        setActiveView('guides');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === 'faq') {
+        setActiveView('faq');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === 'editor') {
+        setActiveView('editor');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (hash === 'privacy' || hash === 'terms' || hash === 'about') {
+        setLegalModalTab(hash as 'privacy' | 'terms' | 'about');
+      } else if (hash === 'adsense-guide') {
+        setIsAdSenseGuideOpen(true);
+      }
+    };
+
+    handleHashRouting();
+    window.addEventListener('hashchange', handleHashRouting);
+    return () => window.removeEventListener('hashchange', handleHashRouting);
+  }, []);
+
   const handleInstallApp = async () => {
     if (deferredInstallPrompt) {
       try {

@@ -17,45 +17,75 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateTab }) => {
           <span className="text-slate-400">© 2026 All rights reserved</span>
         </div>
 
-        {/* Minimal Subtle Links (Fully readable by AdSense crawlers!) */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] font-medium text-slate-400">
-          <button
-            onClick={() => onNavigateTab('guides')}
+        {/* Crawlable Semantic Links (Fully indexed by Google AdSense & Search Engine crawlers) */}
+        <nav aria-label="Footer Navigation" className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] font-medium text-slate-400">
+          <a
+            href="#guides"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'guides';
+              onNavigateTab('guides');
+            }}
             className="hover:text-purple-300 transition-colors cursor-pointer"
           >
-            Guides
-          </button>
-          <button
-            onClick={() => onNavigateTab('faq')}
+            Academic Guides
+          </a>
+          <a
+            href="#faq"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'faq';
+              onNavigateTab('faq');
+            }}
             className="hover:text-purple-300 transition-colors cursor-pointer"
           >
             FAQ
-          </button>
-          <button
-            onClick={() => onNavigateTab('privacy')}
+          </a>
+          <a
+            href="#privacy"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'privacy';
+              onNavigateTab('privacy');
+            }}
             className="hover:text-purple-300 transition-colors cursor-pointer"
           >
             Privacy Policy
-          </button>
-          <button
-            onClick={() => onNavigateTab('terms')}
+          </a>
+          <a
+            href="#terms"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'terms';
+              onNavigateTab('terms');
+            }}
             className="hover:text-purple-300 transition-colors cursor-pointer"
           >
-            Terms
-          </button>
-          <button
-            onClick={() => onNavigateTab('about')}
+            Terms of Service
+          </a>
+          <a
+            href="#about"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'about';
+              onNavigateTab('about');
+            }}
             className="hover:text-purple-300 transition-colors cursor-pointer"
           >
             About &amp; Contact
-          </button>
-          <button
-            onClick={() => onNavigateTab('adsense-guide')}
+          </a>
+          <a
+            href="#adsense-guide"
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.hash = 'adsense-guide';
+              onNavigateTab('adsense-guide');
+            }}
             className="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors cursor-pointer"
           >
             AdSense Status
-          </button>
-        </div>
+          </a>
+        </nav>
 
         {/* Developer Credit */}
         <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
