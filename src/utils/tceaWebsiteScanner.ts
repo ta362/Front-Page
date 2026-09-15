@@ -145,6 +145,12 @@ export async function scanTceaWebsiteFaculty(
       subUrl: '/department/computer-science-engineering',
     },
     {
+      code: 'AIDS',
+      name: 'Department of Artificial Intelligence & Data Science',
+      facultyCount: 20,
+      subUrl: '/department/artificial-intelligence-data-science',
+    },
+    {
       code: 'ECE',
       name: 'Department of Electronics & Communication Engineering',
       facultyCount: 11,

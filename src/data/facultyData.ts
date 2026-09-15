@@ -568,14 +568,104 @@ export const DEPARTMENT_FACULTY_LIST: DepartmentFacultyGroup[] = [
     ],
     faculties: [
       {
-        name: 'Faculty Member',
+        name: 'Mrs. Purbani Kar',
         designation: 'Assistant Professor & Head of Department',
-        qualification: 'B.Tech, M.Tech, Ph.D.',
+        qualification: 'B.E, M.Tech.',
       },
       {
-        name: 'Faculty Member',
+        name: 'Dr. Partha Pratim Deb',
+        designation: 'Associate Professor',
+        qualification: 'B.Tech, M.Tech, PhD.',
+      },
+      {
+        name: 'Dr. Tutan Nama',
+        designation: 'Associate Professor',
+        qualification: 'B.E, M.Tech, PhD.',
+      },
+      {
+        name: 'Dr. Arpita Banik',
+        designation: 'Associate Professor',
+        qualification: 'B.E, M.Tech, PhD.',
+      },
+      {
+        name: 'Dr. Barnali Chowdhury',
+        designation: 'Associate Professor',
+        qualification: 'B.E, M.Tech, PhD.',
+      },
+      {
+        name: 'Dr. Joy Lal Sarkar',
+        designation: 'Associate Professor',
+        qualification: 'B.Sc(Physics), MCA, M.Tech, PhD, PostDoc',
+      },
+      {
+        name: 'Mr. Sankha Subhra Debnath',
         designation: 'Assistant Professor',
         qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mr. Kankan Saha',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mrs. Sarmistha Das',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Ms. Nabanita Shil',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mr. Biswaraj Roy',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mr. Jayanta Das',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mrs. Rajna Saha',
+        designation: 'Assistant Professor',
+        qualification: 'B.E, M.Tech.',
+      },
+      {
+        name: 'Mrs. Shriya Chakraborty',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Ms. Sourabarna Roy',
+        designation: 'Assistant Professor',
+        qualification: 'B.Tech, M.Tech.',
+      },
+      {
+        name: 'Mr. Sourav Deb',
+        designation: 'Lecturer',
+        qualification: 'B.Tech.',
+      },
+      {
+        name: 'Mr. Prasenjit Das',
+        designation: 'Lecturer',
+        qualification: 'B.Tech.',
+      },
+      {
+        name: 'Mr. Rahul Karmakar',
+        designation: 'Lecturer',
+        qualification: 'B.Tech.',
+      },
+      {
+        name: 'Mr. Bishal Debnath',
+        designation: 'Lecturer',
+        qualification: 'B.Tech.',
+      },
+      {
+        name: 'Ms. Ankita Bhattacharjee',
+        designation: 'Visiting Faculty',
+        qualification: 'B.Tech.',
       },
     ],
   },

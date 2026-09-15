@@ -17,6 +17,22 @@ export function getSavedFacultyGroups(): DepartmentFacultyGroup[] {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Automatically sync AIDS if previously saved with placeholder
+        const aidsGroup = parsed.find((g: DepartmentFacultyGroup) => g.shortCode === 'AIDS');
+        const defaultAids = DEPARTMENT_FACULTY_LIST.find((g) => g.shortCode === 'AIDS');
+        if (
+          defaultAids &&
+          (!aidsGroup ||
+            aidsGroup.faculties.length <= 2 ||
+            aidsGroup.faculties.some((f: FacultyMember) => f.name === 'Faculty Member'))
+        ) {
+          if (aidsGroup) {
+            aidsGroup.faculties = defaultAids.faculties;
+          } else {
+            parsed.push(defaultAids);
+          }
+          localStorage.setItem(STORAGE_KEY_FACULTY, JSON.stringify(parsed));
+        }
         return parsed;
       }
     }

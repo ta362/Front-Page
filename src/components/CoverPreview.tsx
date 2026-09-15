@@ -60,7 +60,7 @@ export const CoverPreview = forwardRef<HTMLDivElement, CoverPreviewProps>(
       session,
       date,
       logoUrl,
-      logoSize = 155,
+      logoSize = 200,
       borderStyle = 'classic-double',
       showWatermark = false,
       fontTheme = 'times',

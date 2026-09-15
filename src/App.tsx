@@ -267,7 +267,7 @@ export default function App() {
       session: '',
       date: '',
       logoUrl: '',
-      logoSize: 155,
+      logoSize: 200,
       borderStyle: 'none',
       showWatermark: false,
       fontTheme: 'times',

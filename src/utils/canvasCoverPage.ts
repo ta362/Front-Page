@@ -434,8 +434,8 @@ export async function renderCoverPageToCanvas(
   // ---- 4. CENTER LOGO ----
   const logoTargetCenterY = 1040;
   if (logoImg) {
-    const maxLogoW = Math.min((data.logoSize || 170) * SCALE, 195 * SCALE);
-    const maxLogoH = 170 * SCALE;
+    const maxLogoW = Math.min((data.logoSize || 200) * SCALE, 200 * SCALE);
+    const maxLogoH = 175 * SCALE;
 
     const imgAspect = (logoImg.naturalWidth || logoImg.width) / (logoImg.naturalHeight || logoImg.height);
     let drawW = maxLogoW;
@@ -483,59 +483,59 @@ export async function renderCoverPageToCanvas(
 
     // Section Heading: SUBMITTED TO
     if (data.teacher || data.designation || data.department) {
-      ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${21 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
 
       ctx.fillText('Submitted To:', centerX, currentY);
-      currentY += 28 * SCALE;
+      currentY += 32 * SCALE;
 
-      ctx.font = `bold ${20.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${25 * SCALE}px ${fontFamily}`;
       ctx.fillText(data.teacher || 'Dr. Tutan Nama', centerX, currentY);
-      currentY += 26 * SCALE;
+      currentY += 32 * SCALE;
 
       const desigText = data.designation || (data.teacher ? '' : 'Associate Professor');
       if (desigText) {
-        ctx.font = `italic ${17 * SCALE}px ${fontFamily}`;
+        ctx.font = `italic ${20.5 * SCALE}px ${fontFamily}`;
         ctx.fillText(desigText, centerX, currentY);
-        currentY += 23 * SCALE;
+        currentY += 28 * SCALE;
       }
 
       if (teacherDeptClean) {
-        ctx.font = `normal ${17 * SCALE}px ${fontFamily}`;
+        ctx.font = `normal ${20.5 * SCALE}px ${fontFamily}`;
         ctx.fillText(teacherDeptClean, centerX, currentY);
-        currentY += 23 * SCALE;
+        currentY += 28 * SCALE;
       }
 
       if (collegeClean) {
-        ctx.font = `normal ${16.5 * SCALE}px ${fontFamily}`;
+        ctx.font = `normal ${20.5 * SCALE}px ${fontFamily}`;
         ctx.fillText(collegeClean, centerX, currentY);
-        currentY += 24 * SCALE;
+        currentY += 28 * SCALE;
       }
     }
 
     // Section Heading: SUBMITTED BY
     if (data.student || data.studentId || data.roll || data.reg || studentDeptClean || data.semester || data.session) {
       if (data.teacher || data.designation || data.department) {
-        currentY += 36 * SCALE;
+        currentY += 30 * SCALE;
       }
 
-      ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${21 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'center';
 
       ctx.fillText('Submitted By:', centerX, currentY);
-      currentY += 28 * SCALE;
+      currentY += 32 * SCALE;
 
       if (data.student) {
-        ctx.font = `bold ${21.5 * SCALE}px ${fontFamily}`;
+        ctx.font = `bold ${25 * SCALE}px ${fontFamily}`;
         ctx.fillText(data.student, centerX, currentY);
-        currentY += 28 * SCALE;
+        currentY += 32 * SCALE;
       }
 
-      const detailFontSize = 17 * SCALE;
-      const detailRowHeight = 24 * SCALE;
+      const detailFontSize = 20.5 * SCALE;
+      const detailRowHeight = 29 * SCALE;
 
       if (data.studentId) {
         drawLabeledCenteredText(ctx, 'Student ID: ', data.studentId, currentY, centerX, fontFamily, detailFontSize);
@@ -597,7 +597,7 @@ export async function renderCoverPageToCanvas(
     ctx.textBaseline = 'top';
 
     ctx.font = `bold ${14 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED TO', cardLeftX + 16 * SCALE, leftY);
     leftY += 24 * SCALE;
 
@@ -609,28 +609,28 @@ export async function renderCoverPageToCanvas(
     const desigText = data.designation || (data.teacher ? '' : 'Associate Professor');
     if (desigText) {
       ctx.font = `italic ${14.5 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = '#000000';
       ctx.fillText(desigText, cardLeftX + 16 * SCALE, leftY);
       leftY += 21 * SCALE;
     }
 
     if (teacherDeptClean) {
       ctx.font = `normal ${14.5 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = '#000000';
       ctx.fillText(teacherDeptClean, cardLeftX + 16 * SCALE, leftY);
       leftY += 21 * SCALE;
     }
 
     if (collegeClean) {
       ctx.font = `normal ${14 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#475569';
+      ctx.fillStyle = '#000000';
       ctx.fillText(collegeClean, cardLeftX + 16 * SCALE, leftY);
     }
 
     // Student Details inside Card 2
     let rightY = startSectionY + 20 * SCALE;
     ctx.font = `bold ${14 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED BY', cardRightX + 16 * SCALE, rightY);
     rightY += 24 * SCALE;
 
@@ -678,7 +678,7 @@ export async function renderCoverPageToCanvas(
     let y = startSectionY;
 
     // Vertical Bar
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillRect(accentX, startSectionY, 5 * SCALE, 260 * SCALE);
 
     ctx.textAlign = 'left';
@@ -686,7 +686,7 @@ export async function renderCoverPageToCanvas(
 
     // Submitted To Block
     ctx.font = `bold ${15 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED TO', textLeftX, y);
     y += 24 * SCALE;
 
@@ -698,21 +698,21 @@ export async function renderCoverPageToCanvas(
     const desigText = data.designation || (data.teacher ? '' : 'Associate Professor');
     if (desigText) {
       ctx.font = `italic ${15.5 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#000000';
       ctx.fillText(desigText, textLeftX, y);
       y += 22 * SCALE;
     }
 
     if (teacherDeptClean) {
       ctx.font = `normal ${15.5 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#000000';
       ctx.fillText(teacherDeptClean, textLeftX, y);
       y += 22 * SCALE;
     }
 
     if (collegeClean) {
       ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = '#000000';
       ctx.fillText(collegeClean, textLeftX, y);
       y += 26 * SCALE;
     }
@@ -728,7 +728,7 @@ export async function renderCoverPageToCanvas(
 
     // Submitted By Block
     ctx.font = `bold ${15 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED BY', textLeftX, y);
     y += 24 * SCALE;
 
@@ -792,26 +792,26 @@ export async function renderCoverPageToCanvas(
     const desigText = data.designation || (data.teacher ? '' : 'Associate Professor');
     if (desigText) {
       ctx.font = `italic ${15 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#000000';
       ctx.fillText(desigText, colLeftX, leftY);
       leftY += 22 * SCALE;
     }
 
     if (teacherDeptClean) {
       ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#000000';
       ctx.fillText(teacherDeptClean, colLeftX, leftY);
       leftY += 22 * SCALE;
     }
 
     if (collegeClean) {
       ctx.font = `normal ${14.5 * SCALE}px ${fontFamily}`;
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = '#000000';
       ctx.fillText(collegeClean, colLeftX, leftY);
     }
 
     // Right Column (Submitted By - Flush Right with right accent bar)
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillRect(702 * SCALE, startSectionY, 4 * SCALE, 220 * SCALE);
 
     ctx.textAlign = 'right';
@@ -825,7 +825,7 @@ export async function renderCoverPageToCanvas(
     rightY += 27 * SCALE;
 
     ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#1e293b';
+    ctx.fillStyle = '#000000';
 
     if (data.studentId) {
       ctx.fillText(`ID: ${data.studentId}`, colRightEdgeX, rightY);
@@ -890,26 +890,26 @@ export async function renderCoverPageToCanvas(
     ctx.textBaseline = 'top';
 
     ctx.font = `bold ${12 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED TO', boxX + 16 * SCALE, startSectionY + 12 * SCALE);
 
     ctx.font = `bold ${17.5 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillText(data.teacher || 'Dr. Tutan Nama', boxX + 16 * SCALE, startSectionY + 34 * SCALE);
 
     const subDetail = `${data.designation || 'Associate Professor'} • ${teacherDeptClean}`;
     ctx.font = `normal ${14 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#334155';
+    ctx.fillStyle = '#000000';
     ctx.fillText(subDetail, boxX + 16 * SCALE, startSectionY + 62 * SCALE);
 
     // Row 2 (Student Matrix)
     const stY = startSectionY + teacherRowH + 12 * SCALE;
     ctx.font = `bold ${12 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#475569';
+    ctx.fillStyle = '#000000';
     ctx.fillText('SUBMITTED BY', boxX + 16 * SCALE, stY);
 
     ctx.font = `bold ${18 * SCALE}px ${fontFamily}`;
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#000000';
     ctx.fillText(data.student || 'Joy Debnath', boxX + 16 * SCALE, stY + 22 * SCALE);
 
     const detailFontSize = 14 * SCALE;
@@ -958,36 +958,36 @@ export async function renderCoverPageToCanvas(
 
     // LEFT COLUMN: SUBMITTED TO
     if (data.teacher || data.designation || data.department) {
-      ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
       ctx.fillText('Submitted To:', colLeftX, leftY);
-      leftY += 26 * SCALE;
+      leftY += 28 * SCALE;
 
-      ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${20.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       ctx.fillText(data.teacher || 'Dr. Tutan Nama', colLeftX, leftY);
-      leftY += 26 * SCALE;
+      leftY += 29 * SCALE;
 
       const desigText = data.designation || (data.teacher ? '' : 'Associate Professor');
       if (desigText) {
-        ctx.font = `italic ${15.5 * SCALE}px ${fontFamily}`;
+        ctx.font = `italic ${16.5 * SCALE}px ${fontFamily}`;
         ctx.fillStyle = '#000000';
         ctx.fillText(desigText, colLeftX, leftY);
-        leftY += 23 * SCALE;
+        leftY += 25 * SCALE;
       }
 
       if (teacherDeptClean) {
-        ctx.font = `normal ${15.5 * SCALE}px ${fontFamily}`;
+        ctx.font = `normal ${16.5 * SCALE}px ${fontFamily}`;
         ctx.fillStyle = '#000000';
         ctx.fillText(teacherDeptClean, colLeftX, leftY);
-        leftY += 23 * SCALE;
+        leftY += 25 * SCALE;
       }
 
       if (collegeClean) {
-        ctx.font = `normal ${15 * SCALE}px ${fontFamily}`;
+        ctx.font = `normal ${16.5 * SCALE}px ${fontFamily}`;
         ctx.fillStyle = '#000000';
         ctx.fillText(collegeClean, colLeftX, leftY);
       }
@@ -995,23 +995,23 @@ export async function renderCoverPageToCanvas(
 
     // RIGHT COLUMN: SUBMITTED BY
     if (data.student || data.studentId || data.roll || data.reg || studentDeptClean || data.semester || data.session) {
-      ctx.font = `bold ${17 * SCALE}px ${fontFamily}`;
+      ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
       ctx.fillText('Submitted By:', colRightX, rightY);
-      rightY += 26 * SCALE;
+      rightY += 28 * SCALE;
 
       if (data.student) {
-        ctx.font = `bold ${18.5 * SCALE}px ${fontFamily}`;
+        ctx.font = `bold ${20.5 * SCALE}px ${fontFamily}`;
         ctx.fillStyle = '#000000';
         ctx.fillText(data.student, colRightX, rightY);
-        rightY += 27 * SCALE;
+        rightY += 29 * SCALE;
       }
 
-      const detailFontSize = 15 * SCALE;
-      const detailRowHeight = 23 * SCALE;
+      const detailFontSize = 16.5 * SCALE;
+      const detailRowHeight = 25 * SCALE;
 
       if (data.studentId) {
         drawLabeledLeftText(ctx, 'Student ID: ', data.studentId, colRightX, rightY, fontFamily, detailFontSize);

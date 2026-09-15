@@ -730,7 +730,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                 <div className="flex flex-wrap items-center gap-1.5">
                   <button
                     type="button"
-                    onClick={() => onChange({ logoUrl: TCEA_LOGO_SVG, logoSize: 155 })}
+                    onClick={() => onChange({ logoUrl: TCEA_LOGO_SVG, logoSize: 200 })}
                     className="px-3 py-1.5 text-xs bg-red-500/15 hover:bg-red-500/25 text-red-700 font-bold rounded-full border border-red-500/30 cursor-pointer shadow-sm transition-all"
                   >
                     ★ TCEA Red Emblem
@@ -739,23 +739,6 @@ export const CoverForm: React.FC<CoverFormProps> = ({
               </div>
             </div>
           </div>
-
-          {formData.logoUrl && (
-            <div className="pt-3 border-t border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <label className="text-xs font-bold text-slate-700">
-                Adjust Logo Size: <span className="text-indigo-600">{formData.logoSize || 155}px</span>
-              </label>
-              <input
-                type="range"
-                min={90}
-                max={200}
-                step={5}
-                value={formData.logoSize || 155}
-                onChange={(e) => onChange({ logoSize: Number(e.target.value) })}
-                className="w-full sm:w-56 accent-indigo-600 cursor-pointer"
-              />
-            </div>
-          )}
         </div>
       </div>
 
