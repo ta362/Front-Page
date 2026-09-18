@@ -77,3 +77,16 @@ export interface ToastMessage {
   type: 'success' | 'error' | 'info' | 'warning';
   text: string;
 }
+
+export interface DownloadNotificationItem {
+  id: string;
+  title: string;
+  fileName: string;
+  format: 'PDF' | 'JPG' | 'PNG' | 'PRINT';
+  fileSize?: string;
+  timestamp: number;
+  status: 'processing' | 'completed' | 'failed';
+  read: boolean;
+  dataUrl?: string;
+}
+
