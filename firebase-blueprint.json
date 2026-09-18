@@ -1,0 +1,36 @@
+{
+  "collections": [
+    {
+      "name": "users",
+      "description": "User profile and account information",
+      "fields": [
+        { "name": "uid", "type": "string", "required": true },
+        { "name": "email", "type": "string", "required": true },
+        { "name": "displayName", "type": "string", "required": false },
+        { "name": "createdAt", "type": "timestamp", "required": true },
+        { "name": "lastLoginAt", "type": "timestamp", "required": true }
+      ]
+    },
+    {
+      "name": "otp_codes",
+      "description": "Email OTP verification codes",
+      "fields": [
+        { "name": "email", "type": "string", "required": true },
+        { "name": "code", "type": "string", "required": true },
+        { "name": "expiresAt", "type": "timestamp", "required": true },
+        { "name": "verified", "type": "boolean", "required": true },
+        { "name": "createdAt", "type": "timestamp", "required": true }
+      ]
+    },
+    {
+      "name": "user_saved_covers",
+      "description": "Cover pages saved by users",
+      "fields": [
+        { "name": "userId", "type": "string", "required": true },
+        { "name": "title", "type": "string", "required": true },
+        { "name": "formData", "type": "map", "required": true },
+        { "name": "createdAt", "type": "timestamp", "required": true }
+      ]
+    }
+  ]
+}

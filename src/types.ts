@@ -77,3 +77,12 @@ export interface ToastMessage {
   type: 'success' | 'error' | 'info' | 'warning';
   text: string;
 }
+
+export interface AuthUser {
+  uid: string;
+  email: string;
+  displayName?: string;
+  createdAt?: string;
+  lastLoginAt?: string;
+}
+

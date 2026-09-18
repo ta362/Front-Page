@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read/write for demo and backend server interactions
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

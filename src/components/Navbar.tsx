@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { AuthUser } from '../types';
 import {
   Printer,
   FileSpreadsheet,
@@ -9,7 +10,10 @@ import {
   Award,
   MoreVertical,
   Shield,
-  Info
+  Info,
+  UserCheck,
+  LogOut,
+  User
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -25,6 +29,9 @@ interface NavbarProps {
   onNavigateTab: (tab: 'editor' | 'guides' | 'faq') => void;
   onOpenAdSenseGuide: () => void;
   onOpenLegal: (tab: 'privacy' | 'terms' | 'about') => void;
+  user: AuthUser | null;
+  onOpenAuth: () => void;
+  onLogout: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -36,6 +43,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateTab,
   onOpenAdSenseGuide,
   onOpenLegal,
+  user,
+  onOpenAuth,
+  onLogout,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -98,6 +108,36 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="px-3 py-1 text-xs font-bold text-white bg-purple-700 hover:bg-purple-800 rounded-full transition-all cursor-pointer shadow-sm"
             >
               Generator Tool
+            </button>
+          )}
+
+          {/* User Auth Button */}
+          {user ? (
+            <div className="flex items-center gap-1 bg-indigo-50 border border-indigo-200/80 rounded-full py-0.5 pl-1.5 pr-2.5 shadow-xs">
+              <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                {user.email.substring(0, 1).toUpperCase()}
+              </div>
+              <span className="text-[11px] font-semibold text-indigo-900 truncate max-w-[90px] sm:max-w-[130px]" title={user.email}>
+                {user.email.split('@')[0]}
+              </span>
+              <button
+                type="button"
+                onClick={onLogout}
+                className="p-1 hover:text-rose-600 text-slate-400 transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onOpenAuth}
+              className="flex items-center gap-1 px-3 py-1 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 rounded-full transition-all cursor-pointer shadow-sm"
+              title="Login with Email & Brevo OTP"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Login</span>
             </button>
           )}
 
@@ -225,3 +265,4 @@ export const Navbar: React.FC<NavbarProps> = ({
     </header>
   );
 };
+
