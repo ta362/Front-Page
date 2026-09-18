@@ -64,10 +64,13 @@ export const InstallPwaModal: React.FC<InstallPwaModalProps> = ({
 
         {/* Modal Header */}
         <div className="flex items-center gap-3.5 mb-5 shrink-0">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 p-0.5 shadow-lg shadow-indigo-500/25 flex items-center justify-center shrink-0">
-            <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center">
-              <Download className="w-6 h-6 text-indigo-600" />
-            </div>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-purple-600 to-indigo-600 p-0.5 shadow-lg shadow-amber-500/25 flex items-center justify-center shrink-0 overflow-hidden">
+            <img 
+              src="/golden_emblem_logo.jpg" 
+              alt="Golden Emblem Logo" 
+              className="w-full h-full object-cover rounded-[14px]"
+              referrerPolicy="no-referrer"
+            />
           </div>
           <div>
             <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
