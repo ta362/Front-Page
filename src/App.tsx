@@ -14,7 +14,8 @@ import { AcademicGuidesView } from './components/AcademicGuidesView';
 import { FaqView } from './components/FaqView';
 import { LegalPagesModal } from './components/LegalPagesModal';
 import { AdSenseApprovalGuideModal } from './components/AdSenseApprovalGuideModal';
-import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect, shareCoverPageFile } from './utils/exportUtils';
+import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
+import { sendDeviceSystemNotification } from './utils/notificationUtils';
 import {
   FileCheck,
   Smartphone,
@@ -32,8 +33,7 @@ import {
   ArrowDownToLine,
   ArrowLeft,
   Award,
-  RefreshCw,
-  Share2
+  RefreshCw
 } from 'lucide-react';
 
 const STORAGE_KEY = 'assignment_cover_page_data_liquid_v3';
@@ -224,9 +224,11 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing (JPG).....');
+      addToast('info', 'Processing.....');
+      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
       await exportCoverPageAsJPGDirect(formData, 'Cover_Page_A4.jpg');
-      addToast('success', 'Complete Download (JPG)');
+      addToast('success', 'Complete Download');
+      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export JPG: ${err?.message || 'Error occurred'}`);
@@ -242,9 +244,11 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing (PNG).....');
+      addToast('info', 'Processing.....');
+      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
       await exportCoverPageAsPNGDirect(formData, 'Cover_Page_A4.png');
-      addToast('success', 'Complete Download (PNG)');
+      addToast('success', 'Complete Download');
+      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export PNG: ${err?.message || 'Error occurred'}`);
@@ -260,35 +264,14 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing (PDF).....');
+      addToast('info', 'Processing.....');
+      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
       await exportCoverPageAsPDFDirect(formData, 'Cover_Page_A4.pdf');
-      addToast('success', 'Complete Download (PDF)');
+      addToast('success', 'Complete Download');
+      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
     } catch (err: any) {
       console.error(err);
       addToast('error', 'Failed to generate PDF.');
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const handleShareDirectFile = async (format: 'pdf' | 'jpg') => {
-    if (!isPreviewGenerated) {
-      addToast('warning', 'Please generate preview first.');
-      return;
-    }
-    try {
-      setIsExporting(true);
-      addToast('info', `Preparing file share (${format.toUpperCase()}).....`);
-      const shared = await shareCoverPageFile(formData, format);
-      if (shared) {
-        addToast('success', `Shared successfully! (${format.toUpperCase()})`);
-      } else {
-        if (format === 'pdf') await handleDownloadPDF();
-        else await handleDownloadJPG();
-      }
-    } catch (err: any) {
-      console.error(err);
-      addToast('error', 'Could not share file.');
     } finally {
       setIsExporting(false);
     }
@@ -559,22 +542,6 @@ export default function App() {
                       <Download className="w-4 h-4" />
                       <span>Download PDF Document</span>
                     </button>
-                    {typeof navigator !== 'undefined' && 'canShare' in navigator && (
-                      <button
-                        type="button"
-                        onClick={() => handleShareDirectFile('pdf')}
-                        disabled={!isPreviewGenerated || isExporting}
-                        className={`py-3 px-4 text-xs font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-emerald-600/20 active:scale-95 transition-all ${
-                          isPreviewGenerated && !isExporting
-                            ? 'opacity-100'
-                            : 'opacity-60 cursor-not-allowed'
-                        }`}
-                        title="Share PDF directly to WhatsApp, Drive, or Save"
-                      >
-                        <Share2 className="w-4 h-4" />
-                        <span>Share File</span>
-                      </button>
-                    )}
                   </div>
 
                 </div>
