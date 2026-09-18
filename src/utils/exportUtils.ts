@@ -75,8 +75,41 @@ export async function exportCoverPageAsPDFDirect(
 }
 
 /**
- * Formats YYYY-MM-DD to DD/MM/YYYY
+ * Direct File Share Helper for Mobile Devices (Bypasses Chrome download bar)
  */
+export async function shareCoverPageFile(
+  formData: CoverPageFormData,
+  format: 'pdf' | 'jpg' = 'pdf'
+): Promise<boolean> {
+  const canvas = await renderCoverPageToCanvas(formData);
+  let file: File;
+
+  if (format === 'pdf') {
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.98);
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+    pdf.addImage(dataUrl, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+    const pdfBlob = pdf.output('blob');
+    file = new File([pdfBlob], 'Cover_Page_A4.pdf', { type: 'application/pdf' });
+  } else {
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.98));
+    if (!blob) return false;
+    file = new File([blob], 'Cover_Page_A4.jpg', { type: 'image/jpeg' });
+  }
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    await navigator.share({
+      title: 'A4 Cover Page',
+      text: 'My A4 Assignment / Lab Copy Cover Page',
+      files: [file],
+    });
+    return true;
+  }
+  return false;
+}
 export function formatSubmissionDate(isoDateString: string): string {
   if (!isoDateString) return '';
   const parts = isoDateString.split('-');
