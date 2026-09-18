@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CoverPageFormData, ValidationErrors, ToastMessage, AuthUser } from './types';
+import { CoverPageFormData, ValidationErrors, ToastMessage } from './types';
 import { INITIAL_FORM_DATA, TCEA_LOGO_SVG } from './utils/academicPresets';
 import { Navbar } from './components/Navbar';
 import { CoverForm } from './components/CoverForm';
@@ -14,7 +14,6 @@ import { AcademicGuidesView } from './components/AcademicGuidesView';
 import { FaqView } from './components/FaqView';
 import { LegalPagesModal } from './components/LegalPagesModal';
 import { AdSenseApprovalGuideModal } from './components/AdSenseApprovalGuideModal';
-import { AuthModal } from './components/AuthModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
 import {
   FileCheck,
@@ -75,54 +74,6 @@ export default function App() {
   const [isPresetsOpen, setIsPresetsOpen] = useState<boolean>(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
-  
-  // Auth User State
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    try {
-      const savedUser = localStorage.getItem('cover_app_user_data');
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-
-  // Validate Auth Token on mount
-  useEffect(() => {
-    const token = localStorage.getItem('cover_app_auth_token');
-    if (token) {
-      fetch('/api/auth/me', {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success && data.user) {
-            setUser(data.user);
-            localStorage.setItem('cover_app_user_data', JSON.stringify(data.user));
-          } else {
-            localStorage.removeItem('cover_app_auth_token');
-            localStorage.removeItem('cover_app_user_data');
-            setUser(null);
-          }
-        })
-        .catch(() => {
-          // Keep offline session if available
-        });
-    }
-  }, []);
-
-  const handleLoginSuccess = (userData: AuthUser, token: string) => {
-    setUser(userData);
-    localStorage.setItem('cover_app_auth_token', token);
-    localStorage.setItem('cover_app_user_data', JSON.stringify(userData));
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('cover_app_auth_token');
-    localStorage.removeItem('cover_app_user_data');
-    addToast('info', 'Logged out successfully.');
-  };
   
   // Active Navigation View State
   const [activeView, setActiveView] = useState<'editor' | 'guides' | 'faq'>('editor');
@@ -431,9 +382,6 @@ export default function App() {
         }}
         onOpenAdSenseGuide={() => setIsAdSenseGuideOpen(true)}
         onOpenLegal={(tab) => setLegalModalTab(tab)}
-        user={user}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        onLogout={handleLogout}
       />
 
       {/* Main Layout Container */}
@@ -645,14 +593,6 @@ export default function App() {
           onClose={() => setIsPresetsOpen(false)}
         />
       )}
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onLoginSuccess={handleLoginSuccess}
-        addToast={addToast}
-      />
 
       {/* Reset Confirmation Modal */}
       <ResetConfirmModal
