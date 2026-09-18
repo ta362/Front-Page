@@ -15,7 +15,6 @@ import { FaqView } from './components/FaqView';
 import { LegalPagesModal } from './components/LegalPagesModal';
 import { AdSenseApprovalGuideModal } from './components/AdSenseApprovalGuideModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
-import { sendDeviceSystemNotification } from './utils/notificationUtils';
 import {
   FileCheck,
   Smartphone,
@@ -32,8 +31,7 @@ import {
   Layers,
   ArrowDownToLine,
   ArrowLeft,
-  Award,
-  RefreshCw
+  Award
 } from 'lucide-react';
 
 const STORAGE_KEY = 'assignment_cover_page_data_liquid_v3';
@@ -224,11 +222,9 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
+      addToast('info', 'Rendering high-resolution A4 image (300 DPI)...');
       await exportCoverPageAsJPGDirect(formData, 'Cover_Page_A4.jpg');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'Cover page saved successfully! (Cover_Page_A4.jpg)');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export JPG: ${err?.message || 'Error occurred'}`);
@@ -244,11 +240,8 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
       await exportCoverPageAsPNGDirect(formData, 'Cover_Page_A4.png');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'PNG exported successfully!');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export PNG: ${err?.message || 'Error occurred'}`);
@@ -264,11 +257,9 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
+      addToast('info', 'Generating print-ready A4 PDF document...');
       await exportCoverPageAsPDFDirect(formData, 'Cover_Page_A4.pdf');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'PDF file downloaded successfully!');
     } catch (err: any) {
       console.error(err);
       addToast('error', 'Failed to generate PDF.');
@@ -636,61 +627,36 @@ export default function App() {
         />
       )}
 
-      {/* Toast Alerts (White Theme with App Icon) */}
-      <div className="fixed bottom-5 right-4 z-50 flex flex-col gap-2.5 max-w-sm w-full px-3 pointer-events-none">
-        {toasts.map((toast) => {
-          const isProcessing = toast.text.toLowerCase().includes('processing');
-
-          return (
-            <div
-              key={toast.id}
-              className="pointer-events-auto p-3.5 rounded-2xl bg-white/98 text-slate-900 border border-slate-200/90 shadow-2xl shadow-slate-900/15 flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-4 backdrop-blur-xl"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                {/* App Icon */}
-                <div className="relative shrink-0">
-                  <img
-                    src="/golden_emblem_logo.jpg"
-                    alt="App Icon"
-                    className="w-8.5 h-8.5 rounded-xl object-cover border border-amber-500/30 shadow-xs"
-                    referrerPolicy="no-referrer"
-                  />
-                  {/* Status Indicator Badge */}
-                  <span className={`absolute -bottom-1 -right-1 p-0.5 rounded-full text-white shadow-xs ${
-                    toast.type === 'success' ? 'bg-emerald-500' :
-                    toast.type === 'error' ? 'bg-rose-500' :
-                    toast.type === 'warning' ? 'bg-amber-500' : 'bg-purple-600'
-                  }`}>
-                    {toast.type === 'success' && <CheckCircle className="w-2.5 h-2.5" />}
-                    {toast.type === 'error' && <AlertTriangle className="w-2.5 h-2.5" />}
-                    {toast.type === 'warning' && <AlertTriangle className="w-2.5 h-2.5" />}
-                    {toast.type === 'info' && (
-                      isProcessing ? <RefreshCw className="w-2.5 h-2.5 animate-spin" /> : <Info className="w-2.5 h-2.5" />
-                    )}
-                  </span>
-                </div>
-
-                <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">
-                    Cover Page App
-                  </span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-800 leading-snug flex items-center gap-1.5">
-                    {isProcessing && <RefreshCw className="w-3.5 h-3.5 text-purple-600 animate-spin shrink-0" />}
-                    {toast.text}
-                  </span>
-                </div>
-              </div>
-
-              <button
-                onClick={() => removeToast(toast.id)}
-                className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors cursor-pointer shrink-0"
-                title="Close"
-              >
-                <X className="w-4 h-4" />
-              </button>
+      {/* Toast Alerts */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-3 pointer-events-none">
+        {toasts.map((toast) => (
+          <div
+            key={toast.id}
+            className={`pointer-events-auto p-3.5 rounded-2xl shadow-xl border flex items-center justify-between gap-3 animate-in fade-in slide-in-from-bottom-3 backdrop-blur-xl ${
+              toast.type === 'success'
+                ? 'bg-emerald-500/90 text-white border-emerald-400/50 shadow-emerald-500/20'
+                : toast.type === 'error'
+                ? 'bg-rose-500/90 text-white border-rose-400/50 shadow-rose-500/20'
+                : toast.type === 'warning'
+                ? 'bg-amber-500/90 text-white border-amber-400/50 shadow-amber-500/20'
+                : 'bg-indigo-600/90 text-white border-indigo-400/50 shadow-indigo-500/20'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              {toast.type === 'success' && <CheckCircle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'error' && <AlertTriangle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'warning' && <AlertTriangle className="w-4 h-4 shrink-0" />}
+              {toast.type === 'info' && <Info className="w-4 h-4 shrink-0" />}
+              <span className="text-xs font-bold leading-snug">{toast.text}</span>
             </div>
-          );
-        })}
+            <button
+              onClick={() => removeToast(toast.id)}
+              className="p-1 text-white/80 hover:text-white rounded-full transition-colors cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ))}
       </div>
 
     </div>
