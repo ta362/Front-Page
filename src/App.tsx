@@ -15,7 +15,6 @@ import { FaqView } from './components/FaqView';
 import { LegalPagesModal } from './components/LegalPagesModal';
 import { AdSenseApprovalGuideModal } from './components/AdSenseApprovalGuideModal';
 import { exportCoverPageAsJPGDirect, exportCoverPageAsPNGDirect, exportCoverPageAsPDFDirect } from './utils/exportUtils';
-import { sendDeviceSystemNotification } from './utils/notificationUtils';
 import {
   FileCheck,
   Smartphone,
@@ -224,11 +223,9 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
+      addToast('info', 'Processing (JPG).....');
       await exportCoverPageAsJPGDirect(formData, 'Cover_Page_A4.jpg');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'Complete Download (JPG)');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export JPG: ${err?.message || 'Error occurred'}`);
@@ -244,11 +241,9 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
+      addToast('info', 'Processing (PNG).....');
       await exportCoverPageAsPNGDirect(formData, 'Cover_Page_A4.png');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'Complete Download (PNG)');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export PNG: ${err?.message || 'Error occurred'}`);
@@ -264,11 +259,9 @@ export default function App() {
     }
     try {
       setIsExporting(true);
-      addToast('info', 'Processing.....');
-      sendDeviceSystemNotification('Cover Page App', 'Processing.....');
+      addToast('info', 'Processing (PDF).....');
       await exportCoverPageAsPDFDirect(formData, 'Cover_Page_A4.pdf');
-      addToast('success', 'Complete Download');
-      sendDeviceSystemNotification('Cover Page App', 'Complete Download');
+      addToast('success', 'Complete Download (PDF)');
     } catch (err: any) {
       console.error(err);
       addToast('error', 'Failed to generate PDF.');
