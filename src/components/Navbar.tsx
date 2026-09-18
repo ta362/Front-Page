@@ -58,11 +58,14 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <div 
             onClick={() => onNavigateTab('editor')}
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-400 p-[1.5px] shadow-lg shadow-purple-500/25 flex items-center justify-center shrink-0 cursor-pointer"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-amber-400 to-teal-400 p-[1.5px] shadow-lg shadow-amber-500/25 flex items-center justify-center shrink-0 cursor-pointer overflow-hidden"
           >
-            <div className="w-full h-full bg-white/90 rounded-[14px] flex items-center justify-center backdrop-blur-sm">
-              <FileSpreadsheet className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
-            </div>
+            <img 
+              src="/golden_emblem_logo.jpg" 
+              alt="Golden Emblem Logo" 
+              className="w-full h-full object-cover rounded-[14px]"
+              referrerPolicy="no-referrer"
+            />
           </div>
           <div className="min-w-0 flex-1 max-w-[190px] xs:max-w-[240px] sm:max-w-xs md:max-w-md lg:max-w-xl">
             <h1 
@@ -98,15 +101,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {/* Compact Share App Button */}
+          {/* Icon-only Share App Button */}
           <button
             type="button"
             onClick={onShareApp}
-            className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold text-indigo-900 bg-indigo-500/20 hover:bg-indigo-500/30 active:scale-95 border border-indigo-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md"
-            title="Share Cover Page App"
+            className="p-1.5 text-indigo-900 bg-indigo-500/20 hover:bg-indigo-500/30 active:scale-95 border border-indigo-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md flex items-center justify-center"
+            title="Share App"
           >
-            <Share2 className="w-3 h-3 text-indigo-700" />
-            <span>Share App</span>
+            <Share2 className="w-4 h-4 text-indigo-700" />
           </button>
 
           {/* Compact Header Reset Button */}

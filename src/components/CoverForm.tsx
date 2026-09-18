@@ -17,7 +17,6 @@ import {
   Sliders,
   CheckCircle2,
   Eye,
-  Download,
   RotateCcw,
   Check,
   Building2,
@@ -669,7 +668,7 @@ export const CoverForm: React.FC<CoverFormProps> = ({
                     onClick={() => onChange({ logoUrl: TCEA_LOGO_SVG, logoSize: 200 })}
                     className="px-3 py-1.5 text-xs bg-red-500/15 hover:bg-red-500/25 text-red-700 font-bold rounded-full border border-red-500/30 cursor-pointer shadow-sm transition-all"
                   >
-                    ★ TCEA Red Emblem
+                    ★ TCEA Official Emblem
                   </button>
                 </div>
               </div>
@@ -1393,35 +1392,17 @@ export const CoverForm: React.FC<CoverFormProps> = ({
       </div>
 
       {/* ACTION BUTTONS: Glossy Liquid Glass Action Bar */}
-      <div className="pt-3 space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          {/* 1. Update Preview Button (Liquid Purple Pill) */}
-          <button
-            type="button"
-            id="btn-generate-preview"
-            onClick={onGeneratePreview}
-            className="w-full py-3.5 px-6 liquid-pill-purple font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-lg"
-          >
-            <Eye className="w-5 h-5" />
-            <span>Update Preview</span>
-          </button>
-
-          {/* 2. Download JPG Button (Liquid Cyan / Blue Pill) */}
-          <button
-            type="button"
-            id="btn-download-jpg"
-            onClick={onDownloadJPG}
-            disabled={isExporting}
-            className={`w-full py-3.5 px-6 font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-lg ${
-              isPreviewGenerated
-                ? 'liquid-pill-cyan'
-                : 'bg-slate-300 text-slate-500 cursor-not-allowed rounded-full opacity-70'
-            }`}
-          >
-            <Download className="w-5 h-5" />
-            <span>{isExporting ? 'Generating...' : 'Download JPG (300 DPI)'}</span>
-          </button>
-        </div>
+      <div className="pt-3">
+        {/* Update Preview Button (Liquid Purple Pill) */}
+        <button
+          type="button"
+          id="btn-generate-preview"
+          onClick={onGeneratePreview}
+          className="w-full py-3.5 px-6 liquid-pill-purple font-extrabold text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+        >
+          <Eye className="w-5 h-5" />
+          <span>Update Preview</span>
+        </button>
       </div>
 
       {/* Syllabus PDF / Text Importer Modal */}

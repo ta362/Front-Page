@@ -30,6 +30,7 @@ import {
   Minimize2,
   Layers,
   ArrowDownToLine,
+  ArrowLeft,
   Award
 } from 'lucide-react';
 
@@ -204,9 +205,13 @@ export default function App() {
     if (validateForm()) {
       setIsPreviewGenerated(true);
       addToast('success', 'Cover page preview updated successfully!');
-      if (window.innerWidth < 1024) {
-        setActiveTab('preview');
-      }
+      setActiveTab('preview');
+      setTimeout(() => {
+        const previewElement = document.getElementById('preview-section');
+        if (previewElement) {
+          previewElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
     }
   };
 
@@ -422,33 +427,6 @@ export default function App() {
         {activeView === 'editor' && (
           <div className="space-y-6">
             
-            {/* Mobile View Toggle Bar */}
-            <div className="lg:hidden flex items-center liquid-panel p-1 shadow-md">
-              <button
-                onClick={() => setActiveTab('editor')}
-                className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                  activeTab === 'editor'
-                    ? 'liquid-pill-purple shadow-md text-white'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Layers className="w-4 h-4" />
-                <span>1. Edit Details</span>
-              </button>
-              <button
-                onClick={() => setActiveTab('preview')}
-                className={`flex-1 py-2.5 text-xs font-bold rounded-full transition-all flex items-center justify-center gap-1.5 cursor-pointer relative ${
-                  activeTab === 'preview'
-                    ? 'liquid-pill-purple shadow-md text-white'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Eye className="w-4 h-4" />
-                <span>2. A4 Preview</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              </button>
-            </div>
-
             {/* Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
               
@@ -480,7 +458,27 @@ export default function App() {
               </div>
 
               {/* RIGHT COLUMN: Live A4 Preview & Controls */}
-              <div className={`lg:col-span-6 space-y-4 sticky top-20 ${activeTab === 'preview' ? 'block' : 'hidden lg:block'}`}>
+              <div 
+                id="preview-section"
+                className={`lg:col-span-6 space-y-4 sticky top-20 ${activeTab === 'preview' ? 'block' : 'hidden lg:block'}`}
+              >
+                {/* Single Fixed Floating Back Button at Viewport Top-Left (Constantly fixed on screen scroll) */}
+                {activeTab === 'preview' && (
+                  <div className="fixed top-16 left-3 sm:top-20 sm:left-5 z-50">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('editor');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="liquid-pill-purple px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 cursor-pointer shadow-lg shadow-purple-950/30 border border-purple-300/40 rounded-full active:scale-95 transition-all animate-in zoom-in-90 duration-200"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 animate-bounce" />
+                      <span>Back</span>
+                    </button>
+                  </div>
+                )}
+
                 <div className="liquid-panel p-4 sm:p-6 shadow-2xl space-y-4">
                   
                   <div className="flex items-center justify-between border-b border-slate-200/80 pb-3">
