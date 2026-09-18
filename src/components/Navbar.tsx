@@ -9,8 +9,7 @@ import {
   Award,
   MoreVertical,
   Shield,
-  Info,
-  Bell
+  Info
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -26,8 +25,6 @@ interface NavbarProps {
   onNavigateTab: (tab: 'editor' | 'guides' | 'faq') => void;
   onOpenAdSenseGuide: () => void;
   onOpenLegal: (tab: 'privacy' | 'terms' | 'about') => void;
-  onOpenNotifications?: () => void;
-  unreadNotificationCount?: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -39,12 +36,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNavigateTab,
   onOpenAdSenseGuide,
   onOpenLegal,
-  onOpenNotifications,
-  unreadNotificationCount = 0,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -104,23 +98,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="px-3 py-1 text-xs font-bold text-white bg-purple-700 hover:bg-purple-800 rounded-full transition-all cursor-pointer shadow-sm"
             >
               Generator Tool
-            </button>
-          )}
-
-          {/* In-App Notification Bell Button */}
-          {onOpenNotifications && (
-            <button
-              type="button"
-              onClick={onOpenNotifications}
-              className="relative p-1.5 text-amber-900 bg-amber-500/20 hover:bg-amber-500/30 active:scale-95 border border-amber-500/35 rounded-full transition-all cursor-pointer shadow-xs backdrop-blur-md flex items-center justify-center"
-              title="In-App Download Center (Chrome Silent Alerts Blocked)"
-            >
-              <Bell className="w-4 h-4 text-amber-800" />
-              {unreadNotificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white animate-bounce">
-                  {unreadNotificationCount}
-                </span>
-              )}
             </button>
           )}
 

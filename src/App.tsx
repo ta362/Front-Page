@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CoverPageFormData, ValidationErrors, ToastMessage, DownloadNotificationItem } from './types';
+import { CoverPageFormData, ValidationErrors, ToastMessage } from './types';
 import { INITIAL_FORM_DATA, TCEA_LOGO_SVG } from './utils/academicPresets';
 import { Navbar } from './components/Navbar';
 import { CoverForm } from './components/CoverForm';
@@ -8,8 +8,6 @@ import { A4PreviewViewer } from './components/A4PreviewViewer';
 import { PresetSelectorModal } from './components/PresetSelectorModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
 import { InstallPwaModal } from './components/InstallPwaModal';
-import { DownloadNotificationDrawer } from './components/DownloadNotificationDrawer';
-import { useInAppNotifications } from './hooks/useInAppNotifications';
 import { AdBanner } from './components/AdBanner';
 import { Footer } from './components/Footer';
 import { AcademicGuidesView } from './components/AcademicGuidesView';
@@ -76,20 +74,6 @@ export default function App() {
   const [isPresetsOpen, setIsPresetsOpen] = useState<boolean>(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
-
-  // In-App Download Notification Center hook
-  const {
-    notifications,
-    unreadCount,
-    isDrawerOpen: isNotificationDrawerOpen,
-    setIsDrawerOpen: setIsNotificationDrawerOpen,
-    logDownload,
-    markAllAsRead,
-    markAsRead,
-    clearAll: clearAllNotifications,
-    isChromeSilentDisabled,
-    toggleChromeSilent,
-  } = useInAppNotifications();
   
   // Active Navigation View State
   const [activeView, setActiveView] = useState<'editor' | 'guides' | 'faq'>('editor');
@@ -231,28 +215,16 @@ export default function App() {
     }
   };
 
-  const sanitizeFileName = (name: string, ext: string) => {
-    const clean = name.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_');
-    return clean ? `${clean}_A4.${ext}` : `Cover_Page_A4.${ext}`;
-  };
-
   const handleDownloadJPG = async () => {
     if (!isPreviewGenerated) {
       addToast('warning', 'Please generate preview first before downloading.');
       return;
     }
-    const fileName = sanitizeFileName(formData.course || formData.submissionType || 'Cover_Page', 'jpg');
     try {
       setIsExporting(true);
       addToast('info', 'Rendering high-resolution A4 image (300 DPI)...');
-      await exportCoverPageAsJPGDirect(formData, fileName);
-      logDownload(
-        `${formData.submissionType || 'Cover Page'} JPG Image`,
-        fileName,
-        'JPG',
-        '~850 KB'
-      );
-      addToast('success', `File saved in-app! (${fileName})`);
+      await exportCoverPageAsJPGDirect(formData, 'Cover_Page_A4.jpg');
+      addToast('success', 'Cover page saved successfully! (Cover_Page_A4.jpg)');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export JPG: ${err?.message || 'Error occurred'}`);
@@ -266,17 +238,10 @@ export default function App() {
       addToast('warning', 'Please generate preview first.');
       return;
     }
-    const fileName = sanitizeFileName(formData.course || formData.submissionType || 'Cover_Page', 'png');
     try {
       setIsExporting(true);
-      await exportCoverPageAsPNGDirect(formData, fileName);
-      logDownload(
-        `${formData.submissionType || 'Cover Page'} PNG Image`,
-        fileName,
-        'PNG',
-        '~1.4 MB'
-      );
-      addToast('success', `PNG file saved in-app! (${fileName})`);
+      await exportCoverPageAsPNGDirect(formData, 'Cover_Page_A4.png');
+      addToast('success', 'PNG exported successfully!');
     } catch (err: any) {
       console.error(err);
       addToast('error', `Failed to export PNG: ${err?.message || 'Error occurred'}`);
@@ -290,18 +255,11 @@ export default function App() {
       addToast('warning', 'Please generate preview first.');
       return;
     }
-    const fileName = sanitizeFileName(formData.course || formData.submissionType || 'Cover_Page', 'pdf');
     try {
       setIsExporting(true);
       addToast('info', 'Generating print-ready A4 PDF document...');
-      await exportCoverPageAsPDFDirect(formData, fileName);
-      logDownload(
-        `${formData.submissionType || 'Cover Page'} PDF Document`,
-        fileName,
-        'PDF',
-        '~1.1 MB'
-      );
-      addToast('success', `PDF file saved in-app! (${fileName})`);
+      await exportCoverPageAsPDFDirect(formData, 'Cover_Page_A4.pdf');
+      addToast('success', 'PDF file downloaded successfully!');
     } catch (err: any) {
       console.error(err);
       addToast('error', 'Failed to generate PDF.');
@@ -315,21 +273,7 @@ export default function App() {
       addToast('warning', 'Please generate preview first.');
       return;
     }
-    logDownload(
-      `${formData.submissionType || 'Cover Page'} Sent to Printer`,
-      'A4_Print_Job.pdf',
-      'PRINT',
-      'System Print'
-    );
-    addToast('info', 'Document sent to printer in-app queue...');
     window.print();
-  };
-
-  const handleRedownloadNotification = (item: DownloadNotificationItem) => {
-    if (item.format === 'PDF') handleDownloadPDF();
-    else if (item.format === 'JPG') handleDownloadJPG();
-    else if (item.format === 'PNG') handleDownloadPNG();
-    else if (item.format === 'PRINT') handlePrint();
   };
 
   const handleClearForm = () => {
@@ -438,8 +382,6 @@ export default function App() {
         }}
         onOpenAdSenseGuide={() => setIsAdSenseGuideOpen(true)}
         onOpenLegal={(tab) => setLegalModalTab(tab)}
-        onOpenNotifications={() => setIsNotificationDrawerOpen(true)}
-        unreadNotificationCount={unreadCount}
       />
 
       {/* Main Layout Container */}
@@ -684,19 +626,6 @@ export default function App() {
           onOpenLegal={() => setLegalModalTab('privacy')}
         />
       )}
-
-      {/* In-App Download Notification Center Drawer */}
-      <DownloadNotificationDrawer
-        isOpen={isNotificationDrawerOpen}
-        onClose={() => setIsNotificationDrawerOpen(false)}
-        notifications={notifications}
-        onClearAll={clearAllNotifications}
-        onMarkAllRead={markAllAsRead}
-        onMarkRead={markAsRead}
-        onRedownload={handleRedownloadNotification}
-        isChromeSilentDisabled={isChromeSilentDisabled}
-        onToggleChromeSilent={toggleChromeSilent}
-      />
 
       {/* Toast Alerts */}
       <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full px-3 pointer-events-none">

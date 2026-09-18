@@ -1,5 +1,5 @@
 // Service Worker for Academic Cover Page Generator PWA
-const CACHE_NAME = 'cover-page-generator-v2';
+const CACHE_NAME = 'cover-page-generator-v1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -7,15 +7,6 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
-});
-
-// Explicitly suppress/block browser silent notifications and push prompts
-self.addEventListener('push', (event) => {
-  event.preventDefault();
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -28,4 +19,3 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-
